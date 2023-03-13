@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Use cases{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+    <h1>Use cases</h1>
+
+    {% include './partials/resource_listing.html' with items=groups namespace='registry:group' kind='groups' %}
+
+</div>
+
+{% endblock %}

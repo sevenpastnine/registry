@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ resource }}{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="flex justify-between items-center">
+        <h1>{{ resource.name }}</h1>
+        <a class="btn btn-primary" href="{% url 'registry:resource_edit' resource.id %}">Update this resource</a>
+    </div>
+
+    <dl>
+        <div>
+            <dt>ID</dt>
+            <dd class="!text-base font-mono">{{ resource.id }}</dd>
+        </div>
+
+        {% if resource.archived %}
+        <div>
+            <dt>Archived</dt>
+            <dd>
+                This resource is archived.
+                <br>Update it if you need to un-archive it.
+            </dd>
+        </div>
+        {% endif %}
+
+        <div>
+            <dt>Type of resource</dt>
+            <dd>{{ resource.get_kind_display }}</dd>
+        </div>
+
+        <div>
+            <dt>Status</dt>
+            <dd>{{ resource.status }}</dd>
+        </div>
+
+        <div>
+            <dt>Data link/file</dt>
+            <dd>
+                {% if resource.data_link %}
+                <a href="{{ resource.data_link }}">{{ resource.data_link }}</a>
+                {% elif resource.data_file %}
+                <a href="{{ resource.data_file.url }}">{{ resource.data_file_name }}</a>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Description</dt>
+            <dd>
+                {% if resource.description %}
+                {{ resource.description|linebreaks }}
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Use cases</dt>
+            <dd>
+                {% if resource.groups.all.count %}
+                <ul>
+                    {% for group in resource.groups.all %}
+                    <li><a href="{% url 'registry:group' group.id %}">{{ group }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Contributors</dt>
+            <dd>
+                {% if resource.contributors.all.count %}
+                <ul>
+                    {% for contributor in resource.contributors.all %}
+                    <li><a href="{% url 'registry:person' contributor.person.id %}">{{ contributor.person.full_name }}</a>, <span class="text-muted">{{ contributor.role.name }}</span></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>License</dt>
+            <dd>
+                {% if resource.license %}
+                <a href="{% url 'registry:license' resource.license.id %}">{{ resource.license.name }}</a>, <span class="text-muted">{{ resource.license.description }}</span>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+    </dl>
+
+</div>
+{% endblock %}

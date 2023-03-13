@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}License{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+    <h1>Licenses</h1>
+
+    {% include './partials/resource_listing.html' with items=licenses namespace='registry:license' kind='licences' %}
+
+</div>
+
+{% endblock %}

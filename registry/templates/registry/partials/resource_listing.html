@@ -1,0 +1,61 @@
+    <div class="overflow-hidden bg-white shadow sm:rounded-md border-t">
+        <ul class="divide-y divide-gray-200" role="list">
+            {% for item in items %}
+            <li>
+                <a class="block hover:bg-gray-50" href="{% url namespace item.id %}">
+                    <div class="flex items-center px-gap py-gap">
+                        <div class="min-w-0 flex-1 sm:flex sm:items-start sm:justify-between">
+                            <div class="{% if layout == 'twocol'%}w-1/2 truncate{% endif %}">
+                                <div class="flex text-sm">
+                                    <p class="truncate font-medium text-lg">{{ item }}</p>
+                                </div>
+                                <div class="mt-2 flex">
+                                    <div class="flex items-center text-sm text-muted">
+                                        <p>
+                                            {% if kind == 'organisations' %}
+                                                {{ item.short_name }} | {{ item.country.name }}
+                                            {% elif kind == 'people' %}
+                                                {% if item.user.email %}
+                                                {{ item.user.email }}
+                                                {% endif %}
+                                            {% else %}
+                                                {% if item.description %}
+                                                {{ item.description|truncatewords:50 }}
+                                                {% endif %}
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if layout == 'twocol'%}
+                            <div class="w-1/2 flex items-center text-sm text-muted mt-2">
+                                <div>
+                                    <p>
+                                        Organisations:
+                                        {% for organisation in item.organisations.all %}
+                                        {{  organisation.short_name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                    <p class="mt-2">
+                                        Use cases:
+                                        {% if item.groups.all %}
+                                        {% for group in item.groups.all %}
+                                        {{ group.name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                        {% else %}
+                                        /
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="ml-gap flex-shrink-0">
+                            {% include './chevron_right.html' %}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>

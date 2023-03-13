@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Resources{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="flex justify-between items-center">
+        <h1>Resources</h1>
+        <a class="btn btn-primary" href="{% url 'registry:resource_add' %}">Register a new resource</a>
+    </div>
+
+    <div id="content">
+        {% include './partials/resources.html' %}
+    </div>
+</div>
+{% endblock %}

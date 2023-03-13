@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ study_design }}{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="flex justify-between items-center">
+        <h1>{{ study_design.name }}</h1>
+        <a class="btn btn-primary" href="{% url 'registry:study_design_edit' study_design.id %}">Update this study design</a>
+    </div>
+
+    <dl>
+        <div>
+            <dt>ID</dt>
+            <dd class="!text-base font-mono">{{ study_design.id }}</dd>
+        </div>
+
+        {% if study_design.archived %}
+        <div>
+            <dt>Archived</dt>
+            <dd>
+                This study design is archived.
+                <br>Update it if you need to un-archive it.
+            </dd>
+        </div>
+        {% endif %}
+
+        <div>
+            <dt>Description</dt>
+            <dd>
+                {% if study_design.description %}
+                {{ study_design.description|linebreaks }}
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Use cases</dt>
+            <dd>
+                {% if study_design.groups.all.count %}
+                <ul>
+                    {% for group in study_design.groups.all %}
+                    <li><a href="{% url 'registry:group' group.id %}">{{ group }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Contributors</dt>
+            <dd>
+                {% if study_design.contributors.all.count %}
+                <ul>
+                    {% for contributor in study_design.contributors.all %}
+                    <li><a href="{% url 'registry:person' contributor.person.id %}">{{ contributor.person.full_name }}</a>, <span class="text-muted">{{ contributor.role.name }}</span></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>License</dt>
+            <dd>
+                {% if study_design.license %}
+                <a href="{% url 'registry:license' study_design.license.id %}">{{ study_design.license }}</a>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+    </dl>
+
+</div>
+{% endblock %}

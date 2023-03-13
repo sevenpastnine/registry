@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Register a new Resource{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Register a new Resource</h1>
+
+    <form class="max-w-screen-md" method="post" enctype="multipart/form-data" novalidate>
+
+        {% csrf_token %}
+        {% include 'partials/form_errors.html' with formset=contributor_formset %}
+        {% include './partials/resource_form.html' %}
+        {% include './partials/contributor_formset.html' %}
+
+        <input class="btn btn-primary" type="submit" value="Register">
+        <a class="btn btn-text" href="{% url 'registry:index' %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

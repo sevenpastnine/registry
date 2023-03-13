@@ -1,0 +1,58 @@
+<div id="contributor-formset" class="my-2gap">
+    <label class="block text-sm font-medium">Contributors</label>
+    {% if contributor_formset.non_form_errors %}
+    <div class="text-error text-sm">Please add at least one contributor.</div>
+    {% endif %}
+    <div class="forms-container mt-gap border p-gap empty:border-none">
+        {% for contributor_form in contributor_formset.forms %}
+        {{ contributor_form.id }}
+        {{ contributor_form.non_field_errors }}
+        <div class="form flex items-center space-x-1 my-gap">
+            <div class="w-[45%]">{% include 'partials/form_field.html' with field=contributor_form.person %}</div>
+            <div class="w-[45%]">{% include 'partials/form_field.html' with field=contributor_form.role %}</div>
+            <div class="w-[7%] text-center pt-2gap">
+                {% if contributor_formset.can_delete %}
+                {{ contributor_form.DELETE }}
+                <button type="button" class="delete-form-button"><span
+                        class="material-symbols-outlined">delete</span></button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div><input type="button" class="add-form-button cursor-pointer text-sm mt-gap" value="+ Add another contributor">
+    </div>
+    <div class="empty-form-template" hidden>
+        <div class="form flex items-center space-x-1 mb-gap">
+            <div class="w-[45%]">{% include 'partials/form_field.html' with field=contributor_formset.empty_form.person %}</div>
+            <div class="w-[45%]">{% include 'partials/form_field.html' with field=contributor_formset.empty_form.role %}
+            </div>
+            <div class="w-[7%] text-center pt-2gap">
+                {% if contributor_formset.can_delete %}
+                <button type="button" class="delete-form-button"><span
+                        class="material-symbols-outlined">delete</span></button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {{ contributor_formset.management_form }}
+</div>
+
+{{ contributor_formset.media }}
+
+<script defer>
+    new ConvenientFormset({
+        'formsetPrefix': '{{ contributor_formset.prefix }}',
+        'formsContainerSelector': '#contributor-formset .forms-container',
+        'formSelector': '.form',
+
+        'canAddForms': true,
+        'addFormButtonSelector': '#contributor-formset .add-form-button',
+        'emptyFormSelector': '#contributor-formset .empty-form-template .form',
+
+        'canDeleteForms': true,
+        'deleteFormButtonSelector': '.delete-form-button',
+
+        'canOrderForms': false,
+    })
+</script>

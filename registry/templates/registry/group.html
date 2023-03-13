@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ group }}{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+    <h1>{{ group }}</h1>
+
+    <dl>
+        <div>
+            <dt>ID</dt>
+            <dd class="!text-base font-mono">{{ group.id }}</dd>
+        </div>
+
+        {% if group.description %}
+        <div>
+            <dt>Description</dt>
+            <dd>
+                {{ group.description }}
+            </dd>
+        </div>
+        {% endif %}
+
+        <div>
+            <dt>Members</dt>
+            <dd>
+                {% if group.people.all.count %}
+                <ul>
+                    {% for person in group.people.all %}
+                    <li><a href="{% url 'registry:person' person.id %}">{{ person }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Resources</dt>
+            <dd>
+                {% if group.resources.all.count %}
+                <ul>
+                    {% for resource in group.resources.all %}
+                    <li><a href="{% url 'registry:resource' resource.id %}">{{ resource }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+    </dl>
+
+</div>
+
+{% endblock %}
