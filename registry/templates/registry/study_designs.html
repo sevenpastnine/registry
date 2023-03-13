@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load registry %}
+
 {% block title %}Study designs{% endblock %}
 
 {% block body %}
@@ -21,10 +23,10 @@
             <div class="ml-3">
                 <h3 class="text-sm font-medium text-yellow-800">Please note!</h3>
                 <div class="mt-2 text-sm text-yellow-700">
-                    <p>We are in the process of integrating the InstanceMaps tool into MACRAMÉ Registry.
+                    <p>We are in the process of integrating the InstanceMaps tool into {% settings_value 'REGISTRY_PROJECT_NAME' %} Registry.
                         <br>Until this is complete, you can create and edit instance maps at
                             <a target="_blank" class="underline" href="https://instance-maps.stage.sevenpastnine.com/">https://instance-maps.stage.sevenpastnine.com/</a>
-                        <br>To sign in to InstanceMaps, please use the same credentials as for the MACRAMÉ Registry.
+                        <br>To sign in to InstanceMaps, please use the same credentials as for the {% settings_value 'REGISTRY_PROJECT_NAME' %} Registry.
                     </p>
                 </div>
             </div>

@@ -20,11 +20,6 @@ PERSON_ROLES = [
 ]
 
 USE_CASES = [
-    'GRM in water filters',
-    'GRM in batteries',
-    'GRM in car wax spray',
-    'CNTs in heated car seats',
-    'PLGA-based inhalable antibiotics',
 ]
 
 LICENSES = [
