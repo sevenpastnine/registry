@@ -31,13 +31,17 @@
                             <div class="w-1/2 flex items-center text-sm text-muted mt-2">
                                 <div>
                                     <p>
-                                        Organisations:
+                                        {% with orgs=item.organisations.count %}
+                                        Organisation{{ orgs|pluralize }}:
+                                        {% endwith %}
                                         {% for organisation in item.organisations.all %}
                                         {{  organisation.short_name }}{% if not forloop.last %}, {% endif %}
                                         {% endfor %}
                                     </p>
                                     <p class="mt-2">
-                                        Use cases:
+                                        {% with groups=item.groups.count %}
+                                        Use case{{ groups|pluralize }}:
+                                        {% endwith %}
                                         {% if item.groups.all %}
                                         {% for group in item.groups.all %}
                                         {{ group.name }}{% if not forloop.last %}, {% endif %}

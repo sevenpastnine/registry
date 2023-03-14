@@ -126,7 +126,7 @@ class Contributor(BaseModel):
 
 
 class ResourceStatus(BaseModel):
-    position = models.PositiveIntegerField(default=0, blank=False, null=False)
+    position = models.PositiveIntegerField(default=0)
     name = models.CharField(max_length=100, unique=True)
 
     class Meta:
@@ -155,8 +155,8 @@ class Resource(BaseModel):
     groups = models.ManyToManyField(Group, blank=True, related_name='resources', verbose_name='Use cases')
     contributors = GenericRelation(Contributor)
 
-    data_link = models.URLField(null=True, blank=True, help_text='Link to data (e.g. Zenodo, Figshare, etc.)')
-    data_file = models.FileField(upload_to='resources/', null=True, blank=True, help_text='File containing data. In case of multiple files, please upload a zip file.')
+    data_link = models.URLField('Resource link', null=True, blank=True, help_text='Link to the resource (e.g. Zenodo, Figshare, etc.)')
+    data_file = models.FileField('Resource file', upload_to='resources/', null=True, blank=True, help_text='File containing data or information on the resource. In case of multiple files, please upload a zip file.')
 
     class Meta:
         ordering = ['name', 'kind']
