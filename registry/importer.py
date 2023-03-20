@@ -87,7 +87,7 @@ def run(organisations_csv, people_csv, init=False):
             person, created = Person.objects.update_or_create(
                 user=user,
                 defaults={'orcid': orcid if orcid else None})
-            person.organisations.add(Organisation.objects.get(short_name=organisation))
+            person.organisations.add(Organisation.objects.get(short_name=organisation)) # type: ignore
 
     for name in PERSON_ROLES:
         PersonRole.objects.get_or_create(name=name)
