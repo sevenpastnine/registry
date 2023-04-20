@@ -9,18 +9,18 @@ summary = "ASGI specs, helper code, and adapters"
 
 [[package]]
 name = "django"
-version = "4.1.7"
+version = "4.2"
 requires_python = ">=3.8"
 summary = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 dependencies = [
-    "asgiref<4,>=3.5.2",
-    "sqlparse>=0.2.2",
+    "asgiref<4,>=3.6.0",
+    "sqlparse>=0.3.1",
     "tzdata; sys_platform == \"win32\"",
 ]
 
 [[package]]
 name = "django-admin-sortable2"
-version = "2.1.4"
+version = "2.1.5"
 summary = "Generic drag-and-drop sorting for the List, the Stacked- and the Tabular-Inlines Views in the Django Admin"
 dependencies = [
     "Django>=4.0",
@@ -28,11 +28,11 @@ dependencies = [
 
 [[package]]
 name = "django-convenient-formsets"
-version = "1.2.1"
-requires_python = ">=3.5"
+version = "2.0"
+requires_python = ">=3.8"
 summary = "Django dynamic formsets made convenient for users and developers alike."
 dependencies = [
-    "Django>=2.2",
+    "Django>=4.2",
 ]
 
 [[package]]
@@ -94,7 +94,7 @@ summary = "passive checker of Python programs"
 
 [[package]]
 name = "setuptools"
-version = "67.6.0"
+version = "67.6.1"
 requires_python = ">=3.7"
 summary = "Easily download, build, install, upgrade, and uninstall Python packages"
 
@@ -132,17 +132,17 @@ content_hash = "sha256:a8f778de72d0d7c3720df3e9ea28c9b85b89140e5fac39bf3bd510563
     {url = "https://files.pythonhosted.org/packages/78/2d/797c0537426266d6c9377a2ed6a4ac61e50c2d5b1ab4da101a4b9bfe26e2/asgiref-3.6.0.tar.gz", hash = "sha256:9567dfe7bd8d3c8c892227827c41cce860b368104c3431da67a0c5a65a949506"},
     {url = "https://files.pythonhosted.org/packages/8f/29/38d10a47b322a77b2d12c2b79c789f52956f733cb701d4d5157c76b5f238/asgiref-3.6.0-py3-none-any.whl", hash = "sha256:71e68008da809b957b7ee4b43dbccff33d1b23519fb8344e33f049897077afac"},
 ]
-"django 4.1.7" = [
-    {url = "https://files.pythonhosted.org/packages/89/86/59e237f7176cfc1544446914fa329fd560bb8fce46be52dd7af5dc7c54f9/Django-4.1.7-py3-none-any.whl", hash = "sha256:f2f431e75adc40039ace496ad3b9f17227022e8b11566f4b363da44c7e44761e"},
-    {url = "https://files.pythonhosted.org/packages/9f/a7/07939866241b7e8f8d3bf164b7d6ad428163723e29dd472700f8ab0e5fd5/Django-4.1.7.tar.gz", hash = "sha256:44f714b81c5f190d9d2ddad01a532fe502fa01c4cb8faf1d081f4264ed15dcd8"},
+"django 4.2" = [
+    {url = "https://files.pythonhosted.org/packages/9a/bb/48aa3e0850923096dff2766d21a6004d6e1a3317f0bd400ba81f586754e1/Django-4.2.tar.gz", hash = "sha256:c36e2ab12824e2ac36afa8b2515a70c53c7742f0d6eaefa7311ec379558db997"},
+    {url = "https://files.pythonhosted.org/packages/d9/40/6012f98b14b64b4d3dc47b0c2f116fccbd0795ab35515d0c40dac73b81b8/Django-4.2-py3-none-any.whl", hash = "sha256:ad33ed68db9398f5dfb33282704925bce044bef4261cd4fb59e4e7f9ae505a78"},
 ]
-"django-admin-sortable2 2.1.4" = [
-    {url = "https://files.pythonhosted.org/packages/2c/17/7962b9367b0d8ceb84b8292f5c69daedba39c44dfe7b0e32627cf24a6ca4/django_admin_sortable2-2.1.4-py3-none-any.whl", hash = "sha256:93d7951fadfeb1a31bed382e78adbf015f30018429a3287bd4343e343fa10aa8"},
-    {url = "https://files.pythonhosted.org/packages/d4/e4/1ec438748a62fe9d7384d9a955f1e56fe0135313d1ff2391acc1cf391f86/django-admin-sortable2-2.1.4.tar.gz", hash = "sha256:7dc08ff0fbce5859502f809d108c0495f3b0d94609269eaedbb1237e03084acb"},
+"django-admin-sortable2 2.1.5" = [
+    {url = "https://files.pythonhosted.org/packages/34/cf/d98e22d1fb18f9df8dd6db911fec550a567adca91030a6634f7cada61fde/django_admin_sortable2-2.1.5-py3-none-any.whl", hash = "sha256:4fe40552c138c557e366ebcbfeb5447ee0dd5ae6719aa8395df0d15fa2b6c460"},
+    {url = "https://files.pythonhosted.org/packages/5e/bd/5ce8c37cf3c6aaa78708222a8e5587f1790baf53ca5d3ee19a092b87bef4/django-admin-sortable2-2.1.5.tar.gz", hash = "sha256:b435c696ff410d1fc108684bb3f7de34c5f6dd24bb08dc15ff7d9a0b9161c8c7"},
 ]
-"django-convenient-formsets 1.2.1" = [
-    {url = "https://files.pythonhosted.org/packages/71/3c/c27cd56e2381747e1696bba6644cb8c8376884a1a5668cd7b313437a8339/django-convenient-formsets-1.2.1.tar.gz", hash = "sha256:2a862545e2e40d5b496da1dae1077afd1aa2aaccd145b4b2df05d6c2838d5643"},
-    {url = "https://files.pythonhosted.org/packages/8b/3d/a2fc2f942a9e34d8d2f46065dda54e668222b1e65de5963962b46add3b16/django_convenient_formsets-1.2.1-py3-none-any.whl", hash = "sha256:e2625b284294a3a759881b84af53491657c28b060025a80130167c6f0132ce20"},
+"django-convenient-formsets 2.0" = [
+    {url = "https://files.pythonhosted.org/packages/23/35/403e45680475c237c57e499140c345ce6bdfd3b5be8cf9357575a72bad05/django_convenient_formsets-2.0-py3-none-any.whl", hash = "sha256:4952e96b2ef34e0e3484e90d86971bc9150b7d452212a6b20c0f8670a7b8e655"},
+    {url = "https://files.pythonhosted.org/packages/ed/a8/f4d15a388f67af68e007128186a37fce36d0979f2c0568023a8c5b333833/django-convenient-formsets-2.0.tar.gz", hash = "sha256:db7c4750452ce13088cb004d8f9b4e4c2b929d2289a7270666d18ecab7d8ae67"},
 ]
 "django-countries 7.5.1" = [
     {url = "https://files.pythonhosted.org/packages/6e/8a/d477590872e3945cefb704f93edf03ae53dad0bc5e6ba9f53b41b10aa78a/django_countries-7.5.1-py3-none-any.whl", hash = "sha256:2df707aca7a5e677254bed116cf6021a136ebaccd5c2f46860abd6452bb45521"},
@@ -175,9 +175,9 @@ content_hash = "sha256:a8f778de72d0d7c3720df3e9ea28c9b85b89140e5fac39bf3bd510563
     {url = "https://files.pythonhosted.org/packages/af/4c/b1c7008aa7788b3e26c06c60aa18da7d3aa1f00e344aa3f18ac92768854b/pyflakes-3.0.1-py2.py3-none-any.whl", hash = "sha256:ec55bf7fe21fff7f1ad2f7da62363d749e2a470500eab1b555334b67aa1ef8cf"},
     {url = "https://files.pythonhosted.org/packages/f2/51/506ddcfab10d708e8460554cc1cf37c727a6a2cccbad8dfe57766cfce33c/pyflakes-3.0.1.tar.gz", hash = "sha256:ec8b276a6b60bd80defed25add7e439881c19e64850afd9b346283d4165fd0fd"},
 ]
-"setuptools 67.6.0" = [
-    {url = "https://files.pythonhosted.org/packages/25/f3/d68c20919bc774c6cb127f1762f2f2f999d700a58198556e883dd3700e58/setuptools-67.6.0.tar.gz", hash = "sha256:2ee892cd5f29f3373097f5a814697e397cf3ce313616df0af11231e2ad118077"},
-    {url = "https://files.pythonhosted.org/packages/c3/9e/8a7ba2c9984a060daa6c6f9fff4d576b7ace3936239d6b771541eab972ed/setuptools-67.6.0-py3-none-any.whl", hash = "sha256:b78aaa36f6b90a074c1fa651168723acbf45d14cb1196b6f02c0fd07f17623b2"},
+"setuptools 67.6.1" = [
+    {url = "https://files.pythonhosted.org/packages/0b/fc/8781442def77b0aa22f63f266d4dadd486ebc0c5371d6290caf4320da4b7/setuptools-67.6.1-py3-none-any.whl", hash = "sha256:e728ca814a823bf7bf60162daf9db95b93d532948c4c0bea762ce62f60189078"},
+    {url = "https://files.pythonhosted.org/packages/cb/46/22ec35f286a77e6b94adf81b4f0d59f402ed981d4251df0ba7b992299146/setuptools-67.6.1.tar.gz", hash = "sha256:257de92a9d50a60b8e22abfcbb771571fde0dbf3ec234463212027a4eeecbe9a"},
 ]
 "shortuuid 1.0.11" = [
     {url = "https://files.pythonhosted.org/packages/1e/c6/ba2dd56e3996a1919984645ca0aaf20c4879cc1227c50a4be08f52b19ad0/shortuuid-1.0.11.tar.gz", hash = "sha256:fc75f2615914815a8e4cb1501b3a513745cb66ef0fd5fc6fb9f8c3fa3481f789"},
