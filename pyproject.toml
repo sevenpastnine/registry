@@ -1,5 +1,8 @@
 [tool.pdm]
 [tool.pdm.dev-dependencies]
+dev = [
+    "flake8>=6.0.0",
+]
 
 [project]
 name = "registry"
