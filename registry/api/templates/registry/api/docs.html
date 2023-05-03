@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <div class="prose max-w-screen-md">
+
+        <h1>API</h1>
+
+        <p>The Registry provides an API that allows you to interact with the Registry programmatically. The API is HTTP based and provides resource-oriented URLs. JSON is used as the format for sending and receiving data. You can use the API to get the information about all the Registry entities and to create new resources.</p>
+
+        <p>The API also features a HTML interface that allows you to inspect and interact with the API from your browser.</p>
+
+        <p>The API is available at <a href="{{ scheme }}://{{ hostname }}/api/">{{ scheme }}://{{ hostname }}/api/</a></p>
+
+        <h2>Authentication</h2>
+
+        <p>Authentication/Authorization is token-based. The token must be passed in the <code>Authorization</code> header of each request, prefixed by the <code>Token</code> keyword like so:</p>
+
+        <p><code>Token {{ token }}</code></p>
+
+        <p>Your access token is: <strong>{{ token }}</strong></p></p>
+
+        <p>Please keep your access token secret and make sure you don't leak it (e.g. commit it in GIT or other version control system).</p>
+
+        <h2>Usage</h2>
+
+        <p>Following is a list of available API endpoints.</p>
+
+        <h3>People</h3>
+        {% include 'registry/api/endpoint.html' with endpoint='person-list' %}
+
+        <h3>Groups</h3>
+        {% include 'registry/api/endpoint.html' with endpoint='group-list' %}
+
+        <h3>Licenses</h3>
+        {% include 'registry/api/endpoint.html' with endpoint='license-list' %}
+
+        <h3>Person roles</h3>
+        {% include 'registry/api/endpoint.html' with endpoint='personrole-list' %}
+
+        <h3>Resource kinds</h3>
+        {% include 'registry/api/endpoint.html' with endpoint='resourcekind-list' %}
+
+        <h3>Resource statuses</h3>
+        {% include 'registry/api/endpoint.html' with endpoint='resourcestatus-list' %}
+
+        <h3>Resources</h3>
+        {% include 'registry/api/endpoint.html' with endpoint='resource-list' %}
+
+        <p>Create a new resource:</p>
+
+        <pre>curl -X POST {{ scheme }}://{{ hostname }}{% url 'resource-list' %} -H 'Content-Type: application/json' -d '{ "archived": false, "name": "Test resource", "kind": "MATERIAL", "description": "", "status": "33ecxks4dhbe", "license": null, "groups": [], "data_link": "", "data_file": null }' -H 'Authorization: Token {{ token }}'</pre>
+
+
+    </div>
+
+</div>
+{% endblock %}

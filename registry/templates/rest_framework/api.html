@@ -1,0 +1,18 @@
+{% extends "rest_framework/base.html" %}
+
+{% block style %}
+{{ block.super }}
+<style>
+    body {
+        background: white;
+    }
+
+    .navbar {
+        display: none;
+    }
+
+    ul.breadcrumb {
+        margin-top: 2rem;
+    }
+</style>
+{% endblock %}
