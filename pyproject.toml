@@ -18,6 +18,7 @@ dependencies = [
     "django-widget-tweaks>=1.4.12",
     "setuptools>=67.6.0",
     "djangorestframework>=3.14.0",
+    "django-debug-toolbar>=4.0.0",
 ]
 readme = "README.md"
 
