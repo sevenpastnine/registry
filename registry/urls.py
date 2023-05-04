@@ -20,4 +20,5 @@ urlpatterns = [
     path('study-designs/add/', views.study_design_add, name='study_design_add'),
     path('study-designs/<slug:study_design_id>/', views.study_design, name='study_design'),
     path('study-designs/<slug:study_design_id>/edit/', views.study_design_edit, name='study_design_edit'),
+    path('resources-by-group/', views.resources_by_group, name='resources_by_group'),
 ]

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Resources by Use cases{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Overview of Resources by Use cases</h1>
+
+    <div class="overflow-x-auto mt-2gap max-h-[70vh] overflow-y-auto">
+        <table class="table-auto min-w-full w-full divide-y divide-gray-300 relative">
+            <thead>
+                <tr class="text-sm align-top">
+                    <th class="sticky top-0 bg-gray-100 py-2 px-2 text-left">Resource</th>
+                    {% for group in groups %}
+                    <th class="sticky top-0 bg-gray-100 py-2 px-2">{{ group.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for resource, groups in resource_groups %}
+                <tr>
+                    <td class="whitespace-nowrap py-2 px-2 text-sm"><a href="{% url 'registry:resource' resource.id %}">{{ resource.name }}</a></td>
+                    {% for group in groups %}
+                    <td class="text-center py-2 px-2 text-primary-500">{% if group %}⬤{% else %}{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -32,14 +32,20 @@
         </div>
     </div>
 
-    <div class="max-w-screen-md mx-auto mt-2gap sm:mt-4gap">
-        <div class="grid grid-cols-1 mb-4 gap-4">
+    <div class="max-w-screen-lg mx-auto mt-2gap sm:mt-4gap">
+        <div class="grid grid-cols-1 sm:grid-cols-2 mb-4 gap-4">
             <div class="block border rounded-md px-gap py-4 hover:bg-zinc-100">
                 <div class="text-xl font-medium">Use cases</div>
-                <ul class="columns-3 mt-2 text-primary text-sm underline">
+                <ul class="columns-2 mt-2 text-primary text-sm underline">
                     {% for group in groups %}
                     <li class="mt-1"><a href="{% url 'registry:group' group.id %}">{{ group.name }}</a></li>
                     {% endfor %}
+                </ul>
+            </div>
+            <div class="block border rounded-md px-gap py-4 hover:bg-zinc-100">
+                <div class="text-xl font-medium">Overviews</div>
+                <ul class="mt-2 text-primary text-sm underline">
+                    <li class="mt-1"><a href="{% url 'registry:resources_by_group' %}" class="text-sm underline">Resources by use cases</a></li>
                 </ul>
             </div>
         </div>

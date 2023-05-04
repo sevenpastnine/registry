@@ -52,6 +52,21 @@
                 {% endif %}
             </dd>
         </div>
+
+        <div>
+            <dt>Study designs</dt>
+            <dd>
+                {% if group.study_designs.all.count %}
+                <ul>
+                    {% for study_design in group.study_designs.all %}
+                    <li><a href="{% url 'registry:study_design' study_design.id %}">{{ study_design.name }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
     </dl>
 
 </div>

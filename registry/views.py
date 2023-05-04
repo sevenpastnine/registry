@@ -115,6 +115,20 @@ def study_design(request, study_design_id):
     })
 
 
+def resources_by_group(request):
+    groups = models.Group.objects.all()
+    resources = models.Resource.objects.all().prefetch_related('groups')
+
+    resource_groups = []
+    for resource in resources:
+        resource_groups.append((resource, [group in resource.groups.all() for group in groups]))
+
+    return render(request, 'registry/resource_by_group.html', {
+        'resource_groups': resource_groups,
+        'groups': groups,
+    })
+
+
 # -----------------------------------------------------------------------------
 # Resource editing
 
