@@ -12,7 +12,7 @@
 
         <p>The API is available at <a href="{{ scheme }}://{{ hostname }}/api/">{{ scheme }}://{{ hostname }}/api/</a></p>
 
-        <h2>Authentication</h2>
+        {% include './partials/header.html' with header='h2' label='Authentication' %}
 
         <p>Authentication/Authorization is token-based. The token must be passed in the <code>Authorization</code> header of each request, prefixed by the <code>Token</code> keyword:</p>
 
@@ -22,31 +22,30 @@
 
         <p>Please keep your access token secret and make sure you don't leak it (e.g. commit it in GIT or other version control system).</p>
 
-        <h2>Usage</h2>
+        {% include './partials/header.html' with header='h2' label='Endpoints' %}
 
         <p>Following is a list of available API endpoints.</p>
 
-        <h3>People</h3>
-        {% include 'registry/api/endpoint.html' with endpoint='person-list' %}
+        {% include './partials/header.html' with header='h3' label='People' %}
+        {% include './partials/endpoint.html' with endpoint='person-list' %}
 
-        <h3>Groups</h3>
-        {% include 'registry/api/endpoint.html' with endpoint='group-list' %}
+        {% include './partials/header.html' with header='h3' label='Groups' %}
+        {% include './partials/endpoint.html' with endpoint='group-list' %}
 
-        <h3>Licenses</h3>
-        {% include 'registry/api/endpoint.html' with endpoint='license-list' %}
+        {% include './partials/header.html' with header='h3' label='Licenses' %}
+        {% include './partials/endpoint.html' with endpoint='license-list' %}
 
-        <h3>Person roles</h3>
-        {% include 'registry/api/endpoint.html' with endpoint='personrole-list' %}
+        {% include './partials/header.html' with header='h3' label='Person roles' %}
+        {% include './partials/endpoint.html' with endpoint='personrole-list' %}
 
-        <h3>Resource kinds</h3>
-        {% include 'registry/api/endpoint.html' with endpoint='resourcekind-list' %}
+        {% include './partials/header.html' with header='h3' label='Resource kinds' %}
+        {% include './partials/endpoint.html' with endpoint='resourcekind-list' %}
 
-        <h3>Resource statuses</h3>
-        {% include 'registry/api/endpoint.html' with endpoint='resourcestatus-list' %}
+        {% include './partials/header.html' with header='h3' label='Resource statuses' %}
+        {% include './partials/endpoint.html' with endpoint='resourcestatus-list' %}
 
-        <h3>Resources</h3>
-
-        {% include 'registry/api/endpoint.html' with endpoint='resource-list' %}
+        {% include './partials/header.html' with header='h3' label='Resources' %}
+        {% include './partials/endpoint.html' with endpoint='resource-list' %}
 
         <p>Create a new resource:</p>
 
