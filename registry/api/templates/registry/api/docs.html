@@ -2,7 +2,7 @@
 
 {% block body %}
 <div class="container">
-    <div class="prose max-w-screen-md">
+    <div class="prose max-w-screen-lg">
 
         <h1>API</h1>
 
@@ -14,7 +14,7 @@
 
         <h2>Authentication</h2>
 
-        <p>Authentication/Authorization is token-based. The token must be passed in the <code>Authorization</code> header of each request, prefixed by the <code>Token</code> keyword like so:</p>
+        <p>Authentication/Authorization is token-based. The token must be passed in the <code>Authorization</code> header of each request, prefixed by the <code>Token</code> keyword:</p>
 
         <p><code>Token {{ token }}</code></p>
 
@@ -45,11 +45,35 @@
         {% include 'registry/api/endpoint.html' with endpoint='resourcestatus-list' %}
 
         <h3>Resources</h3>
+
         {% include 'registry/api/endpoint.html' with endpoint='resource-list' %}
 
         <p>Create a new resource:</p>
 
-        <pre>curl -X POST {{ scheme }}://{{ hostname }}{% url 'resource-list' %} -H 'Content-Type: application/json' -d '{ "archived": false, "name": "Test resource", "kind": "MATERIAL", "description": "", "status": "33ecxks4dhbe", "license": null, "groups": [], "data_link": "", "data_file": null }' -H 'Authorization: Token {{ token }}'</pre>
+        <pre>curl -X POST {{ scheme }}://{{ hostname }}{% url 'resource-list' %} -H 'Content-Type: application/json' -d '{ "name": "Test resource", "kind": "MATERIAL", "status": "resource-status-id", "contributors": [{"person":"person-id", "role":"person-role-id"}] }' -H 'Authorization: Token {{ token }}'</pre>
+
+        <p>The POST JSON data has the following form:</p>
+
+<pre>{
+  "archived": false,                  // optional, true|false, default: false
+  "name": "Test resource",            // required
+  "kind": "MATERIAL",                 // required, see <a href="{{ scheme }}://{{ hostname }}{% url 'resourcekind-list' %}">Resource kinds</a>
+  "description": "Some description",  // optional
+  "status": "resource-status-id",     // required, see <a href="{{ scheme }}://{{ hostname }}{% url 'resourcestatus-list' %}">Resource statuses</a>
+  "license": null,                    // optional, see <a href="{{ scheme }}://{{ hostname }}{% url 'license-list' %}">Licenses</a>
+  "groups": [],                       // optional, see <a href="{{ scheme }}://{{ hostname }}{% url 'group-list' %}">Groups</a>
+  "data_link": "",                    // optional
+  "contributors": [                  // required, at least one contributor is required
+    {
+      "person": "person-id",          // required, see <a href="{{ scheme }}://{{ hostname }}{% url 'person-list' %}">People</a>
+      "role": "person-role-id"        // required, see <a href="{{ scheme }}://{{ hostname }}{% url 'personrole-list' %}">Person roles</a>
+    }
+  ]
+}</pre>
+
+        <p>Delete an existing resource:</p>
+
+        <pre>curl -X DELETE {{ scheme }}://{{ hostname }}{% url 'resource-list' %}{resource-id}/ -H 'Authorization: Token {{ token }}'</pre>
 
 
     </div>

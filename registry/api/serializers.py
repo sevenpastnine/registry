@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from django.contrib.contenttypes.models import ContentType
+
 from .. import models
 
 
@@ -54,15 +56,37 @@ class TaggedItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Contributor
         fields = [
-            # 'id',
             'person',
             'role',
         ]
 
 
 class ResourceSerializer(serializers.ModelSerializer):
-    contributors = TaggedItemSerializer(many=True, read_only=True)
+    contributors = TaggedItemSerializer(many=True)
 
     class Meta:
         model = models.Resource
-        fields = ['pk', 'archived', 'name', 'kind', 'description', 'status', 'license', 'groups', 'data_link', 'data_file', 'contributors']
+        fields = ['pk', 'archived', 'name', 'kind', 'description', 'status', 'license', 'groups', 'data_link', 'contributors']
+
+    def validate_contributors(self, data):
+        if not len(data):
+            raise serializers.ValidationError('At least one contributor is required.')
+        return super().validate(data)
+
+    def create(self, validated_data):
+        groups = validated_data.pop('groups', [])
+        contributors = validated_data.pop('contributors', [])
+
+        resource = models.Resource.objects.create(**validated_data)
+
+        resource.groups.set(groups)
+
+        content_type = ContentType.objects.get_for_model(resource.__class__)
+        for contributor in contributors:
+            contributor_obj = models.Contributor.objects.create(
+                person=contributor['person'],
+                role=contributor['role'],
+                content_type=content_type,
+                object_id=resource.id)
+            resource.contributors.add(contributor_obj)
+        return resource

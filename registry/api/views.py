@@ -66,3 +66,4 @@ class ResourceStatusViewSet(AuthzMixin, ListRetrieveViewSet):
 class ResourceViewSet(AuthzMixin, viewsets.ModelViewSet):
     queryset = models.Resource.objects.all()
     serializer_class = serializers.ResourceSerializer
+    http_method_names = ['get', 'post', 'head', 'delete']
