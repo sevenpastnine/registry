@@ -45,16 +45,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "django-debug-toolbar"
-version = "4.0.0"
-requires_python = ">=3.8"
-summary = "A configurable set of panels that display various debug information about the current request/response."
-dependencies = [
-    "django>=3.2.4",
-    "sqlparse>=0.2",
-]
-
-[[package]]
 name = "django-docopt-command"
 version = "1.1.0"
 summary = "Django-docopt-command allows you to write Django manage.py commands using the docopt library."
@@ -148,8 +138,9 @@ requires_python = ">=2"
 summary = "Provider of IANA time zone data"
 
 [metadata]
-lock_version = "4.1"
-content_hash = "sha256:9c6c902e499d97da1bbde947aae5bac98bb0509bbd00613a88679cc1d77de126"
+lock_version = "4.2"
+groups = ["default", "dev"]
+content_hash = "sha256:f71b86db27018782b88ac044df8d94474d9d015d79ad41c32744091962b0ce7c"
 
 [metadata.files]
 "asgiref 3.6.0" = [
@@ -171,10 +162,6 @@ content_hash = "sha256:9c6c902e499d97da1bbde947aae5bac98bb0509bbd00613a88679cc1d
 "django-countries 7.5.1" = [
     {url = "https://files.pythonhosted.org/packages/6e/8a/d477590872e3945cefb704f93edf03ae53dad0bc5e6ba9f53b41b10aa78a/django_countries-7.5.1-py3-none-any.whl", hash = "sha256:2df707aca7a5e677254bed116cf6021a136ebaccd5c2f46860abd6452bb45521"},
     {url = "https://files.pythonhosted.org/packages/f8/21/059186c744953a74732a018e6cd6592a099b69fbc647b8831d325fdec1c6/django-countries-7.5.1.tar.gz", hash = "sha256:22915d9b9403932b731622619940a54894a3eb0da9a374e7249c8fc453c122d7"},
-]
-"django-debug-toolbar 4.0.0" = [
-    {url = "https://files.pythonhosted.org/packages/1a/85/4a70b9f31cb01ebec664e2abdebba94aa8c0ae8e029b2b8564d6316e3bf1/django_debug_toolbar-4.0.0-py3-none-any.whl", hash = "sha256:bad339d68520652ddc1580c76f136fcbc3e020fd5ed96510a89a02ec81bb3fb1"},
-    {url = "https://files.pythonhosted.org/packages/86/e0/85387258279b436e66d0afa5e676b5956ae9f68e62e22fadcc473315e322/django_debug_toolbar-4.0.0.tar.gz", hash = "sha256:89619f6e0ea1057dca47bfc429ed99b237ef70074dabc065a7faa5f00e1459cf"},
 ]
 "django-docopt-command 1.1.0" = [
     {url = "https://files.pythonhosted.org/packages/7b/35/8446c743dd14e8ea404732eedc8100763a0fc1f72e7724768371749051cc/django_docopt_command-1.1.0-py3-none-any.whl", hash = "sha256:aee42da41adfb1ac263eeae5c118178a75538ef829ab1cb7a10b6f87a7c8579a"},
