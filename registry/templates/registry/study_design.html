@@ -53,6 +53,17 @@
         </div>
 
         <div>
+            <dt>Instance map link</dt>
+            <dd>
+                {% if study_design.instance_map_link %}
+                {{ study_design.instance_map_link|urlize }}
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
             <dt>Contributors</dt>
             <dd>
                 {% if study_design.contributors.all.count %}

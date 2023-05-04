@@ -179,6 +179,8 @@ class StudyDesign(BaseModel):
     groups = models.ManyToManyField(Group, blank=True, related_name='study_designs', verbose_name='Use cases')
     contributors = GenericRelation(Contributor)
 
+    instance_map_link = models.URLField('Instance map link', null=True, blank=True, help_text='Link to the Instance map')
+
     class Meta:
         ordering = ['name']
 
