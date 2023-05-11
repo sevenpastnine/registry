@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load markdownify %}
+
 {% block title %}{{ resource }}{% endblock %}
 
 {% block body %}
@@ -53,7 +55,7 @@
             <dt>Description</dt>
             <dd>
                 {% if resource.description %}
-                {{ resource.description|linebreaks }}
+                {{ resource.description|markdownify }}
                 {% else %}
                 /
                 {% endif %}
