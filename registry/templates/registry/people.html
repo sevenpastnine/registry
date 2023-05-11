@@ -5,12 +5,9 @@
 {% block body %}
 
 <div class="container">
-
     <h1>People</h1>
 
     {% include './partials/resource_listing.html' with items=people namespace='registry:person' kind='people' layout='twocol' %}
-
-
 </div>
 
 {% endblock %}

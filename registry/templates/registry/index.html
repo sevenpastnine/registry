@@ -36,7 +36,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 mb-4 gap-4">
             <div class="block border rounded-md px-gap py-4 hover:bg-zinc-100">
                 <div class="text-xl font-medium">Use cases</div>
-                <ul class="columns-2 mt-2 text-primary text-sm underline">
+                <ul class="columns-2 mt-2 text-primary text-sm">
                     {% for group in groups %}
                     <li class="mt-1"><a href="{% url 'registry:group' group.id %}">{{ group.name }}</a></li>
                     {% endfor %}
@@ -44,30 +44,30 @@
             </div>
             <div class="block border rounded-md px-gap py-4 hover:bg-zinc-100">
                 <div class="text-xl font-medium">Overviews</div>
-                <ul class="mt-2 text-primary text-sm underline">
-                    <li class="mt-1"><a href="{% url 'registry:resources_by_group' %}" class="text-sm underline">Resources by use cases</a></li>
+                <ul class="mt-2 text-primary text-sm">
+                    <li class="mt-1"><a href="{% url 'registry:resources_by_group' %}" class="text-sm">Resources by use cases</a></li>
                 </ul>
             </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 mb-4 gap-4">
-            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100" href="{% url 'registry:resources' %}">
+            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100 !no-underline" href="{% url 'registry:resources' %}">
                 <div class="text-xl font-medium">Resources</div>
                 <div class="text-sm text-muted mt-1">Materials, test methods and data</div>
                 <div class="pt-gap"><span class="text-lg text-secondary-500 font-medium">{{ resources.count }}</span> <span class="text-sm">entries</span></div>
             </a>
-            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100" href="{% url 'registry:study_designs' %}">
+            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100 !no-underline" href="{% url 'registry:study_designs' %}">
                 <div class="text-xl font-medium">Study designs</div>
                 <div class="text-sm text-muted mt-1">Annotated workflow visualizations</div>
                 <div class="pt-gap"><span class="text-lg text-secondary-500 font-medium">{{ study_designs.count }}</span> <span class="text-sm">entries</span></div>
             </a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 mb-4 gap-4">
-            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100" href="{% url 'registry:organisations' %}">
+            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100 !no-underline" href="{% url 'registry:organisations' %}">
                 <div class="text-xl font-medium">Organisations</div>
                 <div class="text-sm text-muted mt-1">Consortium organisations</div>
                 <div class="pt-gap"><span class="text-lg text-secondary-500 font-medium">{{ organisations.count }}</span> <span class="text-sm">entries</span></div>
             </a>
-            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100" href="{% url 'registry:people' %}">
+            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100 !no-underline" href="{% url 'registry:people' %}">
                 <div class="text-xl font-medium">People</div>
                 <div class="text-sm text-muted mt-1">Members of the project</div>
                 <div class="pt-gap"><span class="text-lg text-secondary-500 font-medium">{{ people.count }}</span> <span class="text-sm">entries</span></div>

@@ -2,7 +2,7 @@
         <ul class="divide-y divide-gray-200" role="list">
             {% for item in items %}
             <li>
-                <a class="block hover:bg-gray-50" href="{% url namespace item.id %}">
+                <a class="block hover:bg-gray-50 !no-underline" href="{% url namespace item.id %}">
                     <div class="flex items-center px-gap py-gap">
                         <div class="min-w-0 flex-1 sm:flex sm:items-start sm:justify-between">
                             <div class="{% if layout == 'twocol'%}w-1/2 truncate{% endif %}">
