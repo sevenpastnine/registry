@@ -22,7 +22,7 @@
     </div>
     <div><input type="button" class="add-form-button cursor-pointer text-sm mt-gap" value="+ Add another contributor">
     </div>
-    <div class="empty-form-template" hidden>
+    <template class="empty-form-template">
         <div class="form flex items-center space-x-1 mb-gap">
             <div class="w-[45%]">{% include 'partials/form_field.html' with field=contributor_formset.empty_form.person %}</div>
             <div class="w-[45%]">{% include 'partials/form_field.html' with field=contributor_formset.empty_form.role %}
@@ -33,7 +33,7 @@
                 {% endif %}
             </div>
         </div>
-    </div>
+    </template>
     {{ contributor_formset.management_form }}
 </div>
 
@@ -47,7 +47,7 @@
 
         'canAddForms': true,
         'addFormButtonSelector': '#contributor-formset .add-form-button',
-        'emptyFormSelector': '#contributor-formset .empty-form-template .form',
+        'emptyFormTemplateSelector': '#contributor-formset .empty-form-template',
 
         'canDeleteForms': true,
         'deleteFormButtonSelector': '.delete-form-button',
