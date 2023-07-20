@@ -69,7 +69,13 @@
     }
   ]
 }</pre>
-    </div>
+
+        <p>Update an existing resource:</p>
+
+        <pre>curl -X PATCH {{ scheme }}://{{ hostname }}{% url 'resource-list' %}&lt;resource-id&gt;/ -H 'Content-Type: application/json' -d '{ "name": "Updated test resource" }' -H 'Authorization: Token {{ token }}'</pre>
+
+        <p>When updating the resource only the fields specified in the JSON data will be modified, all other fields will remain unchanged. For example, in the above example, only resource name will be changed.</p>
+  </div>
 
 </div>
 {% endblock %}
