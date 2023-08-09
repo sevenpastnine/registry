@@ -81,15 +81,12 @@ class ResourceSerializer(serializers.ModelSerializer):
         resource.groups.set(groups)
 
         content_type = ContentType.objects.get_for_model(resource.__class__)
-        contributor_objects = [
-            models.Contributor.objects.create(
-                person=contributor['person'],
-                role=contributor['role'],
-                content_type=content_type,
-                object_id=resource.id)
-            for contributor in contributors
-        ]
-        resource.contributors.set(contributor_objects)
+        [models.Contributor.objects.create(
+            person=contributor['person'],
+            role=contributor['role'],
+            content_type=content_type,
+            object_id=resource.id)
+            for contributor in contributors]
 
         return resource
 
@@ -103,14 +100,12 @@ class ResourceSerializer(serializers.ModelSerializer):
 
         if contributors is not None:
             content_type = ContentType.objects.get_for_model(resource.__class__)
-            contributor_objects = [
-                models.Contributor.objects.create(
-                    person=contributor['person'],
-                    role=contributor['role'],
-                    content_type=content_type,
-                    object_id=resource.id)
-                for contributor in contributors
-            ]
-            resource.contributors.set(contributor_objects)
+            resource.contributors.all().delete()
+            [models.Contributor.objects.create(
+                person=contributor['person'],
+                role=contributor['role'],
+                content_type=content_type,
+                object_id=resource.id)
+                for contributor in contributors]
 
         return resource
