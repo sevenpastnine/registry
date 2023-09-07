@@ -4,22 +4,23 @@ readme = "README.md"
 dynamic = ["version"]
 requires-python = ">=3.11"
 dependencies = [
-    "django>=4.1.7",
-    "shortuuid>=1.0.11",
-    "django-countries>=7.5.1",
-    "django-docopt-command>=1.1.0",
-    "django-admin-sortable2>=2.1.4",
-    "django-convenient-formsets>=1.2.1",
-    "django-widget-tweaks>=1.4.12",
-    "djangorestframework>=3.14.0",
-    "django-markdownify>=0.9.3",
+    "django~=4.2",
+    "shortuuid~=1.0",
+    "django-countries~=7.5",
+    "django-docopt-command~=1.1",
+    "django-admin-sortable2~=2.1",
+    "django-convenient-formsets~=2.0",
+    "django-widget-tweaks~=1.5",
+    "djangorestframework~=3.14",
+    "django-markdownify~=0.9",
+    "setuptools~=68.2",
 ]
 
 [tool.pdm.dev-dependencies]
 dev = [
-    "flake8>=6.0.0",
+    "flake8~=6.1",
 ]
 
 [build-system]
-requires = ["pdm-backend", "setuptools"]
+requires = ["pdm-backend"]
 build-backend = "pdm.backend"
