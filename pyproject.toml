@@ -16,7 +16,6 @@ dependencies = [
     "django-admin-sortable2>=2.1.4",
     "django-convenient-formsets>=1.2.1",
     "django-widget-tweaks>=1.4.12",
-    "setuptools>=67.6.0",
     "djangorestframework>=3.14.0",
     "django-markdownify>=0.9.3",
 ]
@@ -26,5 +25,5 @@ readme = "README.md"
 source = "scm"
 
 [build-system]
-requires = ["pdm-pep517>=1.0"]
+requires = ["pdm-pep517>=1.0", "setuptools>=67.6.0"]
 build-backend = "pdm.pep517.api"
