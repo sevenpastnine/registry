@@ -68,9 +68,9 @@
         <div>
             <dt>Resources</dt>
             <dd>
-                {% if person.resources.all.count %}
+                {% if resources %}
                 <ul>
-                    {% for resource in person.resources.all %}
+                    {% for resource in resources %}
                     <li><a href="{% url 'registry:resource' resource.id %}">{{ resource }}</a></li>
                     {% endfor %}
                 </ul>

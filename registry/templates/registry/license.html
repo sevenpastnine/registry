@@ -33,9 +33,9 @@
         <div>
             <dt>Resources</dt>
             <dd>
-                {% if license.resources.all.count %}
+                {% if resources %}
                 <ul>
-                    {% for resource in license.resources.all %}
+                    {% for resource in resources %}
                     <li><a href="{% url 'registry:resource' resource.id %}">{{ resource }}</a></li>
                     {% endfor %}
                 </ul>

@@ -8,8 +8,8 @@ from . import forms
 
 def index(request):
     return render(request, 'registry/index.html', {
-        'study_designs': models.StudyDesign.objects.all(),
-        'resources': models.Resource.objects.all(),
+        'study_designs': models.StudyDesign.objects.filter(archived=False),
+        'resources': models.Resource.objects.filter(archived=False),
         'people': models.Person.objects.all(),
         'organisations': models.Organisation.objects.all(),
         'groups': models.Group.objects.all(),
@@ -23,8 +23,10 @@ def people(request):
 
 
 def person(request, person_id):
+    person = get_object_or_404(models.Person, pk=person_id)
     return render(request, 'registry/person.html', {
-        'person': get_object_or_404(models.Person, pk=person_id)
+        'person': person,
+        'resources': models.Resource.objects.filter(archived=False, contributors__person=person),
     })
 
 
@@ -47,8 +49,11 @@ def groups(request):
 
 
 def group(request, group_id):
+    group = get_object_or_404(models.Group, pk=group_id)
     return render(request, 'registry/group.html', {
-        'group': get_object_or_404(models.Group, pk=group_id)
+        'group': group,
+        'resources': models.Resource.objects.filter(archived=False, groups=group),
+        'study_designs': models.StudyDesign.objects.filter(archived=False, groups=group),
     })
 
 
@@ -59,13 +64,15 @@ def licenses(request):
 
 
 def license(request, license_id):
+    license = get_object_or_404(models.License, pk=license_id)
     return render(request, 'registry/license.html', {
-        'license': get_object_or_404(models.License, pk=license_id)
+        'license': license,
+        'resources': models.Resource.objects.filter(archived=False, license=license),
     })
 
 
 def get_resources(filters=None):
-    queryset = models.Resource.objects.all()
+    queryset = models.Resource.objects.filter(archived=False)
     if not filters:
         return queryset
     else:
@@ -105,7 +112,7 @@ def resource(request, resource_id):
 
 def study_designs(request):
     return render(request, 'registry/study_designs.html', {
-        'study_designs': models.StudyDesign.objects.all()
+        'study_designs': models.StudyDesign.objects.filter(archived=False)
     })
 
 
@@ -117,7 +124,7 @@ def study_design(request, study_design_id):
 
 def resources_by_group(request):
     groups = models.Group.objects.all()
-    resources = models.Resource.objects.all().prefetch_related('groups')
+    resources = models.Resource.objects.filter(archived=False).prefetch_related('groups')
 
     resource_groups = []
     for resource in resources:

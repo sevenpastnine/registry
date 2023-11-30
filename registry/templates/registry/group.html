@@ -41,9 +41,9 @@
         <div>
             <dt>Resources</dt>
             <dd>
-                {% if group.resources.all.count %}
+                {% if resources %}
                 <ul>
-                    {% for resource in group.resources.all %}
+                    {% for resource in resources %}
                     <li><a href="{% url 'registry:resource' resource.id %}">{{ resource }}</a></li>
                     {% endfor %}
                 </ul>
@@ -56,9 +56,9 @@
         <div>
             <dt>Study designs</dt>
             <dd>
-                {% if group.study_designs.all.count %}
+                {% if study_designs %}
                 <ul>
-                    {% for study_design in group.study_designs.all %}
+                    {% for study_design in study_designs %}
                     <li><a href="{% url 'registry:study_design' study_design.id %}">{{ study_design.name }}</a></li>
                     {% endfor %}
                 </ul>
