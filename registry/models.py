@@ -177,6 +177,8 @@ def resource_file_path(instance, filename):
 
 
 class ResourceFile(BaseModel):
+    archived = models.BooleanField(default=False, help_text='If checked, this file will not be shown in the registry by default. It will still be accessible if requested.')
+
     resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='files')
     name = models.CharField(max_length=255, null=True, blank=True)
     file = models.FileField(upload_to=resource_file_path, help_text='File containing data or information on the resource')
@@ -189,6 +191,8 @@ class ResourceFile(BaseModel):
 
 
 class ResourceCollection(BaseModel):
+    archived = models.BooleanField(default=False, help_text='If checked, this collection will not be shown in the registry by default. It will still be accessible if requested.')
+
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
 

@@ -68,9 +68,9 @@ class Resource(admin.ModelAdmin):
 
 @admin.register(models.ResourceCollection)
 class ResourceCollection(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['archived', 'name']
     list_display_links = ['name']
-    list_filter = ['groups']
+    list_filter = ['archived', 'groups']
     filter_horizontal = ['groups', 'resources']
     search_fields = ['name', 'description', 'resources__name', 'resources__description']
 
