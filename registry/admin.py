@@ -51,6 +51,11 @@ class ContributorInline(GenericTabularInline):
     extra = 0
 
 
+class ResourceFileInline(admin.TabularInline):
+    model = models.ResourceFile
+    extra = 0
+
+
 @admin.register(models.Resource)
 class Resource(admin.ModelAdmin):
     list_display = ['archived', 'name', 'kind']
@@ -58,7 +63,7 @@ class Resource(admin.ModelAdmin):
     list_filter = ['archived', 'kind', 'groups', 'license']
     filter_horizontal = ['groups']
     search_fields = ['name', 'description']
-    inlines = [ContributorInline]
+    inlines = [ContributorInline, ResourceFileInline]
 
 
 @admin.register(models.ResourceCollection)

@@ -131,6 +131,7 @@ class ResourceStatus(BaseModel):
 
     class Meta:
         ordering = ['position']
+        verbose_name_plural = 'Resource statuses'
 
     def __str__(self):
         return self.name
@@ -158,6 +159,8 @@ class Resource(BaseModel):
     data_link = models.URLField('Resource link', null=True, blank=True, help_text='Link to the resource (e.g. Zenodo, Figshare, etc.)')
     data_file = models.FileField('Resource file', upload_to='resources/', null=True, blank=True, help_text='File containing data or information on the resource. In case of multiple files, please upload a zip file.')
 
+    harmonised_json = models.JSONField('Harmonised JSON data', null=True, blank=True, help_text='JSON file containing the harmonised data')
+
     class Meta:
         ordering = ['name', 'kind']
 
@@ -167,6 +170,22 @@ class Resource(BaseModel):
     @property
     def data_file_name(self):
         return os.path.basename(self.data_file.name)
+
+
+def resource_file_path(instance, filename):
+    return f'resources/files/{instance.resource.id}/{filename}'
+
+
+class ResourceFile(BaseModel):
+    resource = models.ForeignKey(Resource, on_delete=models.CASCADE, related_name='files')
+    name = models.CharField(max_length=255, null=True, blank=True)
+    file = models.FileField(upload_to=resource_file_path, help_text='File containing data or information on the resource')
+
+    class Meta:
+        ordering = ['resource', 'file']
+
+    def __str__(self):
+        return os.path.basename(self.file.name)
 
 
 class ResourceCollection(BaseModel):
