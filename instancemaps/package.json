@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "scripts": {
+    "postinstall": "dotnet tool restore",
+    "start": "dotnet fable watch instancemaps",
+    "clean": "dotnet fable clean instancemaps --yes"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
