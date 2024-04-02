@@ -61,6 +61,15 @@ class Resource(admin.ModelAdmin):
     inlines = [ContributorInline]
 
 
+@admin.register(models.ResourceCollection)
+class ResourceCollection(admin.ModelAdmin):
+    list_display = ['name']
+    list_display_links = ['name']
+    list_filter = ['groups']
+    filter_horizontal = ['groups', 'resources']
+    search_fields = ['name', 'description', 'resources__name', 'resources__description']
+
+
 @admin.register(models.StudyDesign)
 class StudyDesign(admin.ModelAdmin):
     list_display = ['archived', 'name']

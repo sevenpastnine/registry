@@ -169,6 +169,21 @@ class Resource(BaseModel):
         return os.path.basename(self.data_file.name)
 
 
+class ResourceCollection(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+
+    groups = models.ManyToManyField(Group, blank=True, related_name='resource_collections', verbose_name='Use cases')
+
+    resources = models.ManyToManyField(Resource, blank=True, related_name='collections')
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
 class StudyDesign(BaseModel):
     archived = models.BooleanField(default=False, help_text='If checked, this study design will not be shown in the registry by default. It will still be accessible if requested.')
 
