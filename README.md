@@ -1,6 +1,6 @@
 # Registry
 
-## Installation
+## Install Registry as an app in your project
 
 1. Install using pdm:
 
