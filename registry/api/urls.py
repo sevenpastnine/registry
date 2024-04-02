@@ -11,6 +11,8 @@ router.register(r'person-roles', views.PersonRoleViewSet)
 router.register(r'resource-kinds', views.ResourceKindViewSet, basename='resourcekind')
 router.register(r'resource-statuses', views.ResourceStatusViewSet)
 router.register(r'resources', views.ResourceViewSet)
+router.register(r'resource-files', views.ResourceFileViewSet)
+router.register(r'resource-collections', views.ResourceCollectionViewSet)
 
 urlpatterns = [
     path('docs/', views.docs, name='api_docs'),

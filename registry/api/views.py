@@ -66,4 +66,16 @@ class ResourceStatusViewSet(AuthzMixin, ListRetrieveViewSet):
 class ResourceViewSet(AuthzMixin, viewsets.ModelViewSet):
     queryset = models.Resource.objects.filter(archived=False)
     serializer_class = serializers.ResourceSerializer
-    http_method_names = ['head', 'get', 'post', 'patch']
+    http_method_names = ['head', 'options', 'get', 'post', 'patch']
+
+
+class ResourceFileViewSet(AuthzMixin, viewsets.ModelViewSet):
+    queryset = models.ResourceFile.objects.filter(archived=False, resource__archived=False)
+    serializer_class = serializers.ResourceFileSerializer
+    http_method_names = ['head', 'options', 'get', 'post', 'patch']
+
+
+class ResourceCollectionViewSet(AuthzMixin, viewsets.ModelViewSet):
+    queryset = models.ResourceCollection.objects.filter(archived=False)
+    serializer_class = serializers.ResourceCollectionSerializer
+    http_method_names = ['head', 'options', 'get', 'post', 'patch']

@@ -66,7 +66,7 @@ class ResourceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Resource
-        fields = ['pk', 'archived', 'name', 'kind', 'description', 'status', 'license', 'groups', 'data_link', 'contributors']
+        fields = ['id', 'archived', 'name', 'kind', 'description', 'status', 'license', 'groups', 'contributors', 'data_link', 'harmonised_json']
 
     def validate_contributors(self, data):
         if not len(data):
@@ -109,3 +109,15 @@ class ResourceSerializer(serializers.ModelSerializer):
                 for contributor in contributors]
 
         return resource
+
+
+class ResourceFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ResourceFile
+        fields = ['id', 'resource', 'name', 'file']
+
+
+class ResourceCollectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ResourceCollection
+        fields = ['id', 'name', 'description', 'groups', 'resources']
