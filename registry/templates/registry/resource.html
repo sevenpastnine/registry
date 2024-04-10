@@ -105,5 +105,64 @@
         </div>
     </dl>
 
+    {% if resource.harmonised_json %}
+    <div class="border p-2gap bg-gray-100">
+
+        <div class="flex justify-between items-center">
+            <table>
+                {% if resource.harmonised_json.InternalId %}
+                <tr>
+                    <td class="w-[250px]">Internal id:</td>
+                    <td><table>{% include './partials/json_value.html' with items=resource.harmonised_json.InternalId %}</table></td>
+                </tr>
+                {% endif %}
+
+                {% if resource.harmonised_json.MaterialType %}
+                <tr>
+                    <td class="w-[250px]">MaterialType:</td>
+                    <td><table>{% include './partials/json_value.html' with items=resource.harmonised_json.MaterialType %}</table></td>
+                </tr>
+                {% endif %}
+            </table>
+            <div class="bg-black text-white rounded-full text-center align-center w-[40px] h-[40px] leading-[50px]"><span class="material-symbols-outlined">download</span></div>
+        </div>
+
+        {% if resource.harmonised_json.Properties %}
+        <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #properties then toggle .hidden on .material-symbols-outlined in me">
+            <div>Properties</div>
+            <span class="material-symbols-outlined">expand_more</span>
+            <span class="material-symbols-outlined hidden">expand_less</span>
+        </div>
+
+        <div id="properties" class="hidden">
+            {% for key,value in resource.harmonised_json.Properties.items %}
+            <p><b>{{ key }}</b></p>
+            <table class="mb-gap">
+            {% include './partials/json_value.html' with items=value %}
+            </table>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if resource.harmonised_json.SafetyAssessment %}
+        <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #safety-assessment then toggle .hidden on .material-symbols-outlined in me">
+            <div>Safety Assessment</div>
+            <span class="material-symbols-outlined">expand_more</span>
+            <span class="material-symbols-outlined hidden">expand_less</span>
+        </div>
+
+        <div id="safety-assessment" class="hidden">
+            {% for key,value in resource.harmonised_json.SafetyAssessment.items %}
+            <p><b>{{ key }}</b></p>
+            <table class="mb-gap">
+            {% include './partials/json_value.html' with items=value %}
+            </table>
+            {% endfor %}
+        </div>
+
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
+
 {% endblock %}

@@ -1,0 +1,24 @@
+{% if items.Provenance %}
+    <tr>
+        <td>
+            {% if items.Value %}
+            <div class="flex items-center">{{ items.Value }} <span class="material-symbols-outlined cursor-pointer ml-2">info</span> <!--{{ items.Provenance }}--></div>
+            {% else %}
+            /
+            {% endif %}
+        </td>
+    </tr>
+{% else %}
+    {% for key, value in items.items %}
+    <tr>
+    <td>
+        <table>
+            <tr>
+                <td class="align-top w-[250px]">{{ key }}:</td>
+                <td><table>{% include 'registry/partials/json_value.html' with items=value %}</table></td>
+            </tr>
+        </table>
+    </td>
+    </tr>
+    {% endfor %}
+{% endif %}
