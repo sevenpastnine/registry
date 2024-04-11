@@ -112,19 +112,19 @@
             <table>
                 {% if resource.harmonised_json.InternalId %}
                 <tr>
-                    <td class="w-[250px]">Internal id:</td>
+                    <td class="w-[120px]">Internal id:</td>
                     <td><table>{% include './partials/json_value.html' with items=resource.harmonised_json.InternalId %}</table></td>
                 </tr>
                 {% endif %}
 
                 {% if resource.harmonised_json.MaterialType %}
                 <tr>
-                    <td class="w-[250px]">MaterialType:</td>
+                    <td class="w-[120px]">MaterialType:</td>
                     <td><table>{% include './partials/json_value.html' with items=resource.harmonised_json.MaterialType %}</table></td>
                 </tr>
                 {% endif %}
             </table>
-            <div class="bg-black text-white rounded-full text-center align-center w-[40px] h-[40px] leading-[50px]"><span class="material-symbols-outlined">download</span></div>
+            <div class="bg-black text-white rounded-full text-center align-center w-[40px] h-[40px] leading-[50px] cursor-pointer"><span class="material-symbols-outlined">download</span></div>
         </div>
 
         {% if resource.harmonised_json.Properties %}

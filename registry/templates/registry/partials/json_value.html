@@ -2,7 +2,20 @@
     <tr>
         <td>
             {% if items.Value %}
-            <div class="flex items-center">{{ items.Value }} <span class="material-symbols-outlined cursor-pointer ml-2">info</span> <!--{{ items.Provenance }}--></div>
+            <div class="flex items-center relative">
+                <span>{{ items.Value|safe }}</span>
+                <div class="cursor-pointer ml-2 relative" _="on click toggle .hidden on .provenance in me">
+                    <span class="material-symbols-outlined">info</span>
+                    <div class="provenance hidden text-sm bg-white border p-gap absolute top-2gap -left-[200px] z-10">
+                        <span class="material-symbols-outlined absolute top-2 right-2" _="on click toggle .hidden on closest parent">close</span>
+                        <div class="font-bold">Provenance</div>
+                        <div>Source: {{ items.Provenance.Source }}</div>
+                        <div>Access date: {{ items.Provenance.AccessDate }}</div>
+                        <div>Original source: {{ items.Provenance.LinkOriginal }}</div>
+                        <div>Extracted data: {{ items.Provenance.LinkExtracted }}</div>
+                    </div>
+                </div>
+            </div>
             {% else %}
             /
             {% endif %}
