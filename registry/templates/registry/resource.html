@@ -146,7 +146,19 @@
 
         {% if resource.harmonised_json.SafetyAssessment %}
         <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #safety-assessment then toggle .hidden on .material-symbols-outlined in me">
-            <div>Safety Assessment</div>
+            <div class="flex justify-start">
+                <div>Safety Assessment</div>
+                {% if safety_score %}
+                <div class="text-sm font-normal px-2 pt-1 rounded-full inline-block ml-4 leading-none
+                    {% if safety_score == 'Negligible risk' %}bg-info text-white
+                    {% elif safety_score == 'Low risk' %}bg-success text-white
+                    {% elif safety_score == 'Medium risk' %}bg-warning
+                    {% elif safety_score == 'High risk' %}bg-beware
+                    {% elif safety_score == 'Very high risk' %}bg-error text-white
+                    {% endif %}
+                    ">{{ safety_score }}</div>
+                {% endif %}
+            </div>
             <span class="material-symbols-outlined">expand_more</span>
             <span class="material-symbols-outlined hidden">expand_less</span>
         </div>
