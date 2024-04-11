@@ -107,70 +107,180 @@
 
     {% if resource.harmonised_json %}
     <div class="border p-2gap bg-gray-100">
-
-        <div class="flex justify-between items-center">
-            <table>
-                {% if resource.harmonised_json.InternalId %}
-                <tr>
-                    <td class="w-[120px]">Internal id:</td>
-                    <td><table>{% include './partials/json_value.html' with items=resource.harmonised_json.InternalId %}</table></td>
-                </tr>
-                {% endif %}
-
-                {% if resource.harmonised_json.MaterialType %}
-                <tr>
-                    <td class="w-[120px]">MaterialType:</td>
-                    <td><table>{% include './partials/json_value.html' with items=resource.harmonised_json.MaterialType %}</table></td>
-                </tr>
-                {% endif %}
-            </table>
-            <div class="bg-black text-white rounded-full text-center align-center w-[40px] h-[40px] leading-[50px] cursor-pointer"><span class="material-symbols-outlined">download</span></div>
-        </div>
-
-        {% if resource.harmonised_json.Properties %}
-        <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #properties then toggle .hidden on .material-symbols-outlined in me">
-            <div>Properties</div>
-            <span class="material-symbols-outlined">expand_more</span>
-            <span class="material-symbols-outlined hidden">expand_less</span>
-        </div>
-
-        <div id="properties" class="hidden">
-            {% for key,value in resource.harmonised_json.Properties.items %}
-            <p><b>{{ key }}</b></p>
-            <table class="mb-gap">
-            {% include './partials/json_value.html' with items=value %}
-            </table>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if resource.harmonised_json.SafetyAssessment %}
-        <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #safety-assessment then toggle .hidden on .material-symbols-outlined in me">
-            <div class="flex justify-start">
-                <div>Safety Assessment</div>
-                {% if safety_score %}
-                <div class="text-sm font-normal px-2 pt-1 rounded-full inline-block ml-4 leading-none
-                    {% if safety_score == 'Negligible risk' %}bg-info text-white
-                    {% elif safety_score == 'Low risk' %}bg-success text-white
-                    {% elif safety_score == 'Medium risk' %}bg-warning
-                    {% elif safety_score == 'High risk' %}bg-beware
-                    {% elif safety_score == 'Very high risk' %}bg-error text-white
+        {% if resource.kind == "MATERIAL" %}
+            <div class="flex justify-between items-center">
+                <table>
+                    {% if resource.harmonised_json.InternalId %}
+                    <tr>
+                        <td class="w-[120px]">Internal id:</td>
+                        <td><table>{% include './partials/json_value.html' with items=resource.harmonised_json.InternalId %}</table></td>
+                    </tr>
                     {% endif %}
-                    ">{{ safety_score }}</div>
+
+                    {% if resource.harmonised_json.MaterialType %}
+                    <tr>
+                        <td class="w-[120px]">MaterialType:</td>
+                        <td><table>{% include './partials/json_value.html' with items=resource.harmonised_json.MaterialType %}</table></td>
+                    </tr>
+                    {% endif %}
+                </table>
+                <div class="bg-black text-white rounded-full text-center align-center w-[40px] h-[40px] leading-[50px] cursor-pointer"><span class="material-symbols-outlined">download</span></div>
+            </div>
+
+            {% if resource.harmonised_json.Properties %}
+            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #properties then toggle .hidden on .material-symbols-outlined in me">
+                <div>Properties</div>
+                <span class="material-symbols-outlined">expand_more</span>
+                <span class="material-symbols-outlined hidden">expand_less</span>
+            </div>
+
+            <div id="properties" class="hidden">
+                {% for key,value in resource.harmonised_json.Properties.items %}
+                <p><b>{{ key }}</b></p>
+                <table class="mb-gap">
+                {% include './partials/json_value.html' with items=value %}
+                </table>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if resource.harmonised_json.Protocol %}
+            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center">
+                <div>Protocol</div>
+            </div>
+
+            <div>
+                <table>
+                    <tr>
+                        <th class="w-[120px] text-left">Registry Id:</th>
+                        <td><a href="{% url 'registry:resource' resource.harmonised_json.Protocol.ProtocolId %}">{{ resource.harmonised_json.Protocol.ProtocolId }}</a></td>
+                    </tr>
+                    <tr>
+                        <th class="w-[120px] text-left">Name:</th>
+                        <td>{{ resource.harmonised_json.Protocol.ProtocolName }}</td>
+                    </tr>
+                </table>
+                {% if resource.harmonised_json.Protocol.SpecialConditions %}
+                <p class="my-gap"><b>Conditions</b></p>
+                <table class="w-full">
+                {% for condition in resource.harmonised_json.Protocol.SpecialConditions %}
+                {% if forloop.counter == 1 %}
+                <tr>
+                {% for key,value in condition.items %}
+                    <th class="{% if forloop.counter == 1 %}text-left{% else %}text-right{% endif %} text-sm border-b border-gray-300">{{ key }}</th>
+                {% endfor %}
+                </tr>
+                {% endif %}
+                {% for key,value in condition.items %}
+                <td class="{% if forloop.counter == 1 %}text-left{% else %}text-right{% endif %}">
+                    {% if key == 'Provenance' %}
+                    {% include './partials/json_value_provenance.html' with source=value %}
+                    {% else %}
+                    {{ value }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+                </tr>
+                {% endfor %}
+                </table>
                 {% endif %}
             </div>
-            <span class="material-symbols-outlined">expand_more</span>
-            <span class="material-symbols-outlined hidden">expand_less</span>
-        </div>
+            {% endif %}
 
-        <div id="safety-assessment" class="hidden">
-            {% for key,value in resource.harmonised_json.SafetyAssessment.items %}
-            <p><b>{{ key }}</b></p>
-            <table class="mb-gap">
-            {% include './partials/json_value.html' with items=value %}
+            {% if resource.harmonised_json.ChemicalComponents %}
+            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center">
+                <div>Chemical components</div>
+            </div>
+
+            <div>
+                <table class="w-full">
+                {% for component in resource.harmonised_json.ChemicalComponents %}
+                {% if forloop.counter == 1 %}
+                <tr>
+                    <th class="text-left">Component</th>
+                    {% for parameter in component.parameters %}
+                    <th class="text-right">{{ parameter.Name }}</th>
+                    {% endfor %}
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>{{ component.name }}</td>
+                    {% for parameter in component.parameters %}
+                        <td class="">
+                            <div class="flex items-center justify-end">
+                                <span>{{ parameter.Value }} {{ parameter.Unit }}</span>
+                                {% include './partials/json_value_provenance.html' with source=parameter.Provenance %}
+                            </div>
+                        </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                </table>
+            </div>
+            {% endif %}
+
+            {% if resource.harmonised_json.SafetyAssessment %}
+            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #safety-assessment then toggle .hidden on .material-symbols-outlined in me">
+                <div class="flex justify-start">
+                    <div>Safety Assessment</div>
+                    {% if safety_score %}
+                    <div class="text-sm font-normal px-2 pt-1 rounded-full inline-block ml-4 leading-none
+                        {% if safety_score == 'Negligible risk' %}bg-info text-white
+                        {% elif safety_score == 'Low risk' %}bg-success text-white
+                        {% elif safety_score == 'Medium risk' %}bg-warning
+                        {% elif safety_score == 'High risk' %}bg-beware
+                        {% elif safety_score == 'Very high risk' %}bg-error text-white
+                        {% endif %}
+                        ">{{ safety_score }}</div>
+                    {% endif %}
+                </div>
+                <span class="material-symbols-outlined">expand_more</span>
+                <span class="material-symbols-outlined hidden">expand_less</span>
+            </div>
+
+            <div id="safety-assessment" class="hidden">
+                {% for key,value in resource.harmonised_json.SafetyAssessment.items %}
+                <p><b>{{ key }}</b></p>
+                <table class="mb-gap">
+                {% include './partials/json_value.html' with items=value %}
+                </table>
+                {% endfor %}
+            </div>
+
+            {% endif %}
+        {% elif resource.kind == "PROTOCOL_SOP" %}
+            <div class="flex justify-between items-center">
+                <table>
+                    {% if resource.harmonised_json.InternalId %}
+                    <tr>
+                        <td class="w-[120px]">Internal id:</td>
+                        <td><table>{% include './partials/json_value.html' with items=resource.harmonised_json.InternalId %}</table></td>
+                    </tr>
+                    {% endif %}
+                </table>
+                <div class="bg-black text-white rounded-full text-center align-center w-[40px] h-[40px] leading-[50px] cursor-pointer"><span class="material-symbols-outlined">download</span></div>
+            </div>
+
+            {% if resource.harmonised_json.Steps %}
+            {% for step in resource.harmonised_json.Steps %}
+            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center">
+                <div>Step {{ forloop.counter }}</div>
+            </div>
+
+            <table>
+                {% for key,value in step.items %}
+                <tr>
+                    <th class="text-left align-top pr-gap">{{ key }}</th>
+                    <td class="align-top">
+                        <table class="">
+                        {% include './partials/json_value.html' with items=value %}
+                        </table>
+                    </td>
+                </tr>
+                {% endfor %}
             </table>
             {% endfor %}
-        </div>
+            {% endif %}
 
         {% endif %}
     </div>
