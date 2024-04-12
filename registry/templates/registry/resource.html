@@ -282,6 +282,55 @@
             {% endfor %}
             {% endif %}
 
+        {% elif resource.kind == "DATA" %}
+            <div class="flex justify-between items-center">
+                <table>
+                    {% if resource.harmonised_json.InternalId %}
+                    <tr>
+                        <td class="w-[120px]">Internal id:</td>
+                        <td><table>{% include './partials/json_value.html' with items=resource.harmonised_json.InternalId %}</table></td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td class="w-[120px]">Protocol:</td>
+                        <td><a href="{% url 'registry:resource' resource.harmonised_json.Protocol %}">{{ resource.harmonised_json.Protocol }}</a></td>
+                    </tr>
+                    <tr>
+                        <td class="w-[120px]">Material:</td>
+                        <td><a href="{% url 'registry:resource' resource.harmonised_json.Material %}">{{ resource.harmonised_json.Material }}</a></td>
+                    </tr>
+                </table>
+                <div class="bg-black text-white rounded-full text-center align-center w-[40px] h-[40px] leading-[50px] cursor-pointer"><span class="material-symbols-outlined">download</span></div>
+            </div>
+
+            {% if resource.harmonised_json.Data %}
+            {% for data in resource.harmonised_json.Data %}
+            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap flex justify-between items-center">
+                <div class="flex items-center">
+                    <span>Data point {{ forloop.counter }}</span>
+                    <div class="font-normal">
+                        {% if data.Provenance %}
+                        {% include './partials/json_value_provenance.html' with source=data.Provenance %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <table>
+                {% for key,value in data.items %}
+                {% if key != 'Provenance' %}
+                <tr>
+                    <th class="text-left align-top pr-gap">{{ key }}</th>
+                    <td class="align-top">
+                        {{ value }}
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+            {% endfor %}
+            {% endif %}
+
         {% endif %}
     </div>
     {% endif %}
