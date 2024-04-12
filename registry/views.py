@@ -108,9 +108,12 @@ def resource(request, resource_id):
 
     resource = get_object_or_404(models.Resource, pk=resource_id)
 
-    try:
-        safety_score = resource.harmonised_json["SafetyAssessment"]["HumanHealthSafetyOfProductionProcesses"]["Aspect"]["Value"]
-    except KeyError:
+    if resource.harmonised_json:
+        try:
+            safety_score = resource.harmonised_json["SafetyAssessment"]["HumanHealthSafetyOfProductionProcesses"]["Aspect"]["Value"]
+        except KeyError:
+            safety_score = None
+    else:
         safety_score = None
 
     return render(request, 'registry/resource.html', {
