@@ -1,0 +1,28 @@
+    {% for data in data_points %}
+    <table class="table table-fixed mt-2gap w-full">
+        <tr class="border-b">
+        {% for key,value in data.items %}
+            {% if key != 'Provenance' %}
+            <th class="text-left align-top pr-gap">{{ key }}</th>
+            {% endif %}
+        {% endfor %}
+            <th class="text-left align-top pr-gap">Provenance</th>
+        </tr>
+        <tr>
+        {% for key,value in data.items %}
+        {% if key != 'Provenance' %}
+            <td class="align-top">
+                {{ value }}
+            </td>
+        {% endif %}
+        {% endfor %}
+            <td>
+            {% if data.Provenance %}
+            {% include './json_value_provenance.html' with source=data.Provenance %}
+            {% else %}
+            /
+            {% endif %}
+            </td>
+        </tr>
+    </table>
+    {% endfor %}

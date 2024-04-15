@@ -116,9 +116,22 @@ def resource(request, resource_id):
     else:
         safety_score = None
 
+    measurements = models.Resource.objects \
+        .filter(archived=False, kind=models.Resource.Kind.DATA, harmonised_json__contains={"Material": resource.id})
+
     return render(request, 'registry/resource.html', {
         'resource': resource,
-        'safety_score': safety_score
+        'safety_score': safety_score,
+        'measurements': measurements,
+    })
+
+
+def collection(request, collection_id):
+
+    collection = get_object_or_404(models.ResourceCollection, pk=collection_id)
+
+    return render(request, 'registry/collection.html', {
+        'collection': collection,
     })
 
 

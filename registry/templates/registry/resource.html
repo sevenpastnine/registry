@@ -63,6 +63,21 @@
             </dd>
         </div>
 
+        {% if resource.collections.all %}
+        <div>
+            <dt>Collections</dt>
+            <dd>
+                <ul>
+                    {% for collection in resource.collections.all %}
+                    {% if not collection.archived %}
+                    <li><a href="{% url 'registry:collection' collection.id %}">{{ collection.name }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </dd>
+        </div>
+        {% endif %}
+
         <div>
             <dt>Use cases</dt>
             <dd>
@@ -105,8 +120,9 @@
         </div>
     </dl>
 
-    {% if resource.harmonised_json %}
+    {% if resource.harmonised_json or measurements %}
     <div class="border p-2gap bg-gray-100">
+        <h3>Properties</h3>
         {% if resource.kind == "MATERIAL" %}
             <div class="flex justify-between items-center">
                 <table>
@@ -145,7 +161,7 @@
             {% endif %}
 
             {% if resource.harmonised_json.Protocol %}
-            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center">
+            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap flex justify-between items-center">
                 <div>Protocol</div>
             </div>
 
@@ -188,7 +204,7 @@
             {% endif %}
 
             {% if resource.harmonised_json.ChemicalComponents %}
-            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center">
+            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap flex justify-between items-center">
                 <div>Chemical components</div>
             </div>
 
@@ -246,7 +262,6 @@
                 </table>
                 {% endfor %}
             </div>
-
             {% endif %}
         {% elif resource.kind == "PROTOCOL_SOP" %}
             <div class="flex justify-between items-center">
@@ -304,36 +319,52 @@
             </div>
 
             {% if resource.harmonised_json.Data %}
-            {% for data in resource.harmonised_json.Data %}
-            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap flex justify-between items-center">
-                <div class="flex items-center">
-                    <span>Data point {{ forloop.counter }}</span>
-                    <div class="font-normal">
-                        {% if data.Provenance %}
-                        {% include './partials/json_value_provenance.html' with source=data.Provenance %}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <table>
-                {% for key,value in data.items %}
-                {% if key != 'Provenance' %}
-                <tr>
-                    <th class="text-left align-top pr-gap">{{ key }}</th>
-                    <td class="align-top">
-                        {{ value }}
-                    </td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </table>
-            {% endfor %}
+            {% include './partials/json_measurement_data.html' with data_points=resource.harmonised_json.Data %}
             {% endif %}
 
         {% endif %}
     </div>
     {% endif %}
+
+    {% if measurements %}
+    <div class="bg-gray-100 p-2gap border mb-gap mt-gap">
+        <h3>Experimental/predicted properties</h3>
+
+        {% for measurement in measurements %}
+        <table>
+            <tr>
+                <td class="w-[120px] font-bold">Measurement:</td>
+                <td><a href="{% url 'registry:resource' measurement.id %}">{{ measurement }}</a></td>
+            </tr>
+            <tr>
+                <td class="w-[120px] font-bold">Protocol:</td>
+                <td><a href="{% url 'registry:resource' measurement.harmonised_json.Protocol %}">{{ measurement.harmonised_json.Protocol }}</a></td>
+            </tr>
+        </table>
+
+        {% if measurement.harmonised_json.Data %}
+        {% include './partials/json_measurement_data.html' with data_points=measurement.harmonised_json.Data %}
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+    {% if resource.files.all %}
+    <div class="bg-gray-100 p-2gap border mb-gap mt-gap">
+        <h3>Resource files</h3>
+        <ul>
+            {% for file in resource.files.all %}
+            {% if not file.archived %}
+            <li class="my-2">
+                <a href="{{ file.file.url }}">{{ file }}</a> {% if file.name %}&ndash; {{ file.name }}{% endif %}
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
 </div>
 
 {% endblock %}
