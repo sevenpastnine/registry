@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'adminsortable2',
     'widget_tweaks',
     'convenient_formsets',
+    'django.contrib.postgres',
 ]
 ```
 

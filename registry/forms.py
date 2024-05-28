@@ -41,7 +41,7 @@ class ResourceForm(ModelForm):
 class ResourceFiltersForm(forms.Form):
     search = forms.CharField(required=False)
     kind = forms.ChoiceField(
-        choices=[(None, 'Resource type')] + models.Resource.Kind.choices,
+        choices=[(None, 'All resource types')] + models.Resource.Kind.choices,
         widget=forms.Select,
         required=False,
     )
@@ -49,13 +49,19 @@ class ResourceFiltersForm(forms.Form):
         queryset=models.Group.objects.all(),
         widget=forms.Select,
         required=False,
-        empty_label='Use case'
+        empty_label='All use cases'
     )
     status = forms.ModelChoiceField(
         queryset=models.ResourceStatus.objects.all(),
         widget=forms.Select,
         required=False,
-        empty_label='Status'
+        empty_label='All statuses'
+    )
+    organisation = forms.ModelChoiceField(
+        queryset=models.Organisation.objects.all(),
+        widget=forms.Select,
+        required=False,
+        empty_label='All organisations'
     )
 
 

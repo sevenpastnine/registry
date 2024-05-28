@@ -1,6 +1,10 @@
+import functools
+
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.search import SearchQuery
 
 from . import models
 from . import forms
@@ -72,18 +76,26 @@ def license(request, license_id):
 
 
 def get_resources(filters=None):
-    queryset = models.Resource.objects.filter(archived=False)
+    queryset = models.Resource.objects.filter(archived=False).select_related('status').prefetch_related('groups')
     if not filters:
         return queryset
     else:
         if filters.get('search'):
-            queryset = queryset.filter(name__icontains=filters.get('search'))
+            REMOVE_CHARS = "()|&:*!"
+            MIN_QUERY_LENGTH = 2
+            query_string = filters.get('search').strip().translate({ord(i): " " for i in REMOVE_CHARS}).strip()
+            tokens = [token.strip() for token in query_string.split() if len(token.strip()) >= MIN_QUERY_LENGTH]
+            if tokens:
+                query = functools.reduce(lambda a, b: a & b, [SearchQuery(f'{token}:*', search_type='raw') for token in tokens])
+                queryset = queryset.filter(Q(id__search=query) | Q(name__search=query) | Q(description__search=query))
         if filters.get('kind'):
             queryset = queryset.filter(kind=filters.get('kind'))
         if filters.get('group'):
             queryset = queryset.filter(groups=filters.get('group'))
         if filters.get('status'):
             queryset = queryset.filter(status=filters.get('status'))
+        if filters.get('organisation'):
+            queryset = queryset.filter(contributors__person__in=filters.get('organisation').people.all())
         return queryset
 
 
