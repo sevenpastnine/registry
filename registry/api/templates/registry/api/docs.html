@@ -29,7 +29,7 @@
         {% include './partials/header.html' with header='h3' label='People' %}
         {% include './partials/endpoint.html' with endpoint='person-list' %}
 
-        {% include './partials/header.html' with header='h3' label='Groups' %}
+        {% include './partials/header.html' with header='h3' label='Groups (use cases)' %}
         {% include './partials/endpoint.html' with endpoint='group-list' %}
 
         {% include './partials/header.html' with header='h3' label='Licenses' %}
@@ -44,23 +44,25 @@
         {% include './partials/header.html' with header='h3' label='Resource statuses' %}
         {% include './partials/endpoint.html' with endpoint='resourcestatus-list' %}
 
+        <!-- Resources -->
+
         {% include './partials/header.html' with header='h3' label='Resources' %}
         {% include './partials/endpoint.html' with endpoint='resource-list' %}
 
         <p>Create a new resource:</p>
 
-        <pre>curl -X POST {{ scheme }}://{{ hostname }}{% url 'resource-list' %} -H 'Content-Type: application/json' -d '{ "name": "Test resource", "kind": "MATERIAL", "status": "&lt;resource-status-id&gt;", "contributors": [{"person": "&lt;person-id&gt;", "role": "&lt;person-role-id&gt;"}] }' -H 'Authorization: Token {{ token }}'</pre>
+        <pre>curl -X POST {{ scheme }}://{{ hostname }}{% url 'resource-list' %} -H 'Content-Type: application/json' -d 'POST_JSON' -H 'Authorization: Token {{ token }}'</pre>
 
-        <p>The POST JSON data has the following form:</p>
+        <p>where the <code>POST_JSON</code> data has the following form:</p>
 
-<pre>{
+        <pre>{
   "archived": false,                  // optional, true|false, default: false
   "name": "Test resource",            // required
   "kind": "MATERIAL",                 // required, see <a href="{{ scheme }}://{{ hostname }}{% url 'resourcekind-list' %}">Resource kinds</a>
   "description": "Some description",  // optional
   "status": "&lt;resource-status-id&gt;",   // required, see <a href="{{ scheme }}://{{ hostname }}{% url 'resourcestatus-list' %}">Resource statuses</a>
   "license": null,                    // optional, see <a href="{{ scheme }}://{{ hostname }}{% url 'license-list' %}">Licenses</a>
-  "groups": [],                       // optional, see <a href="{{ scheme }}://{{ hostname }}{% url 'group-list' %}">Groups</a>
+  "groups": [],                       // optional, list of Group IDs, see <a href="{{ scheme }}://{{ hostname }}{% url 'group-list' %}">Groups (use cases)</a>
   "data_link": "",                    // optional
   "contributors": [                   // required, at least one contributor is required
     {
@@ -72,10 +74,51 @@
 
         <p>Update an existing resource:</p>
 
-        <pre>curl -X PATCH {{ scheme }}://{{ hostname }}{% url 'resource-list' %}&lt;resource-id&gt;/ -H 'Content-Type: application/json' -d '{ "name": "Updated test resource" }' -H 'Authorization: Token {{ token }}'</pre>
+        <pre>curl -X PATCH {{ scheme }}://{{ hostname }}{% url 'resource-list' %}&lt;resource-id&gt;/ -H 'Content-Type: application/json' -d 'POST_JSON' -H 'Authorization: Token {{ token }}'</pre>
 
-        <p>When updating the resource only the fields specified in the JSON data will be modified, all other fields will remain unchanged. For example, in the above example, only resource name will be changed.</p>
+        <p>When updating a resource only the fields specified in the <code>POST_JSON</code> data will be modified, all other fields will remain unchanged.</p>
+
+
+        <!-- Resource files -->
+
+        {% include './partials/header.html' with header='h3' label='Resource files' %}
+        {% include './partials/endpoint.html' with endpoint='resourcefile-list' %}
+
+        <p>Create a new resource file:</p>
+
+        <pre>curl -X POST {{ scheme }}://{{ hostname }}{% url 'resourcefile-list' %} -F 'resource=&lt;resource-id&gt;' -F 'name=&lt;name&gt;' -F 'file=@&lt;path-to-file&gt;' -H 'Authorization: Token {{ token }}'</pre>
+
+        <p>Update an existing resource file:</p>
+
+        <pre>curl -X PATCH {{ scheme }}://{{ hostname }}{% url 'resourcefile-list' %}&lt;resource-file-id&gt;/ -F 'resource=&lt;resource-id&gt;' -F 'name=&lt;name&gt;' -F 'file=@&lt;path-to-file&gt;' -H 'Authorization: Token {{ token }}'</pre>
+
+        <p>When updating a resource file only the fields specified with the <code>-F</code> parameter (<code>resource</code>, <code>name</code> or <code>file</code>) will be modified, all other fields will remain unchanged.</p>
+
+
+        <!-- Resource collections -->
+
+        {% include './partials/header.html' with header='h3' label='Resource collections' %}
+        {% include './partials/endpoint.html' with endpoint='resourcecollection-list' %}
+
+        <p>Create a new resource collection:</p>
+
+        <pre>curl -X POST {{ scheme }}://{{ hostname }}{% url 'resourcecollection-list' %} -H 'Content-Type: application/json' -d 'POST_JSON' -H 'Authorization: Token {{ token }}'</pre>
+
+        <p>where the <code>POST_JSON</code> data has the following form:</p>
+
+        <pre>{
+  "archived": false,                  // optional, true|false, default: false
+  "name": "Test collection",          // required
+  "description": "Some description",  // optional
+  "groups": [&lt;group-id&gt;...],          // optional, list of Group IDs, see <a href="{{ scheme }}://{{ hostname }}{% url 'group-list' %}">Groups (use cases)</a>
+  "resources": [&lt;resource-id&gt;...]     // optional, list of Resource IDs, see <a href="{{ scheme }}://{{ hostname }}{% url 'resource-list' %}">Resources</a>
+}</pre>
+
+        <p>Update an existing resource collection:</p>
+
+        <pre>curl -X PATCH {{ scheme }}://{{ hostname }}{% url 'resourcecollection-list' %}&lt;resource-collection-id&gt;/ -H 'Content-Type: application/json' -d 'POST_JSON' -H 'Authorization: Token {{ token }}'</pre>
+
+        <p>When updating a resource collection only the fields specified in the <code>POST_JSON</code> data will be modified, all other fields will remain unchanged.</p>
   </div>
-
 </div>
 {% endblock %}
