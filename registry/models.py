@@ -171,6 +171,13 @@ class Resource(BaseModel):
     def data_file_name(self):
         return os.path.basename(self.data_file.name)
 
+    @property
+    def organisations(self):
+        return Organisation.objects.filter(
+            people__contributes_to_resources__object_id=self.id,
+            people__contributes_to_resources__content_type=ContentType.objects.get_for_model(Resource)
+        ).distinct()
+
 
 def resource_file_path(instance, filename):
     return f'resources/files/{instance.resource.id}/{filename}'
