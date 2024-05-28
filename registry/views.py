@@ -104,7 +104,7 @@ def resources(request):
 
     if filters_form.is_valid():
         resources = get_resources(filters_form.cleaned_data)
-        if request.htmx:
+        if request.htmx and not request.htmx.boosted:
             return render(request, 'registry/partials/resources.html', {
                 'resources': resources,
                 'filters_form': filters_form,

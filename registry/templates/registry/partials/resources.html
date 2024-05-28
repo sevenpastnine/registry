@@ -1,25 +1,3 @@
-{% load widget_tweaks %}
-
-<form method="GET"
-    hx-get="{% url 'registry:resources' %}"
-    hx-trigger="change, keyup delay:200ms"
-    hx-target="closest #content"
-    hx-swap="innnerHTML"
-    hx-push-url="true">
-    <div class=" p-gap my-2gap relative bg-gray-100">
-        <label class="text-sm font-medium absolute p-2 top-[-1.1rem]">Filter resources</label>
-        <div class="flex flex-col sm:flex-row sm:flex-wrap justify-start items-center space-y-1 max-w-full my-3">
-            <div class="w-full sm:w-[75%] sm:pr-2"><div class="text-sm">{% include 'partials/filter_field.html' with field=filters_form.search placeholder="Search by keywords" %}</div></div>
-            <div class="hidden sm:block sm:w-[25%] text-center"><button hx-get="{% url 'registry:resources' %}" hx-params="none" class="btn !block w-full p-gap !no-underline !text-sm !font-normal border bg-gray-200">Clear all filters</button></div>
-            <div class="w-full sm:w-[50%] lg:w-[25%] sm:pr-2">{% include 'partials/filter_field.html' with field=filters_form.kind %}</div>
-            <div class="w-full sm:w-[50%] lg:w-[25%] lg:pr-2">{% include 'partials/filter_field.html' with field=filters_form.group %}</div>
-            <div class="w-full sm:w-[50%] lg:w-[25%] sm:pr-2">{% include 'partials/filter_field.html' with field=filters_form.status %}</div>
-            <div class="w-full sm:w-[50%] lg:w-[25%]">{% include 'partials/filter_field.html' with field=filters_form.organisation %}</div>
-            <div class="w-full sm:hidden text-center pt-1"><button hx-get="{% url 'registry:resources' %}" hx-params="none" class="btn !block w-full p-gap !no-underline !text-sm !font-normal border bg-gray-200">Clear all filters</button></div>
-        </div>
-    </div>
-</form>
-
 {% if not resources %}
 <div class="my-3gap">No resources found for selected parameters.</div>
 {% else %}
