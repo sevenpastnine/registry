@@ -76,6 +76,8 @@ def get_resources(filters=None):
     if not filters:
         return queryset
     else:
+        if filters.get('search'):
+            queryset = queryset.filter(name__icontains=filters.get('search'))
         if filters.get('kind'):
             queryset = queryset.filter(kind=filters.get('kind'))
         if filters.get('group'):

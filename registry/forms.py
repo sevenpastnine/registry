@@ -39,6 +39,7 @@ class ResourceForm(ModelForm):
 
 
 class ResourceFiltersForm(forms.Form):
+    search = forms.CharField(required=False)
     kind = forms.ChoiceField(
         choices=[(None, 'Resource type')] + models.Resource.Kind.choices,
         widget=forms.Select,
