@@ -3,7 +3,7 @@
         <td>
             {% if items.Value %}
             <div class="flex items-center relative">
-                <span>{{ items.Value|safe }}</span>
+                <span>{{ items.Value|linebreaks|safe }}</span>
                 {% include './json_value_provenance.html' with source=items.Provenance %}
             </div>
             {% else %}
