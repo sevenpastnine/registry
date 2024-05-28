@@ -121,7 +121,7 @@
     </dl>
 
     {% if resource.harmonised_json or measurements %}
-    <div class="border p-2gap bg-gray-100">
+    <div class="border px-2gap py-gap">
         <h3>Properties</h3>
         {% if resource.kind == "MATERIAL" %}
             <div class="flex justify-between items-center">
@@ -144,7 +144,7 @@
             </div>
 
             {% if resource.harmonised_json.Properties %}
-            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #properties then toggle .hidden on .material-symbols-outlined in me">
+            <div class="bg-gray-100 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #properties then toggle .hidden on .material-symbols-outlined in me">
                 <div>Properties</div>
                 <span class="material-symbols-outlined">expand_more</span>
                 <span class="material-symbols-outlined hidden">expand_less</span>
@@ -161,7 +161,7 @@
             {% endif %}
 
             {% if resource.harmonised_json.Protocol %}
-            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap flex justify-between items-center">
+            <div class="bg-gray-100 p-2 -mx-2 font-bold mt-2gap mb-gap flex justify-between items-center">
                 <div>Protocol</div>
             </div>
 
@@ -204,7 +204,7 @@
             {% endif %}
 
             {% if resource.harmonised_json.ChemicalComponents %}
-            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap flex justify-between items-center">
+            <div class="bg-gray-100 p-2 -mx-2 font-bold mt-2gap mb-gap flex justify-between items-center">
                 <div>Chemical components</div>
             </div>
 
@@ -236,7 +236,7 @@
             {% endif %}
 
             {% if resource.harmonised_json.SafetyAssessment %}
-            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #safety-assessment then toggle .hidden on .material-symbols-outlined in me">
+            <div class="bg-gray-100 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center" _="on click toggle .hidden on #safety-assessment then toggle .hidden on .material-symbols-outlined in me">
                 <div class="flex justify-start">
                     <div>Safety Assessment</div>
                     {% if safety_score %}
@@ -278,7 +278,7 @@
 
             {% if resource.harmonised_json.Steps %}
             {% for step in resource.harmonised_json.Steps %}
-            <div class="bg-gray-200 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center">
+            <div class="bg-gray-100 p-2 -mx-2 font-bold mt-2gap mb-gap cursor-pointer flex justify-between items-center">
                 <div>Step {{ forloop.counter }}</div>
             </div>
 
@@ -327,7 +327,7 @@
     {% endif %}
 
     {% if measurements %}
-    <div class="bg-gray-100 p-2gap border mb-gap mt-gap">
+    <div class="border px-2gap py-gap mb-gap mt-gap">
         <h3>Experimental/predicted properties</h3>
 
         {% for measurement in measurements %}
@@ -351,7 +351,7 @@
 
 
     {% if resource.files.all %}
-    <div class="bg-gray-100 p-2gap border mb-gap mt-gap">
+    <div class="border px-2gap py-gap mb-gap mt-gap">
         <h3>Resource files</h3>
         <ul>
             {% for file in resource.files.all %}
