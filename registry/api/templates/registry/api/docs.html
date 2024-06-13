@@ -12,6 +12,7 @@
 
         <p>The API is available at <a href="{{ scheme }}://{{ hostname }}/api/">{{ scheme }}://{{ hostname }}/api/</a></p>
 
+
         {% include './partials/header.html' with header='h2' label='Authentication' %}
 
         <p>Authentication/Authorization is token-based. The token must be passed in the <code>Authorization</code> header of each request, prefixed by the <code>Token</code> keyword:</p>
@@ -22,9 +23,17 @@
 
         <p>Please keep your access token secret and make sure you don't leak it (e.g. commit it in GIT or other version control system).</p>
 
-        {% include './partials/header.html' with header='h2' label='Endpoints' %}
 
-        <p>Following is a list of available API endpoints.</p>
+        {% include './partials/header.html' with header='h2' label='Accessing data files' %}
+
+        <p>Access to the data files is restricted to authenticated users. If you are accessing files with your browser and are logged in to Registry, this will work transparently. However, to access a data file from other clients (e.g. scripts, console, ...) you will need to provide the access token in the <code>Authorization</code> header of the request:</p>
+
+        <pre>curl -X GET {{ scheme }}://{{ hostname }}/media/data.json -H 'Authorization: Token {{ token }}'</pre>
+
+
+        {% include './partials/header.html' with header='h2' label='Available API endpoints' %}
+
+        <p>Following is a list of the available API endpoints.</p>
 
         {% include './partials/header.html' with header='h3' label='People' %}
         {% include './partials/endpoint.html' with endpoint='person-list' %}
