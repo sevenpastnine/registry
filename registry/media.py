@@ -11,7 +11,8 @@ def x_accel_redirect(request, path):
         return serve(request, path, document_root=settings.MEDIA_ROOT)
     else:
         response = HttpResponse()
-        response.headers['X-Accel-Redirect'] = Path('/protected-media/', path).as_posix()  # type: ignore
+        response['Content-Type'] = ''
+        response['X-Accel-Redirect'] = Path('/protected-media/', path).as_posix()
         return response
 
 
