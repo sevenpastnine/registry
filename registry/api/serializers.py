@@ -66,7 +66,7 @@ class ResourceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Resource
-        fields = ['id', 'archived', 'name', 'kind', 'description', 'status', 'license', 'groups', 'contributors', 'data_link', 'harmonised_json']
+        fields = ['id', 'archived', 'name', 'kind', 'description', 'status', 'license', 'groups', 'contributors', 'data_link', 'data_file', 'harmonised_json']
 
     def validate_contributors(self, data):
         if not len(data):
