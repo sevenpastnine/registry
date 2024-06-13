@@ -119,7 +119,6 @@ def resources(request):
 
 
 def resource(request, resource_id):
-
     resource = get_object_or_404(models.Resource, pk=resource_id)
 
     if resource.harmonised_json:
@@ -141,7 +140,6 @@ def resource(request, resource_id):
 
 
 def collection(request, collection_id):
-
     collection = get_object_or_404(models.ResourceCollection, pk=collection_id)
 
     return render(request, 'registry/collection.html', {
