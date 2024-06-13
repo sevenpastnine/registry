@@ -26,7 +26,7 @@
 
         {% include './partials/header.html' with header='h2' label='Accessing data files' %}
 
-        <p>Access to the data files is restricted to authenticated users. If you are accessing files with your browser and are logged in to Registry, this will work transparently. However, to access a data file from other clients (e.g. scripts, console, ...) you will need to provide the access token in the <code>Authorization</code> header of the request:</p>
+        <p>Access to the data files is restricted to authenticated users. If you are accessing files with your browser and are logged in to Registry, this will work transparently. However, to access a data file from other clients (e.g. scripts, console, ...) you will need to provide an access token in the <code>Authorization</code> header of the request:</p>
 
         <pre>curl -X GET {{ scheme }}://{{ hostname }}/media/data.json -H 'Authorization: Token {{ token }}'</pre>
 
