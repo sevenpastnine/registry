@@ -16,6 +16,11 @@ export default defineConfig({
             input: {
                 main: resolve('./frontend/main.js'),
                 studyDesignMaps: resolve('./frontend/studyDesignMaps/main.tsx'),
+            },
+            output: {
+                manualChunks: {
+                    vendor: ['react', 'react-dom'],
+                }
             }
         }
     }
