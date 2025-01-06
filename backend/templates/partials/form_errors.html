@@ -1,0 +1,5 @@
+{% if form.errors or form.non_field_errors or formset.non_form_errors or formset.errors %}
+<div class="text-error bg-error bg-opacity-10 p-gap mb-2gap mt-gap">Please fix the errors below.</div>
+{% endif %}
+
+<div class="mb-2gap">{{ form.non_field_errors }}</div>

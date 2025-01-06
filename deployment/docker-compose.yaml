@@ -1,0 +1,28 @@
+services:
+  django:
+    image: ${IMAGE}
+    build:
+      context: ../
+      dockerfile: deployment/Dockerfile
+    container_name: ${CONTAINER_NAME}
+    restart: always
+    user: ${USER_ID}:${GROUP_ID}
+    environment:
+      - WORKERS
+      - DJANGO_ALLOWED_HOSTS
+      - DJANGO_SETTINGS_MODULE
+      - DJANGO_SECRET_KEY
+      - SERVER_EMAIL
+      - MAILGUN_API_URL
+      - MAILGUN_API_KEY
+      - MAILGUN_SENDER_DOMAIN
+      - POSTGRES_HOST
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+      - ../var/run:/app/var/run
+      - ../var/media:/app/var/media
+      - ../var/static:/app/var/static

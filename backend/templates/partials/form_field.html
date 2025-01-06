@@ -1,0 +1,35 @@
+{% load widget_tweaks %}
+<div class="text-sm">
+    <label for="{{ field.id_for_label }}" class="block text-sm font-medium">{{ field.label }}</label>
+    {{ field.errors }}
+    <div class="{% if field.errors %}border-error{% else %}border-transparent{% endif %}">
+    {% if field.field.widget.input_type == 'checkbox' and widget == 'toggle' %}
+    <div _="on click
+            toggle .bg-gray-200 on .toggle-container in me then
+            toggle .bg-primary-600 on .toggle-container in me then
+            toggle .translate-x-0 on .toggle-indicator in me then
+            toggle .translate-x-5 on .toggle-indicator in me then
+            toggle [@checked='true'] on <input/> in me
+        ">
+        {% render_field field class="hidden" %}
+        <span aria-checked="false" class="toggle-container {% if field.value %}bg-primary-600{% else %}bg-gray-200{% endif %} relative inline-block flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline" role="checkbox" tabindex="0">
+            <!-- On: "translate-x-5", Off: "translate-x-0" -->
+            <span aria-hidden="true" class="toggle-indicator {% if field.value %}translate-x-5{% else %}translate-x-0{% endif %} inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200"></span>
+        </span>
+    </div>
+    {% elif field.field.widget.input_type == 'radio' or field.field.widget.input_type == 'checkbox' %}
+    <div class="mt-4">
+    {% render_field field class="mt-[-2px] text-sm space-y-1 border-gray-300 focus:ring-secondary-500 [&_input]:mr-1" %}
+    </div>
+    {% elif field.field.widget.input_type == 'file' %}
+    <div class="bg-gray-100 rounded-md pl-2 pt-1 mt-1">
+    {% render_field field class="mt-1 block w-full appearance-none rounded-md border border-gray-100 bg-gray-100 px-3 pb-1 placeholder-gray-400 shadow-sm focus:border-secondary-500 focus:outline-none focus:ring-secondary-500 sm:text-sm disabled:text-gray-100" %}
+    </div>
+    {% else %}
+    {% render_field field class="mt-1 block w-full appearance-none rounded-md border border-gray-100 bg-gray-100 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-secondary-500 focus:outline-none focus:ring-secondary-500 sm:text-sm disabled:text-gray-100" %}
+    {% endif %}
+    </div>
+    {% if field.help_text or help_text %}
+    <div class="text-sm text-muted mt-1">{% if field.help_text %}{{ field.help_text|safe }}{% elif help_text %}{{ help_text|safe }}{% endif %}</div>
+    {% endif %}
+</div>

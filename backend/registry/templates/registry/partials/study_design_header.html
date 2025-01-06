@@ -1,0 +1,13 @@
+<div>
+    <div>
+        <h1>
+            <div class="mb-1">Study design</div>
+            <div class="text-lg leading-normal">{{ study_design.name }}</div>
+        </h1>
+    </div>
+
+    <div class="mt-0 text-right">
+        <a href="{% url 'registry:study_design_map' study_design.id %}" class="{% if active_view == 'map' %}border-b-4 border-primary-400{% endif %} inline-block !no-underline px-gap pb-1/2gap">Map</a>
+        <a href="{% url 'registry:study_design' study_design.id %}" class="{% if active_view == 'general-info' %}border-b-4 border-primary-400{% endif %} inline-block !no-underline px-gap pb-1/2gap">General info</a>
+    </div>
+</div>

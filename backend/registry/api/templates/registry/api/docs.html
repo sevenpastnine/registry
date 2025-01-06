@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <div class="prose max-w-screen-lg">
+
+        <h1>API</h1>
+
+        <p>The Registry provides an API that allows you to interact with the Registry programmatically. The API is HTTP based and provides resource-oriented URLs. JSON is used as the format for sending and receiving data. You can use the API to get the information about all the Registry entities and to create new resources.</p>
+
+        <p>The API also features a HTML interface that allows you to inspect and interact with the API from your browser.</p>
+
+        <p>The API is available at <a href="{{ scheme }}://{{ hostname }}/api/">{{ scheme }}://{{ hostname }}/api/</a></p>
+
+
+        {% include './partials/header.html' with header='h2' label='Authentication' %}
+
+        <p>Authentication/Authorization is token-based. The token must be passed in the <code>Authorization</code> header of each request, prefixed by the <code>Token</code> keyword:</p>
+
+        <p><code>Token {{ token }}</code></p>
+
+        <p>Your access token is: <strong>{{ token }}</strong></p></p>
+
+        <p>Please keep your access token secret and make sure you don't leak it (e.g. commit it in GIT or other version control system).</p>
+
+
+        {% include './partials/header.html' with header='h2' label='Accessing data files' %}
+
+        <p>Access to the data files is restricted to authenticated users. If you are accessing files with your browser and are logged in to Registry, this will work transparently. However, to access a data file from other clients (e.g. scripts, console, ...) you will need to provide an access token in the <code>Authorization</code> header of the request:</p>
+
+        <pre>curl -X GET {{ scheme }}://{{ hostname }}/media/data.json -H 'Authorization: Token {{ token }}'</pre>
+
+
+        {% include './partials/header.html' with header='h2' label='Available API endpoints' %}
+
+        <p>Following is a list of the available API endpoints.</p>
+
+        {% include './partials/header.html' with header='h3' label='People' %}
+        {% include './partials/endpoint.html' with endpoint='person-list' %}
+
+        {% include './partials/header.html' with header='h3' label='Groups (use cases)' %}
+        {% include './partials/endpoint.html' with endpoint='group-list' %}
+
+        {% include './partials/header.html' with header='h3' label='Licenses' %}
+        {% include './partials/endpoint.html' with endpoint='license-list' %}
+
+        {% include './partials/header.html' with header='h3' label='Person roles' %}
+        {% include './partials/endpoint.html' with endpoint='personrole-list' %}
+
+        {% include './partials/header.html' with header='h3' label='Resource kinds' %}
+        {% include './partials/endpoint.html' with endpoint='resourcekind-list' %}
+
+        {% include './partials/header.html' with header='h3' label='Resource statuses' %}
+        {% include './partials/endpoint.html' with endpoint='resourcestatus-list' %}
+
+        <!-- Resources -->
+
+        {% include './partials/header.html' with header='h3' label='Resources' %}
+        {% include './partials/endpoint.html' with endpoint='resource-list' %}
+
+        <p>Create a new resource:</p>
+
+        <pre>curl -X POST {{ scheme }}://{{ hostname }}{% url 'resource-list' %} -H 'Content-Type: application/json' -d 'POST_JSON' -H 'Authorization: Token {{ token }}'</pre>
+
+        <p>where the <code>POST_JSON</code> data has the following form:</p>
+
+        <pre>{
+  "archived": false,                  // optional, true|false, default: false
+  "name": "Test resource",            // required
+  "kind": "MATERIAL",                 // required, see <a href="{{ scheme }}://{{ hostname }}{% url 'resourcekind-list' %}">Resource kinds</a>
+  "description": "Some description",  // optional
+  "status": "&lt;resource-status-id&gt;",   // required, see <a href="{{ scheme }}://{{ hostname }}{% url 'resourcestatus-list' %}">Resource statuses</a>
+  "license": null,                    // optional, see <a href="{{ scheme }}://{{ hostname }}{% url 'license-list' %}">Licenses</a>
+  "groups": [],                       // optional, list of Group IDs, see <a href="{{ scheme }}://{{ hostname }}{% url 'group-list' %}">Groups (use cases)</a>
+  "data_link": "",                    // optional
+  "contributors": [                   // required, at least one contributor is required
+    {
+      "person": "&lt;person-id&gt;",        // required, see <a href="{{ scheme }}://{{ hostname }}{% url 'person-list' %}">People</a>
+      "role": "&lt;person-role-id&gt;"      // required, see <a href="{{ scheme }}://{{ hostname }}{% url 'personrole-list' %}">Person roles</a>
+    }
+  ]
+}</pre>
+
+        <p>Update an existing resource:</p>
+
+        <pre>curl -X PATCH {{ scheme }}://{{ hostname }}{% url 'resource-list' %}&lt;resource-id&gt;/ -H 'Content-Type: application/json' -d 'POST_JSON' -H 'Authorization: Token {{ token }}'</pre>
+
+        <p>When updating a resource only the fields specified in the <code>POST_JSON</code> data will be modified, all other fields will remain unchanged.</p>
+
+
+        <!-- Resource files -->
+
+        {% include './partials/header.html' with header='h3' label='Resource files' %}
+        {% include './partials/endpoint.html' with endpoint='resourcefile-list' %}
+
+        <p>Create a new resource file:</p>
+
+        <pre>curl -X POST {{ scheme }}://{{ hostname }}{% url 'resourcefile-list' %} -F 'resource=&lt;resource-id&gt;' -F 'name=&lt;name&gt;' -F 'file=@&lt;path-to-file&gt;' -H 'Authorization: Token {{ token }}'</pre>
+
+        <p>Update an existing resource file:</p>
+
+        <pre>curl -X PATCH {{ scheme }}://{{ hostname }}{% url 'resourcefile-list' %}&lt;resource-file-id&gt;/ -F 'resource=&lt;resource-id&gt;' -F 'name=&lt;name&gt;' -F 'file=@&lt;path-to-file&gt;' -H 'Authorization: Token {{ token }}'</pre>
+
+        <p>When updating a resource file only the fields specified with the <code>-F</code> parameter (<code>resource</code>, <code>name</code> or <code>file</code>) will be modified, all other fields will remain unchanged.</p>
+  </div>
+</div>
+{% endblock %}

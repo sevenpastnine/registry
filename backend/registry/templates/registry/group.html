@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ group }}{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <h1>
+        <div class="mb-1">Use case</div>
+        <div class="text-lg leading-normal">{{ group }}</div>
+    </h1>
+
+    <dl>
+        <div>
+            <dt>ID</dt>
+            <dd class="!text-base font-mono">{{ group.id }}</dd>
+        </div>
+
+        <div>
+            <dt>Name</dt>
+            <dd>{{ group.name }}</dd>
+        </div>
+
+        {% if group.description %}
+        <div>
+            <dt>Description</dt>
+            <dd>
+                {{ group.description }}
+            </dd>
+        </div>
+        {% endif %}
+
+        <div>
+            <dt>Members</dt>
+            <dd>
+                {% if group.people.all.count %}
+                <ul>
+                    {% for person in group.people.all %}
+                    <li><a href="{% url 'registry:person' person.id %}">{{ person }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Resources</dt>
+            <dd>
+                {% if resources %}
+                <ul>
+                    {% for resource in resources %}
+                    <li><a href="{% url 'registry:resource' resource.id %}">{{ resource }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Study designs</dt>
+            <dd>
+                {% if study_designs %}
+                <ul>
+                    {% for study_design in study_designs %}
+                    <li><a href="{% url 'registry:study_design' study_design.id %}">{{ study_design.name }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+    </dl>
+
+</div>
+
+{% endblock %}

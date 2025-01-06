@@ -1,0 +1,63 @@
+.study-design-map
+    @apply text-sm border-t border-gray-200 relative
+
+    background: #fdfdfd
+
+    .cursor
+        position: absolute
+        z-index: 50
+        pointer-events: none
+        user-select: none
+
+    .btn
+        @apply border bg-white drop-shadow-sm
+
+    .btn-primary
+        @apply bg-primary text-white border-transparent
+
+    .node-creator
+        width: 265px
+
+        @apply bg-white px-7 pt-gap drop-shadow-sm border rounded-lg
+
+        .react-flow__node
+            @apply relative
+
+        .description
+            @apply mb-6 mt-2 leading-tight text-muted
+
+    .react-flow__node
+        border-radius: 4px
+
+        &.selected
+            @apply ring-1 ring-offset-1 ring-gray-400
+
+    .study-design-map__node
+        width: 210px
+        height: 40px
+        border-radius: 4px
+
+        @apply bg-white text-black leading-none cursor-grab transition-all duration-[0.4s] overflow-hidden
+
+        &:hover
+            .edit-button
+                opacity: 1
+
+        .data-icon-container
+            @apply absolute top-0 left-0 w-2gap h-full rounded-l-md
+
+        .edit-button
+            opacity: 0
+            transition: opacity 0.2s ease-in-out
+
+    @keyframes study-design-map__node-editor__slide-in
+        from
+            right: -300px
+        to
+            right: 0px
+
+    .study-design-map__node-editor
+        animation-name: study-design-map__node-editor__slide-in
+        animation-duration: 0.2s
+        animation-timing-function: ease-out
+        animation-iteration-count: 1

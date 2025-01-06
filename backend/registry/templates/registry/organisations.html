@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Organisations{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <h1>Organisations</h1>
+
+    {% include './partials/resource_listing.html' with items=organisations namespace='registry:organisation' kind='organisations' %}
+</div>
+
+{% endblock %}

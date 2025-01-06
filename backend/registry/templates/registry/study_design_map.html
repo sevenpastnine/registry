@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load django_vite backend %}
+
+{% block title %}{{ study_design }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include './partials/study_design_header.html' with active_view='map' %}
+
+    <style>{% for node in node_types %}
+        .react-flow__node-{{ node.id }} .study-design-map__node {
+            background-color: white;
+            border: solid 1px {{ node.color }};
+        }
+        .react-flow__node-{{ node.id }} .study-design-map__node .data-icon-container {
+            background-color: {{ node.color }};
+        }
+        {% endfor %}
+    </style>
+
+    {{ node_types|json_script:"node_types" }}
+    {{ organisations|json_script:"organisations" }}
+
+    <script type="module">
+        import StudyDesignMap from '{% vite_asset_url "studyDesignMaps/main.tsx" %}'
+        StudyDesignMap(
+            '{{ study_design.id }}',
+            JSON.parse(document.getElementById('node_types').textContent),
+            JSON.parse(document.getElementById('organisations').textContent),
+        )
+    </script>
+</div>
+<div id="studyDesignMap" class="study-design-map w-full h-full -mb-2gap"></div>
+{% endblock %}

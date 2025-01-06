@@ -1,0 +1,14 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "NODE_ENV=development npx tsx --watch server.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@hocuspocus/extension-webhook": "^2.13.7",
+    "@hocuspocus/server": "^2.13.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.1"
+  }
+}

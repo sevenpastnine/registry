@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% load backend %}
+
+{% block title %}{{ person }}{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+    <h1>{{ person }}</h1>
+
+    <dl>
+        <div>
+            <dt>ID</dt>
+            <dd class="!text-base font-mono">{{ person.id }}</dd>
+        </div>
+        <div>
+            <dt>Email</dt>
+            <dd>
+                {% if person.user.email %}
+                <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>ORCID</dt>
+            <dd>
+                {% if person.orcid %}
+                <a href="{{ person.orcid_url }}">{{ person.orcid }}</a>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Organisations</dt>
+            <dd>
+                {% with person.organisations|site_objects:request as organisations %}
+                {% if organisations.count %}
+                <ul>
+                    {% for organisation in organisations %}
+                    <li><a href="{% url 'registry:organisation' organisation.id %}">{{ organisation }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+                {% endwith %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Use cases</dt>
+            <dd>
+                {% with person.groups|site_objects:request as groups %}
+                {% if groups.count %}
+                <ul>
+                    {% for group in groups %}
+                    <li><a href="{% url 'registry:group' group.id %}">{{ group }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+                {% endwith %}
+            </dd>
+        </div>
+
+        <div>
+            <dt>Resources</dt>
+            <dd>
+                {% if resources %}
+                <ul>
+                    {% for resource in resources %}
+                    <li><a href="{% url 'registry:resource' resource.id %}">{{ resource }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                /
+                {% endif %}
+            </dd>
+        </div>
+
+    </dl>
+
+</div>
+
+{% endblock %}

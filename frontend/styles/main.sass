@@ -1,0 +1,85 @@
+@use 'components/login'
+@use 'components/studyDesignMap'
+
+@tailwind base
+@tailwind components
+@tailwind utilities
+
+.material-symbols-outlined
+    font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 4
+
+[hidden]
+    display: none
+
+@layer utilities
+    .font-normal
+        font-variation-settings: 'wght' 400
+
+    .font-medium
+        font-variation-settings: 'wght' 500
+
+    .font-bold
+        font-variation-settings: 'wght' 700
+
+@layer base
+    h1
+        @apply text-2xl md:text-3xl leading-[3.5rem] mb-gap
+
+    h2
+        @apply text-xl md:text-2xl leading-[1.8rem] md:leading-[48px] mb-gap
+
+    h3
+        @apply text-lg md:text-xl mb-gap
+
+    h4
+        @apply text-lg md:text-lg mb-gap
+
+    .error, .errorlist
+        @apply text-error
+
+    dl
+        @apply sm:divide-y sm:divide-gray-200 border-t my-gap
+
+        > div
+            @apply py-4 sm:grid sm:grid-cols-5 sm:gap-4 sm:py-5
+
+            dt
+                @apply text-sm font-medium text-gray-500
+
+            dd
+                @apply mt-1 text-sm sm:col-span-4 sm:mt-0
+
+                table th,
+                table td
+                    @apply text-left pr-gap
+
+            a
+                @apply cursor-pointer
+
+            p
+                @apply mb-gap
+
+@layer components
+    .btn
+        @apply rounded-lg px-4 py-1.5 text-base font-semibold leading-7 cursor-pointer no-underline #{!important}
+
+    .btn-primary
+        @apply text-white bg-primary-500 ring-primary-500 hover:bg-primary-600 hover:ring-primary-600 hover:text-white shadow-sm ring-1 #{!important}
+
+    .btn-text
+        @apply underline
+
+    .form-label
+        @apply block text-sm font-medium
+
+    .form-text-input
+        @apply mt-1 px-2 py-1 block w-full appearance-none rounded-md border border-gray-100 bg-gray-100 placeholder-gray-400 shadow-sm focus:border-secondary-100 focus:outline-none focus:ring-secondary-300 sm:text-sm disabled:text-gray-100
+
+    .form-select
+        @apply mt-1 block w-full appearance-none rounded-md border border-gray-100 bg-gray-100 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-secondary-500 focus:outline-none focus:ring-secondary-500 sm:text-sm disabled:text-gray-100
+
+    .table.table--bordered
+        @apply border-collapse w-full
+
+        th, td
+            @apply border border-gray-200 px-4 py-2

@@ -1,0 +1,9 @@
+{
+  "include": ["./server.ts"],
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "skipLibCheck": true,
+    "declaration": false,
+  }
+}

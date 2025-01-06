@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% load backend %}
+
+{% block full-title %}{{ request.site.project.name }} Registry{% endblock %}
+
+{% block body %}
+
+<div class="relative px-6 lg:px-8">
+    <div class="mx-auto max-w-3xl pt-gap sm:pt-6gap">
+        <div>
+            <div>
+                <h1 class="text-4xl leading-[3rem] md:text-6xl md:leading-[5rem] font-bold text-center mb-2gap mt-1gap">{{ request.site.project.name }} Registry</h1>
+                <p class="text-lg leading-8 text-gray-600 text-center">
+                    {{ request.site.project.name }} Registry is a <span class="text-brand">central database</span> collecting information about project entities and their
+                    relationships. Each entity is described by a set of properties and represented by a unique identifier that you can use to reference and identify the entity.
+                </p>
+                <div class="mt-3gap flex flex-col space-y-gap sm:flex-row sm:space-y-0 gap-x-4 sm:justify-center sm:items-center">
+                    <a href="{% url 'registry:resource_add' %}"
+                        class="inline-block btn btn-primary">
+                        Register a new Resource
+                        <span class="text-primary-200" aria-hidden="true">&rarr;</span>
+                    </a>
+                    <span class="hidden sm:block">or</span>
+                    <a href="{% url 'registry:study_design_add' %}"
+                        class="inline-block btn btn-primary">
+                        Register a new Study design
+                        <span class="text-primary-200" aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-screen-lg mx-auto mt-2gap sm:mt-4gap">
+        <div class="grid grid-cols-1 sm:grid-cols-2 mb-4 gap-4">
+            <div class="block border rounded-md px-gap py-4 hover:bg-zinc-100">
+                <div class="text-xl font-medium">Use cases</div>
+                <ul class="columns-2 mt-2 text-primary text-sm">
+                    {% for group in groups %}
+                    <li class="mt-1"><a href="{% url 'registry:group' group.id %}">{{ group.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 mb-4 gap-4">
+            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100 !no-underline" href="{% url 'registry:resources' %}">
+                <div class="text-xl font-medium">Resources</div>
+                <div class="text-sm text-muted mt-1">Materials, test methods and data</div>
+                <div class="pt-gap"><span class="text-lg text-secondary-500 font-medium">{{ resources.count }}</span> <span class="text-sm">entries</span></div>
+            </a>
+            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100 !no-underline" href="{% url 'registry:study_designs' %}">
+                <div class="text-xl font-medium">Study designs</div>
+                <div class="text-sm text-muted mt-1">Annotated workflow visualizations</div>
+                <div class="pt-gap"><span class="text-lg text-secondary-500 font-medium">{{ study_designs.count }}</span> <span class="text-sm">entries</span></div>
+            </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 mb-4 gap-4">
+            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100 !no-underline" href="{% url 'registry:organisations' %}">
+                <div class="text-xl font-medium">Organisations</div>
+                <div class="text-sm text-muted mt-1">Consortium organisations</div>
+                <div class="pt-gap"><span class="text-lg text-secondary-500 font-medium">{{ organisations.count }}</span> <span class="text-sm">entries</span></div>
+            </a>
+            <a class="block border rounded-md px-gap py-4 hover:bg-zinc-100 !no-underline" href="{% url 'registry:people' %}">
+                <div class="text-xl font-medium">People</div>
+                <div class="text-sm text-muted mt-1">Members of the project</div>
+                <div class="pt-gap"><span class="text-lg text-secondary-500 font-medium">{{ people.count }}</span> <span class="text-sm">entries</span></div>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

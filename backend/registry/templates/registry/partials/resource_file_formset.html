@@ -1,0 +1,52 @@
+<div id="resource-file-formset" class="my-2gap">
+    <label class="block text-sm font-medium">Resource files</label>
+    <div class="forms-container mt-gap border p-gap empty:border-none">
+        {% for form in formset.forms %}
+        {{ form.id }}
+        {{ form.non_field_errors }}
+        <div class="form flex items-start space-x-1 my-gap">
+            <div class="w-[45%]">{% include 'partials/form_field.html' with field=form.name %}</div>
+            <div class="w-[45%]">{% include 'partials/form_field.html' with field=form.file %}</div>
+            <div class="w-[7%] text-center pt-2gap">
+                {% if formset.can_delete %}
+                {{ form.DELETE }}
+                <button type="button" class="delete-form-button"><span
+                        class="material-symbols-outlined">delete</span></button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div><input type="button" class="add-form-button cursor-pointer text-sm mt-gap" value="+ Add another resource file">
+    </div>
+    <template class="empty-form-template">
+        <div class="form flex items-start space-x-1 mb-gap">
+            <div class="w-[45%]">{% include 'partials/form_field.html' with field=formset.empty_form.name %}</div>
+            <div class="w-[45%]">{% include 'partials/form_field.html' with field=formset.empty_form.file %}
+            </div>
+            <div class="w-[7%] text-center pt-2gap">
+                {% if formset.can_delete %}
+                <button type="button" class="delete-form-button"><span class="material-symbols-outlined">delete</span></button>
+                {% endif %}
+            </div>
+        </div>
+    </template>
+    {{ formset.management_form }}
+</div>
+
+<script defer>
+    new ConvenientFormset({
+        'formsetPrefix': '{{ formset.prefix }}',
+        'formsContainerSelector': '#resource-file-formset .forms-container',
+        'formSelector': '.form',
+
+        'canAddForms': true,
+        'addFormButtonSelector': '#resource-file-formset .add-form-button',
+        'emptyFormTemplateSelector': '#resource-file-formset .empty-form-template',
+
+        'canDeleteForms': true,
+        'deleteFormButtonSelector': '.delete-form-button',
+
+        'canOrderForms': false,
+    })
+</script>

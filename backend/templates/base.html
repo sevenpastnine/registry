@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    {% load static django_vite backend %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study design registry">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block full-title %}{{ request.site.project.name }} Registry • {% block title %}{% endblock %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
+
+    <style>
+        :root {
+{{ request.site.project.style|safe }}
+        }
+    </style>
+
+    {% vite_hmr_client %}
+    {% vite_asset 'main.js' %}
+    {% vite_react_refresh %}
+</head>
+<body class="flex flex-col w-full h-full min-h-screen text-black {% block body_class %}{% endblock %}">
+    {% block header %}
+    <div class="px-gap md:px-2gap lg:px-2gap border-b py-gap">
+        <div>
+            <nav class="w-full flex h-9 items-center justify-between" aria-label="Global">
+                <div class="flex lg:min-w-0" aria-label="Global">
+                    <a href="/" class="-m-1.5 p-1.5">
+                        <span class="sr-only">{{ request.site.project.name }}</span>
+                        <img class="h-8" src="{{ request.site.project.logo.url }}" alt="{{ request.site.project.name }}">
+                    </a>
+                </div>
+                <div class="flex lg:hidden">
+                    <button type="button" id="main-menu-mobile-open" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Heroicon name: outline/bars-3 -->
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="hidden lg:flex lg:min-w-0 lg:justify-center lg:gap-x-8 xl:gap-x-12">
+                    <a href="{% url 'registry:study_designs' %}" class="font-semibold text-zinc-800 hover:text-primary-600 border-b-4{% if request.path|startswith:'/study-designs/' %} border-primary-400{% else %} border-white{% endif %} whitespace-nowrap">Study designs</a>
+                    <a href="{% url 'registry:resources' %}" class="font-semibold text-zinc-800 hover:text-primary-600 border-b-4{% if request.path|startswith:'/resources/' %} border-primary-400{% else %} border-white{% endif %}">Resources</a>
+                    <a href="{% url 'registry:groups' %}" class="font-semibold text-zinc-800 hover:text-primary-600 border-b-4{% if request.path|startswith:'/groups/' %} border-primary-400{% else %} border-white{% endif %} whitespace-nowrap">Use cases</a>
+                    <a href="{% url 'registry:organisations' %}" class="font-semibold text-zinc-800 hover:text-primary-600 border-b-4{% if request.path|startswith:'/organisations/' %} border-primary-400{% else %} border-white{% endif %}">Organisations</a>
+                    <a href="{% url 'registry:people' %}" class="font-semibold text-zinc-800 hover:text-primary-600 border-b-4{% if request.path|startswith:'/people/' %} border-primary-400{% else %} border-white{% endif %}">People</a>
+                    <a href="{% url 'api_docs' %}" class="font-semibold text-zinc-800 hover:text-primary-600 border-b-4{% if request.path|startswith:'/api/docs/' %} border-primary-400{% else %} border-white{% endif %}">API</a>
+                </div>
+                <div class="hidden lg:flex lg:min-w-0 lg:justify-end">
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="inline-block rounded-lg px-3 py-1.5 text-sm font-semibold leading-6 text-zinc-800 shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20">Log out</a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="inline-block rounded-lg px-3 py-1.5 text-sm font-semibold leading-6 text-zinc-800 shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20">Log in</a>
+                    {% endif %}
+                </div>
+            </nav>
+            <!-- Mobile menu, show/hide based on menu open state. -->
+            <div role="dialog" aria-modal="true">
+                <div focus="true" id="main-menu-mobile" class="fixed inset-0 z-10 overflow-y-auto bg-white px-2gap py-gap hidden">
+                    <div class="flex h-9 items-center justify-between">
+                        <div class="flex">
+                            <a href="/" class="-m-1.5 p-1.5">
+                                <span class="sr-only">{{ request.site.project.name }}</span>
+                                <img class="h-8" src="{{ request.site.project.logo.url }}" alt="{{ request.site.project.name }}">
+                            </a>
+                        </div>
+                        <div class="flex">
+                            <button type="button" id="main-menu-mobile-close" class="-m-2.5 items-center justify-center rounded-md p-2.5 text-gray-700 hidden">
+                                <span class="sr-only">Close menu</span>
+                                <!-- Heroicon name: outline/x-mark -->
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-6 flow-root">
+                        <div class="-my-6 divide-y divide-gray-500/10">
+                            <div class="space-y-2 py-6">
+                                <a href="{% url 'registry:study_designs' %}" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-zinc-800 hover:bg-gray-400/10">Study designs</a>
+                                <a href="{% url 'registry:resources' %}" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-zinc-800 hover:bg-gray-400/10">Resources</a>
+                                <a href="{% url 'registry:people' %}" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-zinc-800 hover:bg-gray-400/10">People</a>
+                                <a href="{% url 'registry:organisations' %}" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-zinc-800 hover:bg-gray-400/10">Organisations</a>
+                                <a href="{% url 'registry:groups' %}" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-zinc-800 hover:bg-gray-400/10">Groups</a>
+                                <a href="{% url 'registry:licenses' %}" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-zinc-800 hover:bg-gray-400/10">Licenses</a>
+                                <a href="{% url 'api_docs' %}" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-zinc-800 hover:bg-gray-400/10">API</a>
+                            </div>
+                            <div class="py-6">
+                                {% if request.user.is_authenticated %}
+                                <a href="{% url 'logout' %}" class="-mx-3 block rounded-lg py-2.5 px-3 text-base font-semibold leading-6 text-zinc-800 hover:bg-gray-400/10">Logout</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+    <main class="flex flex-col flex-grow pt-gap pb-2gap [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-primary-600">
+        {% block body %}
+        {% endblock %}
+    </main>
+    {% include 'partials/notification.html' %}
+</body>
+</html>

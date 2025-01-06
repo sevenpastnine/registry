@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Update resource: {{ resource }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Update resource</h1>
+
+    <form class="max-w-screen-md" method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {{ contributor_formset.media }}
+        <div>
+            <label for="id">ID:</label>
+            <span class="text-muted font-mono text-lg">{{ resource.id }}</span>
+        </div>
+        {% include 'partials/form_errors.html' with formset=contributor_formset %}
+        {% include './partials/resource_form.html' %}
+        {% include './partials/contributor_formset.html' with formset=contributor_formset %}
+        {% include './partials/resource_file_formset.html' with formset=file_formset %}
+        <div class="my-2gap">
+        {% include 'partials/form_field.html' with field=form.archived widget='toggle' %}
+        </div>
+        <input type="submit" value="Update" class="btn btn-primary">
+        <a href="{% url 'registry:resource' resource.id %}" class="btn btn-text">Cancel</a>
+    </form>
+</div>
+{% endblock %}
