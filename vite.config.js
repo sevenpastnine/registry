@@ -8,11 +8,12 @@ export default defineConfig({
     base: '/static/frontend/',
     css: { preprocessorOptions: { sass: { api: 'modern' } } },
     build: {
-        manifest: "manifest.json",
+        manifest: 'manifest.json',
         assetsDir: '',
         outDir: resolve('./backend/static/frontend'),
         emptyOutDir: true,
         rollupOptions: {
+            preserveEntrySignatures: 'strict', // ensure that entry chunks have the same exports as the underlying entry module
             input: {
                 main: resolve('./frontend/main.js'),
                 studyDesignMaps: resolve('./frontend/studyDesignMaps/main.tsx'),
