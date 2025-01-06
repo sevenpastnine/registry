@@ -37,6 +37,6 @@ COPY manage.py .
 COPY backend backend
 COPY --from=frontend-builder /build/backend/static/frontend ./backend/static/frontend
 
-CMD python manage.py migrate && \
-    python manage.py collectstatic --no-input --clear && \
+CMD python manage.py collectstatic --no-input --clear && \
+    python manage.py migrate && \
     gunicorn --bind=unix:/app/var/run/wsgi.sock --workers=${WORKERS} backend.wsgi
