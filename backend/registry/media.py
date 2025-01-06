@@ -23,7 +23,7 @@ def check_access(request, path):
     user = request.user
 
     if user.is_authenticated:
-        if not hasattr(user, 'person') or site not in user.person.sites.all():
+        if not (user.is_superuser or (hasattr(user, 'person') and site in user.person.sites.all())):
             return HttpResponseForbidden()
         elif path.startswith(settings.REGISTRY_RESOURCE_FILE_DIR) and not models.ResourceFile.objects.filter(file=path, resource__site=site).exists():
             return HttpResponseForbidden()
