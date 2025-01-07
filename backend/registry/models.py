@@ -56,8 +56,6 @@ class Project(BaseModel):
         return self.site.name
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
         if self._state.adding:
             for (pos, type) in enumerate(settings.REGISTRY_DEFAULT_NODE_TYPES):
                 StudyDesignNodeType.objects.create(
@@ -67,6 +65,7 @@ class Project(BaseModel):
                     description=type.get('description', ''),
                     position=pos
                 )
+        super().save(*args, **kwargs)
 
 
 class SiteMixin(models.Model):
