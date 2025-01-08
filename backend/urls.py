@@ -8,6 +8,7 @@ from decorator_include import decorator_include
 
 import backend.registry.urls
 import backend.registry.media
+from backend.auth import site_member_required
 
 admin.site.site_title = "Registry Administration"
 admin.site.site_header = "Registry Administration"
@@ -18,7 +19,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('api/', include('backend.registry.api.urls')),
     path('media/<path:path>', backend.registry.media.check_access),
-    path('', decorator_include([login_required], (backend.registry.urls, 'registry'), namespace='registry')),  # type: ignore
+    path('', decorator_include([login_required, site_member_required], (backend.registry.urls, 'registry'), namespace='registry')),  # type: ignore
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
