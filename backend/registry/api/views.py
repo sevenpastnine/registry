@@ -1,10 +1,6 @@
-import json
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
 
 from rest_framework import viewsets, mixins, authentication, permissions
 from rest_framework.response import Response
@@ -78,30 +74,3 @@ class ResourceFileViewSet(AuthzMixin, viewsets.ModelViewSet):
     queryset = models.ResourceFile.objects.filter(resource__archived=False)
     serializer_class = serializers.ResourceFileSerializer
     http_method_names = ['head', 'options', 'get', 'post', 'patch']
-
-
-@csrf_exempt
-@require_POST
-# TODO Implement token based authentication/authorization
-def study_design_map(request):
-    try:
-        data = json.loads(request.body.decode('utf-8'))
-    except Exception as e:
-        raise ValueError(f'Invalid YDoc document: {e}')
-
-    study_design = get_object_or_404(models.StudyDesign, pk=data['payload']['documentName'])
-
-    # TODO Implement signature verification
-    # print(request.headers)
-    # 'X-Hocuspocus-Signature-256': 'sha256=8e8e78eade79acfa79a6cba8d6c5b899c83827c9dc5de2a4169710ebc3a93db1'
-
-    match data.get('event'):
-        case 'create':
-            # Load from DB
-            return JsonResponse(study_design.to_ydoc())
-        case 'change':
-            # Save to DB
-            study_design.update_from_ydoc(data['payload']['document'])
-            return JsonResponse({})
-        case _:
-            raise ValueError(f'Unknown YDoc event: {data.get("event")}')

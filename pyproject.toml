@@ -13,17 +13,18 @@ dependencies = [
     "psycopg[binary]~=3.2",
     "django-anymail~=12.0",
     "django-vite~=3.0",
-    "pillow~=10.4",
-    "django-htmx~=1.19",
-    "django-decorator-include~=3.0",
+    "pillow~=11.1",
+    "django-htmx~=1.21",
+    "django-decorator-include~=3.2",
     "django-easy-audit~=1.3",
-    "setuptools~=75.1",
-]
-
-[tool.pdm.dev-dependencies]
-dev = [
-    "fabric~=3.2",
+    "setuptools~=75.8",
+    "ypy-websocket~=0.12",
+    "channels[daphne]~=4.2",
+    "channels-redis~=4.2",
 ]
 
 [tool.pdm]
 distribution = false
+
+[dependency-groups]
+dev = ["fabric~=3.2"]

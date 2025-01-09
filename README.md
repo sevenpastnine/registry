@@ -6,7 +6,7 @@ Registry is a Django application that provides a registry of studies and all its
 
 Registry is a regular [django](https://www.djangoproject.com/) project written in [python](https://www.python.org/) that uses [pdm](https://pdm.fming.dev/) for dependency management.
 
-For the interactive and collaborative editing of the the StudyDesignMaps the project uses the [ReactFlow](https://reactflow.dev/) diagraming library and [Hocuspocus](https://tiptap.dev/docs/hocuspocus/introduction) collaborative server based on [Y.js](https://docs.yjs.dev/).
+For the StudyDesignMaps the project uses the [ReactFlow](https://reactflow.dev/) diagraming library together with the [Y.js](https://docs.yjs.dev/) for collaborative editing.
 
 ### Requirements
 
@@ -22,7 +22,6 @@ For python and django:
 For JavaScript:
 
 1. Install the frontend dependencies with `npm install`
-2. Install the Hocuspocus server dependencies with `npm --prefix hocuspocus install`
 
 ### Configuration
 
@@ -37,8 +36,8 @@ In two separate shells run:
 
 ## TODO
 
-- Migrate registry management commands to admin
-
+- Verify if the user is a member of the current site for API endpoints
+- Migrate registry management commands to admin (adding users in bulk)
+- Add transactions to API endpoints
 - Implement StudyDesign API endpoints
 - Implement StudyDesignMap django views
-- Add transactions on API endpoints

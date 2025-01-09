@@ -8,6 +8,7 @@ from decorator_include import decorator_include
 
 import backend.registry.urls
 import backend.registry.media
+import backend.registry.consumers
 from backend.auth import site_member_required
 
 admin.site.site_title = "Registry Administration"
@@ -23,3 +24,7 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+websocket_urlpatterns = [
+    path('ws/registry/study-design-maps/<str:study_design_id>', backend.registry.consumers.YjsConsumer.as_asgi()),
+]

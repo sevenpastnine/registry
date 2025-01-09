@@ -1,6 +1,7 @@
+import * as Y from 'yjs'
 import { useState } from 'react';
-import { HocuspocusProvider } from "@hocuspocus/provider";
 import { Node, Edge } from '@xyflow/react';
+import { WebsocketProvider } from 'y-websocket'
 
 import useNodesStateSynced from './useNodesStateSynced';
 import useEdgesStateSynced from './useEdgesStateSynced';
@@ -16,17 +17,15 @@ export function useYjsFlow(studyDesignId: string) {
     nodesMap,
     edgesMap,
     cursorsMap }] = useState(() => {
-      const provider = new HocuspocusProvider({
-        url: "ws://localhost:1234",
-        name: studyDesignId,
-      });
+      const ydoc = new Y.Doc()
+      const provider = new WebsocketProvider('ws://127.0.0.1:8000/ws/registry/study-design-maps/', studyDesignId, ydoc);
 
-      const nodesMap = provider.document.getMap<Node>('nodes');
-      const edgesMap = provider.document.getMap<Edge>('edges');
-      const cursorsMap = provider.document.getMap<Cursor>('cursors');
+      const nodesMap = ydoc.getMap<Node>('nodes');
+      const edgesMap = ydoc.getMap<Edge>('edges');
+      const cursorsMap = ydoc.getMap<Cursor>('cursors');
 
       return {
-        ydoc: provider.document,
+        ydoc: ydoc,
         provider,
         nodesMap,
         edgesMap,

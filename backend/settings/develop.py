@@ -23,4 +23,10 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

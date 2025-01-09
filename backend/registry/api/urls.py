@@ -15,6 +15,5 @@ router.register(r'resource-files', views.ResourceFileViewSet)
 
 urlpatterns = [
     path('docs/', views.docs, name='api_docs'),
-    path('study-designs/map/', views.study_design_map, name='study_design_map'),
     path('', include(router.urls)),
 ]
