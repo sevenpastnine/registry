@@ -41,3 +41,5 @@ In two separate shells run:
 - Add transactions to API endpoints
 - Implement StudyDesign API endpoints
 - Implement StudyDesignMap django views
+- Investigate DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS
+- Clean up rust/gcc in Docker

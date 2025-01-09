@@ -1,6 +1,12 @@
 services:
+  redis:
+    image: redis
+    container_name: ${CONTAINER_NAME}-redis
+    restart: always
   django:
     image: ${IMAGE}
+    links:
+      - redis
     build:
       context: ../
       dockerfile: deployment/Dockerfile
@@ -8,7 +14,6 @@ services:
     restart: always
     user: ${USER_ID}:${GROUP_ID}
     environment:
-      - WORKERS
       - DJANGO_ALLOWED_HOSTS
       - DJANGO_SETTINGS_MODULE
       - DJANGO_SECRET_KEY

@@ -18,7 +18,7 @@ export function useYjsFlow(studyDesignId: string) {
     edgesMap,
     cursorsMap }] = useState(() => {
       const ydoc = new Y.Doc()
-      const provider = new WebsocketProvider('ws://127.0.0.1:8000/ws/registry/study-design-maps/', studyDesignId, ydoc);
+      const provider = new WebsocketProvider(`//${window.location.host}/ws/registry/study-design-maps/`, studyDesignId, ydoc);
 
       const nodesMap = ydoc.getMap<Node>('nodes');
       const edgesMap = ydoc.getMap<Edge>('edges');

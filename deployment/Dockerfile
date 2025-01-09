@@ -22,16 +22,20 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
-ARG WORKERS
-
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-RUN pip install pdm gunicorn
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+RUN pip install pdm
 
 COPY pyproject.toml pdm.lock ./
-RUN pdm sync --global --project . --no-editable --production
+RUN . $HOME/.cargo/env && pdm sync --global --project . --no-editable --production
 
 COPY manage.py .
 COPY backend backend
@@ -39,4 +43,5 @@ COPY --from=frontend-builder /build/backend/static/frontend ./backend/static/fro
 
 CMD python manage.py collectstatic --no-input --clear && \
     python manage.py migrate && \
-    gunicorn --bind=unix:/app/var/run/wsgi.sock --workers=${WORKERS} backend.wsgi
+    rm -f /app/var/run/wsgi.sock /app/var/run/wsgi.sock.lock && \
+    daphne --unix-socket /app/var/run/wsgi.sock backend.asgi:application

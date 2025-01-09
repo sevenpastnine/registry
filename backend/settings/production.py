@@ -52,6 +52,8 @@ CHANNEL_LAYERS = {
     }
 }
 
+DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS = False
+
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
 USE_ETAGS = True
