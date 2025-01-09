@@ -36,6 +36,7 @@ In two separate shells run:
 
 ## TODO
 
+- Better handling of the Forbidden message when the user is not part of the project
 - Verify if the user is a member of the current site for API endpoints
 - Migrate registry management commands to admin (adding users in bulk)
 - Add transactions to API endpoints
@@ -43,3 +44,4 @@ In two separate shells run:
 - Implement StudyDesignMap django views
 - Investigate DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS
 - Clean up rust/gcc in Docker
+- Fix logout problem

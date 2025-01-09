@@ -15,6 +15,7 @@ services:
     user: ${USER_ID}:${GROUP_ID}
     environment:
       - DJANGO_ALLOWED_HOSTS
+      - DJANGO_CSRF_TRUSTED_ORIGINS
       - DJANGO_SETTINGS_MODULE
       - DJANGO_SECRET_KEY
       - SERVER_EMAIL

@@ -14,7 +14,6 @@ import {
   addEdge,
   ConnectionMode
 } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
 
 import ShortUUID from './shortUUID';
 import Cursors from './Cursors';
