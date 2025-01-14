@@ -1,3 +1,4 @@
+import React, { useCallback, useRef } from 'react';
 import { useReactFlow, useNodesData } from '@xyflow/react';
 
 import useStudyDesignMapState from './useStudyDesignMapState';
@@ -12,16 +13,33 @@ type FormProps = {
     resources: UseFetchState<Resource[]>;
 }
 
+type SharedTextInputProps = {
+    value: string;
+    updateData: (value: string) => void;
+}
+
+const OnChangeSharedText = ({ value, updateData }: SharedTextInputProps) => {
+    const inputRef = useRef<any>(null);
+
+    const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+        const cursorPosition = event.target.selectionStart;
+        updateData(event.target.value);
+
+        requestAnimationFrame(() => {
+            if (inputRef.current) {
+                inputRef.current.setSelectionRange(cursorPosition, cursorPosition);
+            }
+        });
+    }, [value]);
+
+    return ({ inputRef, onChange });
+}
+
 function Form({ nodeId, data, organisations, resources }: FormProps) {
     const { updateNodeData } = useReactFlow();
 
-    const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        updateNodeData(nodeId, { name: event.target.value });
-    };
-
-    const onDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        updateNodeData(nodeId, { description: event.target.value });
-    };
+    const nameInput = OnChangeSharedText({ value: data.name, updateData: (value: string) => updateNodeData(nodeId, { name: value }) });
+    const descriptionInput = OnChangeSharedText({ value: data.description, updateData: (value: string) => updateNodeData(nodeId, { description: value }) });
 
     const onOrganisationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         updateNodeData(nodeId, { organisation: event.target.value });
@@ -35,11 +53,11 @@ function Form({ nodeId, data, organisations, resources }: FormProps) {
         <div className='mt-gap text-sm space-y-gap'>
             <div>
                 <label className='form-label'>Name</label>
-                <input type="text" spellCheck={false} className='form-text-input' value={data.name} onChange={onNameChange} />
+                <input ref={nameInput.inputRef} type="text" spellCheck={false} className='form-text-input' value={data.name} onChange={nameInput.onChange} />
             </div>
             <div>
                 <label className='form-label'>Description</label>
-                <textarea rows={2} spellCheck={false} className='resize-none form-text-input' value={data.description} onChange={onDescriptionChange}></textarea>
+                <textarea ref={descriptionInput.inputRef} rows={2} spellCheck={false} className='resize-none form-text-input' value={data.description} onChange={descriptionInput.onChange}></textarea>
             </div>
             <div>
                 <label className='form-label'>Organisation responsible</label>
@@ -68,7 +86,7 @@ export function NodeEditor({ nodeId, organisations }: NodeEditorProps) {
     const node = useNodesData(nodeId) as StudyDesignMapNode;
 
     const resources = useFetch<Resource[]>('/api/resources/', {
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         transform: (data) => data.map((resource: any) => ({ id: resource.id, name: resource.name })),
     });
 

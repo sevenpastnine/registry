@@ -24,7 +24,6 @@ class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
         super().__init__()
         self.study_design = None
         self.last_updated_time = timezone.now()
-        self.last_updated_value = None
         self.debounce_time = 1000
 
     def make_room_name(self) -> str:
@@ -65,7 +64,5 @@ class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
                     'nodes': dict(self.ydoc.get_map('nodes').items()),
                     'edges': dict(self.ydoc.get_map('edges').items()),
                 }
-                if self.last_updated_value != doc:
-                    await sync_to_async(self.study_design.update_from_ydoc)(doc)
-                    self.last_updated_value = doc
-                    self.last_updated_time = timezone.now()
+                self.last_updated_time = timezone.now()
+                await sync_to_async(self.study_design.update_from_ydoc)(doc)
