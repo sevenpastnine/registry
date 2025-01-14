@@ -10,8 +10,8 @@ export default function StudyDesignMap(
   organisations: Record<string, string>,
 ) {
   ReactDOM.createRoot(document.getElementById('studyDesignMap')!).render(
-    <React.StrictMode>
+    // <React.StrictMode>
       <App studyDesignId={studyDesignId} nodeTypes={nodeTypes} organisations={organisations} />
-    </React.StrictMode>
+    // </React.StrictMode>
   );
 }
