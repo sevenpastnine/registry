@@ -65,4 +65,4 @@ class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
                     'edges': dict(self.ydoc.get_map('edges').items()),
                 }
                 self.last_updated_time = timezone.now()
-                await sync_to_async(self.study_design.update_from_ydoc)(doc)
+                await sync_to_async(self.study_design.update_from_ydoc)(self.scope, doc)

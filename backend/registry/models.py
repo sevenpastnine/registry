@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site as Site
-from django.contrib.sites.managers import CurrentSiteManager
+from django.contrib.sites.shortcuts import get_current_site
 
 from django_countries.fields import CountryField
 
@@ -70,20 +70,24 @@ class Project(BaseModel):
 
 class SiteMixin(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
-    objects = models.Manager()
-    site_objects = CurrentSiteManager('site')
 
     class Meta:
         abstract = True
+
+    @classmethod
+    def site_objects(cls, request):
+        return cls.objects.filter(site=get_current_site(request))
 
 
 class SitesMixin(models.Model):
-    sites = models.ManyToManyField(Site)
-    objects = models.Manager()
-    site_objects = CurrentSiteManager('sites')
+    sites = models.ManyToManyField(Site, blank=True)
 
     class Meta:
         abstract = True
+
+    @classmethod
+    def site_objects(cls, request):
+        return cls.objects.filter(sites=get_current_site(request))
 
 
 # -----------------------------------------------------------------------------
@@ -305,7 +309,7 @@ class StudyDesign(BaseModel, SiteMixin):
             'edges': dict([(edge.id, edge.to_ydoc()) for edge in self.edges.all()])    # type: ignore
         }
 
-    def update_from_ydoc(self, ydoc):
+    def update_from_ydoc(self, scope, ydoc):
         nodes_db = dict([(node.id, node) for node in self.nodes.all()])  # type: ignore
         nodes_db_set = set(nodes_db.keys())
         nodes_ydoc = ydoc.get('nodes', {})
@@ -342,7 +346,7 @@ class StudyDesign(BaseModel, SiteMixin):
                 id=node_id,
                 study_design=self,
 
-                type=StudyDesignNodeType.site_objects.get(id=node_ydoc['type']),
+                type=StudyDesignNodeType.site_objects(scope).get(id=node_ydoc['type']),
                 position_x=node_ydoc['position']['x'],
                 position_y=node_ydoc['position']['y'],
 
@@ -369,7 +373,7 @@ class StudyDesign(BaseModel, SiteMixin):
             node_db = nodes_db[node_id]
             node_ydoc = nodes_ydoc[node_id]
 
-            node_db.type = StudyDesignNodeType.site_objects.get(id=node_ydoc['type'])
+            node_db.type = StudyDesignNodeType.site_objects(scope).get(id=node_ydoc['type'])
             node_db.position_x = node_ydoc['position']['x']
             node_db.position_y = node_ydoc['position']['y']
 

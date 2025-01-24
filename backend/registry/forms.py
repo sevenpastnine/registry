@@ -6,14 +6,14 @@ from . import models
 
 
 class ContributorForm(ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, request=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["person"].queryset = models.Person.site_objects.all()  # type: ignore
-        self.fields["role"].queryset = models.PersonRole.site_objects.all()  # type: ignore
+        self.fields["person"].queryset = models.Person.site_objects(request).all()  # type: ignore
+        self.fields["role"].queryset = models.PersonRole.site_objects(request).all()  # type: ignore
 
 
-ContributorFormSet = forms.modelformset_factory(
+BaseContributorFormSet = forms.modelformset_factory(
     models.Contributor,
     fields=['person', 'role'],
     form=ContributorForm,
@@ -25,6 +25,16 @@ ContributorFormSet = forms.modelformset_factory(
     max_num=10,
     validate_min=True,
 )
+
+
+class ContributorFormSet(BaseContributorFormSet):
+    def __init__(self, *args, request=None, **kwargs):
+        self.request = request
+        super().__init__(*args, **kwargs)
+
+    def _construct_form(self, i, **kwargs):
+        kwargs['request'] = self.request
+        return super()._construct_form(i, **kwargs)  # type: ignore
 
 
 ResourceFileFormSet = forms.modelformset_factory(
@@ -49,12 +59,12 @@ class ResourceForm(ModelForm):
             'groups': forms.CheckboxSelectMultiple(),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["status"].queryset = models.ResourceStatus.site_objects.all()  # type: ignore
-        self.fields["license"].queryset = models.License.site_objects.all()  # type: ignore
-        self.fields["groups"].queryset = models.Group.site_objects.all()  # type: ignore
+        self.fields["status"].queryset = models.ResourceStatus.site_objects(request).all()  # type: ignore
+        self.fields["license"].queryset = models.License.site_objects(request).all()  # type: ignore
+        self.fields["groups"].queryset = models.Group.site_objects(request).all()  # type: ignore
 
 
 class ResourceFiltersForm(forms.Form):
@@ -65,23 +75,30 @@ class ResourceFiltersForm(forms.Form):
         required=False,
     )
     group = forms.ModelChoiceField(
-        queryset=models.Group.site_objects.all(),
+        queryset=models.Group.objects.none(),
         widget=forms.Select,
         required=False,
         empty_label='All use cases'
     )
     status = forms.ModelChoiceField(
-        queryset=models.ResourceStatus.site_objects.all(),
+        queryset=models.ResourceStatus.objects.none(),
         widget=forms.Select,
         required=False,
         empty_label='All statuses'
     )
     organisation = forms.ModelChoiceField(
-        queryset=models.Organisation.site_objects.all(),
+        queryset=models.Organisation.objects.none(),
         widget=forms.Select,
         required=False,
         empty_label='All organisations'
     )
+
+    def __init__(self, request, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['group'].queryset = models.Group.site_objects(request).all()  # type: ignore
+        self.fields['status'].queryset = models.Group.site_objects(request).all()  # type: ignore
+        self.fields['organisation'].queryset = models.Group.site_objects(request).all()  # type: ignore
 
 
 class StudyDesignForm(ModelForm):
@@ -93,8 +110,8 @@ class StudyDesignForm(ModelForm):
             'groups': forms.CheckboxSelectMultiple(),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["license"].queryset = models.License.site_objects.all()  # type: ignore
-        self.fields["groups"].queryset = models.Group.site_objects.all()  # type: ignore
+        self.fields["license"].queryset = models.License.site_objects(request).all()  # type: ignore
+        self.fields["groups"].queryset = models.Group.site_objects(request).all()  # type: ignore
