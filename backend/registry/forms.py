@@ -6,18 +6,25 @@ from . import models
 
 
 class ContributorForm(ModelForm):
-    def __init__(self, request=None, *args, **kwargs):
+    def __init__(self, *args, request=None, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields["person"].queryset = models.Person.site_objects(request).all()  # type: ignore
         self.fields["role"].queryset = models.PersonRole.site_objects(request).all()  # type: ignore
 
 
+class RequestConvenientBaseModelFormSet(ConvenientBaseModelFormSet):
+   def get_form_kwargs(self, index):
+       kwargs = super().get_form_kwargs(index)
+       kwargs['request'] = self.request
+       return kwargs
+
+
 BaseContributorFormSet = forms.modelformset_factory(
     models.Contributor,
     fields=['person', 'role'],
     form=ContributorForm,
-    formset=ConvenientBaseModelFormSet,
+    formset=RequestConvenientBaseModelFormSet,
     can_delete=True,
     can_order=False,
     extra=0,

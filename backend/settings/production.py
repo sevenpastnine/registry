@@ -4,8 +4,6 @@ from .base import BASE_DIR
 
 DEBUG = False
 
-SITE_ID = 1
-
 DJANGO_VITE = {
     'default': {
         'dev_mode': False,
