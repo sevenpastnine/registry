@@ -6,10 +6,11 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.sites.models import Site as Site
-from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.sites.models import Site
 
 from django_countries.fields import CountryField
+
+from backend.utils import get_current_site
 
 UUID_LENGTH = 12
 
