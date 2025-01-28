@@ -1,0 +1,14 @@
+.git
+.gitignore
+
+var
+deployment
+node_modules
+
+.venv
+
+**/*.pyc
+**/__pycache__
+
+*/static/fronted/*
+*/settings/__init__.py
