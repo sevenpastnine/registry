@@ -21,7 +21,7 @@ def get_current_site(request_or_scope: Union[HttpRequest, Dict]) -> Union[Site, 
         Site.DoesNotExist: If no Site object is found with the given criteria.
 
     Notes:
-        - If `request_or_scope` is a dictionary, it is assumed to be a scope containing server information.
+        - If `request_or_scope` is a dictionary, it is assumed to be an wesocket scope.
         - If the `SITE_ID` setting is defined, the site with that ID is returned.
         - Otherwise, the site is determined based on the domain in the scope.
         - If `request_or_scope` is not a dictionary, it is assumed to be a Django HttpRequest object and the function `get_current_site_django` is called.
@@ -31,7 +31,6 @@ def get_current_site(request_or_scope: Union[HttpRequest, Dict]) -> Union[Site, 
         if hasattr(settings, 'SITE_ID'):
             return Site.objects.get(id=settings.SITE_ID)
         else:
-            domain = scope['server'][0]
-            return Site.objects.get(domain=domain)
+            return Site.objects.get(domain=dict(scope['headers'])[b'host'].decode('utf-8'))
     else:
         return get_current_site_django(request_or_scope)
