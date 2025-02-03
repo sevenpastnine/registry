@@ -33,23 +33,35 @@ class ListRetrieveViewSet(
 
 
 class PersonRoleViewSet(AuthzMixin, ListRetrieveViewSet):
-    queryset = models.PersonRole.objects.all()
+    queryset = models.PersonRole.objects.none()
     serializer_class = serializers.PersonRoleSerializer
+
+    def get_queryset(self):
+        return models.PersonRole.site_objects(self.request)
 
 
 class PersonViewSet(AuthzMixin, ListRetrieveViewSet):
-    queryset = models.Person.objects.all()
+    queryset = models.Person.objects.none()
     serializer_class = serializers.PersonSerializer
+
+    def get_queryset(self):
+        return models.Person.site_objects(self.request)
 
 
 class GroupViewSet(AuthzMixin, ListRetrieveViewSet):
-    queryset = models.Group.objects.all()
+    queryset = models.Group.objects.none()
     serializer_class = serializers.GroupSerializer
+
+    def get_queryset(self):
+        return models.Group.site_objects(self.request)
 
 
 class LicenseViewSet(AuthzMixin, ListRetrieveViewSet):
-    queryset = models.License.objects.all()
+    queryset = models.License.objects.none()
     serializer_class = serializers.LicenseSerializer
+
+    def get_queryset(self):
+        return models.License.site_objects(self.request)
 
 
 class ResourceKindViewSet(AuthzMixin, viewsets.ViewSet):
@@ -60,17 +72,26 @@ class ResourceKindViewSet(AuthzMixin, viewsets.ViewSet):
 
 
 class ResourceStatusViewSet(AuthzMixin, ListRetrieveViewSet):
-    queryset = models.ResourceStatus.objects.all()
+    queryset = models.ResourceStatus.objects.none()
     serializer_class = serializers.ResourceStatusSerializer
+
+    def get_queryset(self):
+        return models.ResourceStatus.site_objects(self.request)
 
 
 class ResourceViewSet(AuthzMixin, viewsets.ModelViewSet):
-    queryset = models.Resource.objects.filter(archived=False)
+    queryset = models.Resource.objects.none()
     serializer_class = serializers.ResourceSerializer
     http_method_names = ['head', 'options', 'get', 'post', 'patch']
 
+    def get_queryset(self):
+        return models.Resource.site_objects(self.request).filter(archived=False)
+
 
 class ResourceFileViewSet(AuthzMixin, viewsets.ModelViewSet):
-    queryset = models.ResourceFile.objects.filter(resource__archived=False)
+    queryset = models.ResourceFile.objects.none()
     serializer_class = serializers.ResourceFileSerializer
     http_method_names = ['head', 'options', 'get', 'post', 'patch']
+
+    def get_queryset(self):
+        return models.ResourceFile.objects.filter(resource__site=self.request.site, resource__archived=False)
