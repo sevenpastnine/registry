@@ -23,7 +23,7 @@ def index(request):
 
 def people(request):
     return render(request, 'registry/people.html', {
-        'people': models.Person.site_objects(request).all()
+        'people': models.Person.site_objects(request).all().select_related('user')
     })
 
 

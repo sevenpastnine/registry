@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:a9216321970fe056ab296072188b3015957a7401f139852c1ca4ebcd0bd37c4a"
+content_hash = "sha256:093c3ca2c1d2b338ddc8828b9e0d619a7661e0eec33d5e34ad98d08bea53f3b4"
 
 [[metadata.targets]]
 requires_python = "~=3.13"
@@ -422,6 +422,21 @@ dependencies = [
 files = [
     {file = "django-countries-7.6.1.tar.gz", hash = "sha256:c772d4e3e54afcc5f97a018544e96f246c6d9f1db51898ab0c15cd57e19437cf"},
     {file = "django_countries-7.6.1-py3-none-any.whl", hash = "sha256:1ed20842fe0f6194f91faca21076649513846a8787c9eb5aeec3cbe1656b8acc"},
+]
+
+[[package]]
+name = "django-debug-toolbar"
+version = "5.0.1"
+requires_python = ">=3.9"
+summary = "A configurable set of panels that display various debug information about the current request/response."
+groups = ["default"]
+dependencies = [
+    "django>=4.2.9",
+    "sqlparse>=0.2",
+]
+files = [
+    {file = "django_debug_toolbar-5.0.1-py3-none-any.whl", hash = "sha256:7456cc2e951db37dab335686db7803c4a0ecb6736d120705f6668db9548bf49f"},
+    {file = "django_debug_toolbar-5.0.1.tar.gz", hash = "sha256:296f6f18a80710e84fbb8361538ae5ec522a75ebe9ab67db34bcf1026cbeb420"},
 ]
 
 [[package]]

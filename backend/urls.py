@@ -1,3 +1,5 @@
+from debug_toolbar.toolbar import debug_toolbar_urls
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
@@ -21,7 +23,7 @@ urlpatterns = [
     path('api/', include('backend.registry.api.urls')),
     path('media/<path:path>', backend.registry.media.check_access),
     path('', decorator_include([login_required, site_member_required], (backend.registry.urls, 'registry'), namespace='registry')),  # type: ignore
-]
+] + debug_toolbar_urls()
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

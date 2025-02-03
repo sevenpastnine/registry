@@ -33,27 +33,27 @@
                         <div class="w-1/2 flex items-center text-sm text-muted mt-2">
                             <div>
                                 <p>
-                                    {% with item.organisations|site_objects:request as organisations %}
-                                    {% with orgs=organisations.count %}
-                                    Organisation{{ orgs|pluralize }}:
-                                    {% endwith %}
-                                    {% for organisation in organisations %}
-                                    {{ organisation.short_name }}{% if not forloop.last %}, {% endif %}
-                                    {% endfor %}
+                                    {% with item.organisations.all|site_objects:request as organisations %}
+                                        {% with orgs=organisations.count %}
+                                            Organisation{{ orgs|pluralize }}:
+                                        {% endwith %}
+                                        {% for organisation in organisations %}
+                                        {{ organisation.short_name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
                                     {% endwith %}
                                 </p>
                                 <p class="mt-2">
-                                    {% with item.groups|site_objects:request as groups %}
-                                    {% with groups=groups.count %}
-                                    Use case{{ groups|pluralize }}:
-                                    {% endwith %}
-                                    {% if groups.count %}
-                                    {% for group in groups %}
-                                    {{ group.name }}{% if not forloop.last %}, {% endif %}
-                                    {% endfor %}
-                                    {% else %}
-                                    /
-                                    {% endif %}
+                                    {% with item.groups.all|site_objects:request as groups %}
+                                        {% with groups=groups.count %}
+                                            Use case{{ groups|pluralize }}:
+                                        {% endwith %}
+                                        {% if groups.count %}
+                                        {% for group in groups %}
+                                        {{ group.name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                        {% else %}
+                                        /
+                                        {% endif %}
                                     {% endwith %}
                                 </p>
                             </div>
