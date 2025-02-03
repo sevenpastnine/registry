@@ -59,7 +59,10 @@
                 </div>
                 <div class="hidden lg:flex lg:min-w-0 lg:justify-end">
                     {% if request.user.is_authenticated %}
-                    <a href="{% url 'logout' %}" class="inline-block rounded-lg px-3 py-1.5 text-sm font-semibold leading-6 text-zinc-800 shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20">Log out</a>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="inline-block rounded-lg px-3 py-1.5 text-sm font-semibold leading-6 text-zinc-800 shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20">Log out</button>
+                    </form>
                     {% else %}
                     <a href="{% url 'login' %}" class="inline-block rounded-lg px-3 py-1.5 text-sm font-semibold leading-6 text-zinc-800 shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20">Log in</a>
                     {% endif %}
