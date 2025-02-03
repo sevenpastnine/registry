@@ -4,6 +4,8 @@
 .ionide
 .vscode
 
+.venv
+
 node_modules
 
 .pdm-python
