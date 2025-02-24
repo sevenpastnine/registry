@@ -20,6 +20,7 @@ import Cursors from './Cursors';
 import NodeCreator from './NodeCreator';
 import { StudyDesignMapNode, type StudyDesignMapNodeType } from './Node';
 import { NodeEditor } from './NodeEditor';
+import { OrganisationFilter } from './NodeFilters';
 
 import { useYjsFlow } from './useYjsFlow';
 import useStudyDesignMapState from './useStudyDesignMapState';
@@ -164,8 +165,9 @@ function StudyDesignMap({ studyDesignId, nodeTypes, organisations }: StudyDesign
           variant={BackgroundVariant.Dots}
           gap={10}
           offset={0} />
-        <Panel position='top-left'>
+        <Panel position='top-left' className="flex items-start space-x-4">
           <NodeCreator nodeTypes={nodeTypes} />
+          <OrganisationFilter organisations={organisations} />
         </Panel>
       </ReactFlow>
       {currentlyEditingNode && <NodeEditor nodeId={currentlyEditingNode} organisations={organisations} />}

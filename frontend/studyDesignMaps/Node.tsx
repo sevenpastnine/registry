@@ -1,4 +1,5 @@
 import { Handle, Position, NodeProps, Node } from '@xyflow/react';
+import useStudyDesignMapState from './useStudyDesignMapState';
 
 export type StudyDesignMapNodeType = {
     id: string;
@@ -19,8 +20,12 @@ export type StudyDesignMapNodeData = {
 };
 
 export function StudyDesignMapNode(props: NodeProps<StudyDesignMapNode>) {
+    const selectedOrganisationsFilter = useStudyDesignMapState((state) => state.selectedOrganisationsFilter);
+
+    const filtered = selectedOrganisationsFilter.length === 0 || selectedOrganisationsFilter.includes(props.data.organisation);
+
     return (
-        <div className={'study-design-map__node'}>
+        <div className={`study-design-map__node ${ filtered || 'opacity-20'}`}>
             <div className='data-icon-container'>
                 {props.data.resources.length > 0 && <span className='mt-[9px] ml-[6px] material-symbols-outlined text-white text-[20px]'>equalizer</span>}
             </div>

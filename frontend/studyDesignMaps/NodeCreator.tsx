@@ -6,22 +6,10 @@ const onDragStart = (event: DragEvent, nodeType: string) => {
   event.dataTransfer.effectAllowed = 'move';
 };
 
-type NodeListProps = {
-  close: () => void;
-  nodeTypes: Array<StudyDesignMapNodeType>;
-};
-
-function NodeList({ close, nodeTypes }: NodeListProps) {
+function NodeList({ nodeTypes }: { nodeTypes: Array<StudyDesignMapNodeType> }) {
   return (
     <div className="node-creator">
-      <div className='flex items-center justify-between mb-2'>
-        <div className='text-base font-semibold'>Add nodes</div>
-        <button onClick={() => close()}>
-          <span className="material-symbols-outlined">close</span>
-        </button>
-      </div>
-
-      <p className="mb-5">Drag nodes onto the canvas.</p>
+      <p className="mb-5">Drag nodes onto the canvas:</p>
 
       {nodeTypes.map((nodeType) => (
         <Fragment key={nodeType.id}>
@@ -45,15 +33,11 @@ export default function NodeCreator({ nodeTypes }: { nodeTypes: Array<StudyDesig
 
   return (
     <div>
-      {!isOpen &&
-        <button className='btn btn-primary inline-flex items-center' onClick={() => setIsOpen(!isOpen)}>
-          <span className="material-symbols-outlined mr-1 -ml-1">add</span>
-          <span>Add nodes</span>
-        </button>
-      }
-      {isOpen &&
-        <NodeList close={() => setIsOpen(!isOpen)} nodeTypes={nodeTypes} />
-      }
+      <button className='btn btn-primary flex items-center justify-between w-[265px]' onClick={() => setIsOpen(!isOpen)}>
+        <span>Add nodes</span>
+        <span className={`material-symbols-outlined -mr-1 ${isOpen && 'rotate-90'} transition`}>chevron_right</span>
+      </button>
+      {isOpen && <NodeList nodeTypes={nodeTypes} />}
     </div>
   );
 }
