@@ -165,8 +165,10 @@ function StudyDesignMap({ studyDesignId, nodeTypes, organisations }: StudyDesign
           variant={BackgroundVariant.Dots}
           gap={10}
           offset={0} />
-        <Panel position='top-left' className="flex items-start space-x-4">
+        <Panel position='top-left' className="">
           <NodeCreator nodeTypes={nodeTypes} />
+        </Panel>
+        <Panel position='top-left' className="!left-[280px]">
           <OrganisationFilter organisations={organisations} />
         </Panel>
       </ReactFlow>
