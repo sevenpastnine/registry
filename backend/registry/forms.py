@@ -105,7 +105,8 @@ class ResourceFiltersForm(forms.Form):
 
         self.fields['group'].queryset = models.Group.site_objects(request).all()  # type: ignore
         self.fields['status'].queryset = models.Group.site_objects(request).all()  # type: ignore
-        self.fields['organisation'].queryset = models.Group.site_objects(request).all()  # type: ignore
+        self.fields['organisation'].queryset = models.Organisation.site_objects(request).all().order_by('short_name')  # type: ignore
+        self.fields['organisation'].label_from_instance = lambda o: o.short_name  # type: ignore
 
 
 class StudyDesignForm(ModelForm):
