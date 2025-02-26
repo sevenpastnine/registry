@@ -146,7 +146,7 @@ def study_design_map(request, study_design_id):
     return render(request, 'registry/study_design_map.html', {
         'node_types': list(models.StudyDesignNodeType.site_objects(request).all().values('id', 'name', 'color', 'description')),
         'study_design': get_object_or_404(models.StudyDesign.site_objects(request), pk=study_design_id),
-        'organisations': dict([(org.id, org.name) for org in models.Organisation.site_objects(request).all()]),
+        'organisations': dict([(org.id, org.short_name) for org in models.Organisation.site_objects(request).all()]),
     })
 
 

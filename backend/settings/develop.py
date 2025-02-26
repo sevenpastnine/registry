@@ -2,7 +2,7 @@ from .base import * # noqa
 
 DEBUG = True
 
-SITE_ID = 1
+SITE_ID = 3
 
 DJANGO_VITE = {
     'default': {
@@ -13,7 +13,7 @@ DJANGO_VITE = {
 
 SECRET_KEY = 'secret-key'
 
-INTERNAL_IPS = ["127.0.0.1"]
+# INTERNAL_IPS = ["127.0.0.1"]
 
 DATABASES = {
     "default": {
