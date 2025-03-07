@@ -222,9 +222,6 @@ DJANGO_EASY_AUDIT_REGISTERED_CLASSES = [
     'registry.ResourceFile',
     'registry.StudyDesign',
     'registry.StudyDesignNodeType',
-    'registry.StudyDesignNodeTag',
-    'registry.StudyDesignNode',
-    'registry.StudyDesignEdge',
 ]
 
 
