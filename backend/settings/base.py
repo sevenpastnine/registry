@@ -209,15 +209,22 @@ DJANGO_EASY_AUDIT_REGISTERED_URLS = [
 DJANGO_EASY_AUDIT_REGISTERED_CLASSES = [
     'auth.User',
 
+    'registry.Project',
+    'registry.License',
     'registry.Person',
     'registry.PersonRole',
     'registry.Organisation',
     'registry.Group',
     'registry.License',
     'registry.Contributor',
-    'registry.ResourceStatus',
     'registry.Resource',
+    'registry.ResourceStatus',
+    'registry.ResourceFile',
     'registry.StudyDesign',
+    'registry.StudyDesignNodeType',
+    'registry.StudyDesignNodeTag',
+    'registry.StudyDesignNode',
+    'registry.StudyDesignEdge',
 ]
 
 
