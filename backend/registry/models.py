@@ -1,8 +1,8 @@
 import os
 import shortuuid
 
-from django.db import models
 from django.conf import settings
+from django.db import models, transaction
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -311,88 +311,101 @@ class StudyDesign(BaseModel, SiteMixin):
         }
 
     def update_from_ydoc(self, scope, ydoc):
-        nodes_db = dict([(node.id, node) for node in self.nodes.all()])  # type: ignore
-        nodes_db_set = set(nodes_db.keys())
-        nodes_ydoc = ydoc.get('nodes', {})
-        nodes_ydoc_set = set([node_id for node_id in nodes_ydoc.keys()])
+        with transaction.atomic():
+            nodes_db = dict([(node.id, node) for node in self.nodes.all()])  # type: ignore
+            nodes_db_set = set(nodes_db.keys())
+            nodes_ydoc = ydoc.get('nodes', {})
+            nodes_ydoc_set = set([node_id for node_id in nodes_ydoc.keys()])
 
-        edges_db = dict([(edge.id, edge) for edge in self.edges.all()])  # type: ignore
-        edges_db_set = set(edges_db.keys())
-        edges_ydoc = ydoc.get('edges', {})
-        edges_ydoc_set = set([edge_id for edge_id in edges_ydoc.keys()])
+            edges_db = dict([(edge.id, edge) for edge in self.edges.all()])  # type: ignore
+            edges_db_set = set(edges_db.keys())
+            edges_ydoc = ydoc.get('edges', {})
+            edges_ydoc_set = set([edge_id for edge_id in edges_ydoc.keys()])
 
-        # Delete edges and nodes that are not in the ydoc
+            # Delete edges and nodes that are not in the ydoc
 
-        for edge_id in edges_db_set - edges_ydoc_set:
-            edges_db[edge_id].delete()
+            for edge_id in edges_db_set - edges_ydoc_set:
+                edges_db[edge_id].delete()
 
-        for node_id in nodes_db_set - nodes_ydoc_set:
-            nodes_db[node_id].delete()
+            for node_id in nodes_db_set - nodes_ydoc_set:
+                nodes_db[node_id].delete()
 
-        def get_organisation(node_ydoc):
-            if node_ydoc['data'].get('organisation'):
-                if not Organisation.objects.filter(id=node_ydoc['data']['organisation']).exists():
-                    return None
+            def get_organisation(node_ydoc):
+                if node_ydoc['data'].get('organisation'):
+                    if not Organisation.objects.filter(id=node_ydoc['data']['organisation']).exists():
+                        return None
+                    else:
+                        return Organisation.objects.get(id=node_ydoc['data']['organisation'])
                 else:
-                    return Organisation.objects.get(id=node_ydoc['data']['organisation'])
-            else:
-                return None
+                    return None
 
-        # Create nodes and edges that are not in the db
+            # Create nodes and edges that are not in the db
 
-        for node_id in nodes_ydoc_set - nodes_db_set:
-            node_ydoc = nodes_ydoc[node_id]
+            for node_id in nodes_ydoc_set - nodes_db_set:
+                node_ydoc = nodes_ydoc[node_id]
 
-            node = StudyDesignNode.objects.create(
-                id=node_id,
-                study_design=self,
+                node = StudyDesignNode.objects.create(
+                    id=node_id,
+                    study_design=self,
 
-                type=StudyDesignNodeType.site_objects(scope).get(id=node_ydoc['type']),
-                position_x=node_ydoc['position']['x'],
-                position_y=node_ydoc['position']['y'],
+                    type=StudyDesignNodeType.site_objects(scope).get(id=node_ydoc['type']),
+                    position_x=node_ydoc['position']['x'],
+                    position_y=node_ydoc['position']['y'],
 
-                name=node_ydoc['data']['name'],
-                description=node_ydoc['data'].get('description'),
-                organisation=get_organisation(node_ydoc),
-            )
+                    name=node_ydoc['data']['name'],
+                    description=node_ydoc['data'].get('description'),
+                    organisation=get_organisation(node_ydoc),
+                )
 
-            node.resources.set(Resource.objects.filter(id__in=[resource['id'] for resource in node_ydoc['data']['resources']]))
+                node.resources.set(Resource.objects.filter(id__in=[resource['id'] for resource in node_ydoc['data']['resources']]))
 
-        for edge_id in edges_ydoc_set - edges_db_set:
-            StudyDesignEdge.objects.create(
-                id=edge_id,
-                study_design=self,
-                source_id=edges_ydoc[edge_id]['source'],
-                sourceHandle=edges_ydoc[edge_id]['sourceHandle'],
-                target_id=edges_ydoc[edge_id]['target'],
-                targetHandle=edges_ydoc[edge_id]['targetHandle']
-            )
+            for edge_id in edges_ydoc_set - edges_db_set:
+                StudyDesignEdge.objects.create(
+                    id=edge_id,
+                    study_design=self,
+                    source_id=edges_ydoc[edge_id]['source'],
+                    sourceHandle=edges_ydoc[edge_id]['sourceHandle'],
+                    target_id=edges_ydoc[edge_id]['target'],
+                    targetHandle=edges_ydoc[edge_id]['targetHandle']
+                )
 
-        # Update nodes and edges that are both in ydoc and in db
+            # Update nodes and edges that are both in ydoc and in db
 
-        for node_id in nodes_ydoc_set & nodes_db_set:
-            node_db = nodes_db[node_id]
-            node_ydoc = nodes_ydoc[node_id]
+            for node_id in nodes_ydoc_set & nodes_db_set:
+                node_db = nodes_db[node_id]
+                node_ydoc = nodes_ydoc[node_id]
 
-            node_db.type = StudyDesignNodeType.site_objects(scope).get(id=node_ydoc['type'])
-            node_db.position_x = node_ydoc['position']['x']
-            node_db.position_y = node_ydoc['position']['y']
+                if (node_db.type.id != node_ydoc['type'] or
+                        node_db.position_x != node_ydoc['position']['x'] or
+                        node_db.position_y != node_ydoc['position']['y'] or
+                        node_db.name != node_ydoc['data']['name'] or
+                        node_db.description != node_ydoc['data'].get('description') or
+                        node_db.organisation != get_organisation(node_ydoc)):
 
-            node_db.name = node_ydoc['data']['name']
-            node_db.description = node_ydoc['data'].get('description')
-            node_db.organisation = get_organisation(node_ydoc)
+                    node_db.type = StudyDesignNodeType.site_objects(scope).get(id=node_ydoc['type'])
+                    node_db.position_x = node_ydoc['position']['x']
+                    node_db.position_y = node_ydoc['position']['y']
+                    node_db.name = node_ydoc['data']['name']
+                    node_db.description = node_ydoc['data'].get('description')
+                    node_db.organisation = get_organisation(node_ydoc)
+                    node_db.save()
 
-            node_db.save()
+                if set(node_db.resources.all().values_list('id', flat=True)) != set([resource['id'] for resource in node_ydoc['data']['resources']]):
+                    node_db.resources.set(Resource.objects.filter(id__in=[resource['id'] for resource in node_ydoc['data']['resources']]))
 
-            node_db.resources.set(Resource.objects.filter(id__in=[resource['id'] for resource in node_ydoc['data']['resources']]))
+            for edge_id in edges_ydoc_set & edges_db_set:
+                edge_db = edges_db[edge_id]
 
-        for edge_id in edges_ydoc_set & edges_db_set:
-            edge_db = edges_db[edge_id]
-            edge_db.source_id = edges_ydoc[edge_id]['source']
-            edge_db.sourceHandle = edges_ydoc[edge_id]['sourceHandle']
-            edge_db.target_id = edges_ydoc[edge_id]['target']
-            edge_db.targetHandle = edges_ydoc[edge_id]['targetHandle']
-            edge_db.save()
+                if (edge_db.source_id != edges_ydoc[edge_id]['source'] or
+                        edge_db.sourceHandle != edges_ydoc[edge_id]['sourceHandle'] or
+                        edge_db.target_id != edges_ydoc[edge_id]['target'] or
+                        edge_db.targetHandle != edges_ydoc[edge_id]['targetHandle']):
+
+                    edge_db.source_id = edges_ydoc[edge_id]['source']
+                    edge_db.sourceHandle = edges_ydoc[edge_id]['sourceHandle']
+                    edge_db.target_id = edges_ydoc[edge_id]['target']
+                    edge_db.targetHandle = edges_ydoc[edge_id]['targetHandle']
+                    edge_db.save()
 
 
 class StudyDesignNodeType(BaseModel, SiteMixin):
