@@ -51,6 +51,21 @@ class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
 
     async def disconnect(self, code) -> None:
         if self.room_name is not None:
+            if not await sync_to_async(is_member_of_the_current_site)(self.scope):
+                # Check permission on disconnect as well to be consistent
+                # No need to save changes if the user isn't authorized
+                self.ydoc = None
+            elif hasattr(self, 'ydoc') and self.ydoc is not None:
+                # Ensure the YDoc is properly cleaned up on the same thread
+                # Save any pending changes before disconnecting
+                if self.study_design is not None:
+                    doc = {
+                        'nodes': dict(self.ydoc.get_map('nodes').items()),
+                        'edges': dict(self.ydoc.get_map('edges').items()),
+                    }
+                    await sync_to_async(self.study_design.update_from_ydoc)(self.scope, doc)
+                self.ydoc = None
+
             await super().disconnect(code)
 
     async def receive(self, text_data=None, bytes_data=None):
