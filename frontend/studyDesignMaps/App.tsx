@@ -154,6 +154,7 @@ function StudyDesignMap({ studyDesignId, nodeTypes, organisations, userInfo }: S
         connectionMode={ConnectionMode.Loose}
         snapToGrid={true}
         snapGrid={[20, 20]}
+        proOptions={{ hideAttribution: true }} // Remove ReactFlow link in the bottom right
         defaultEdgeOptions={{
           markerEnd: {
             type: MarkerType.Arrow,
@@ -176,7 +177,9 @@ function StudyDesignMap({ studyDesignId, nodeTypes, organisations, userInfo }: S
         <Panel position='top-left' className="!left-[280px]">
           <OrganisationFilter organisations={organisations} />
         </Panel>
-        <OnlineUsers users={onlineUsers} />
+        <Panel position='bottom-right'>
+          <OnlineUsers users={onlineUsers} />
+        </Panel>
       </ReactFlow>
       {currentlyEditingNode && <NodeEditor nodeId={currentlyEditingNode} organisations={organisations} />}
     </>

@@ -1,6 +1,6 @@
 import { EdgeLabelRenderer, useViewport } from '@xyflow/react';
 import { memo } from 'react';
-import { type Cursor } from './useCursorStateSynced';
+import { type Cursor } from './useAwarenessState';
 
 // Memoized individual cursor component to optimize rendering
 const CursorItem = memo(({ id, displayName, color, x, y, zoom }: Cursor & { zoom: number }) => {

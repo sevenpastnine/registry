@@ -5,8 +5,8 @@ import { WebsocketProvider } from 'y-websocket'
 
 import useNodesStateSynced from './useNodesStateSynced';
 import useEdgesStateSynced from './useEdgesStateSynced';
-import { useCursorStateSynced } from './useCursorStateSynced';
-import { OnlineUser } from './CurrentUsers';
+import { useAwarenessState } from './useAwarenessState';
+import { OnlineUser } from './OnlineUsers';
 
 import { type UserInfo } from './main';
 
@@ -32,47 +32,9 @@ export function useYjsFlow(studyDesignId: string, userInfo: UserInfo) {
 
   const [nodes, setNodes, onNodesChange] = useNodesStateSynced(nodesMap, edgesMap);
   const [edges, setEdges, onEdgesChange] = useEdgesStateSynced(edgesMap);
-  // Get cursor information
-  const [cursors, onMouseMove] = useCursorStateSynced(provider.awareness, userInfo);
-
-  // Track other online users (excluding the current user)
-  const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
   
-  useEffect(() => {
-    // Update the list of online users from awareness states
-    // Ensures user avatars use the same colors as cursors
-    const updateOnlineUsers = () => {
-      const states = provider.awareness.getStates() as Map<number, { user: { id: string, displayName: string, color: string } }>;
-      const users: OnlineUser[] = [];
-      
-      states.forEach((state, clientId) => {
-        // Only include other users (not the current user)
-        if (state.user && state.user.id !== userInfo.id) {
-          // Check if this user is already in the list (avoid duplicates)
-          const exists = users.some(u => u.id === state.user.id);
-          if (!exists) {
-            users.push({
-              id: state.user.id,
-              displayName: state.user.displayName,
-              color: state.user.color // Use the same color as their cursor
-            });
-          }
-        }
-      });
-      
-      setOnlineUsers(users);
-    };
-    
-    // Initial update
-    updateOnlineUsers();
-    
-    // Subscribe to awareness changes to update when users join/leave
-    provider.awareness.on('change', updateOnlineUsers);
-    
-    return () => {
-      provider.awareness.off('change', updateOnlineUsers);
-    };
-  }, [provider.awareness, userInfo.id]);
+  // Use awareness hook to handle both cursor positions and online users
+  const [cursors, onlineUsers, onMouseMove] = useAwarenessState(provider.awareness, userInfo);
 
   useEffect(() => {
     // Handle page unload/refresh explicitly

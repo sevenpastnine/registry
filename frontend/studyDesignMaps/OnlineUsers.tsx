@@ -32,7 +32,7 @@ function OnlineUsers({ users }: OnlineUsersProps) {
   };
 
   return (
-    <div className="absolute top-4 right-4 flex flex-col space-y-2 z-50">
+    <div className="flex flex-col-reverse space-y-reverse space-y-2">
       {users.map(user => (
         <Tooltip key={user.id} content={user.displayName} placement="left">
           <div 

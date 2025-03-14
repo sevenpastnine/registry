@@ -3,6 +3,7 @@ import { Awareness } from 'y-protocols/awareness';
 import { useReactFlow } from '@xyflow/react';
 import { getUserColor, throttle } from './utils';
 import { UserInfo } from './main';
+import { OnlineUser } from './OnlineUsers';
 
 export type Cursor = {
   id: string;
@@ -21,8 +22,9 @@ type AwarenessState = {
   };
 };
 
-export function useCursorStateSynced(awareness: Awareness, userInfo: UserInfo) {
+export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
   const [cursors, setCursors] = useState<Cursor[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
   const { screenToFlowPosition } = useReactFlow();
 
   const userId = userInfo.id;
@@ -87,38 +89,58 @@ export function useCursorStateSynced(awareness: Awareness, userInfo: UserInfo) {
   );
 
   useEffect(() => {
-    // Update cursors when awareness changes
-    const updateCursors = () => {
+    // Update cursors and online users when awareness changes
+    const updateAwareness = () => {
       const states = awareness.getStates() as Map<number, AwarenessState>;
       const cursorList: Cursor[] = [];
+      const usersList: OnlineUser[] = [];
 
       states.forEach((state, clientId) => {
-        if (state.cursor && state.user.id !== userId) {
-          cursorList.push({
-            ...state.cursor,
-            // Use a composite key of clientId and user ID to ensure uniqueness
-            id: `${clientId}-${state.user.id}`,
-            displayName: state.user.displayName,
-            color: state.user.color || state.cursor.color
-          });
+        // Skip the current user
+        if (state.user && state.user.id !== userId) {
+          // Add to online users list if they have user info
+          if (state.user) {
+            // Avoid duplicates
+            const exists = usersList.some(u => u.id === state.user.id);
+            if (!exists) {
+              usersList.push({
+                id: state.user.id,
+                displayName: state.user.displayName,
+                color: state.user.color
+              });
+            }
+          }
+          
+          // Add to cursor list if they have cursor info
+          if (state.cursor) {
+            cursorList.push({
+              ...state.cursor,
+              // Use a composite key of clientId and user ID to ensure uniqueness
+              id: `${clientId}-${state.user.id}`,
+              displayName: state.user.displayName,
+              color: state.user.color || state.cursor.color
+            });
+          }
         }
       });
+      
       setCursors(cursorList);
+      setOnlineUsers(usersList);
     };
 
     // Initial update
-    updateCursors();
+    updateAwareness();
 
     // Subscribe to awareness changes
-    awareness.on('change', updateCursors);
+    awareness.on('change', updateAwareness);
 
     return () => {
-      awareness.off('change', updateCursors);
+      awareness.off('change', updateAwareness);
     };
   }, [awareness, userId]);
 
-  // We now use static colors, so we don't need to return the colors anymore
-  return [cursors, onMouseMove] as const;
+  // Return cursors, online users, and the mouse move handler
+  return [cursors, onlineUsers, onMouseMove] as const;
 }
 
-export default useCursorStateSynced;
+export default useAwarenessState;
