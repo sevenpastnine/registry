@@ -2,7 +2,7 @@ from .base import * # noqa
 
 DEBUG = True
 
-SITE_ID = 3
+SITE_ID = 1
 
 DJANGO_VITE = {
     'default': {
