@@ -6,7 +6,7 @@ import { UserInfo } from './main';
 
 export type Cursor = {
   id: string;
-  username: string;
+  displayName: string;
   color: string;
   x: number;
   y: number;
@@ -16,7 +16,7 @@ type AwarenessState = {
   cursor: Cursor;
   user: {
     id: string;
-    username: string;
+    displayName: string;
     color: string;
   };
 };
@@ -26,21 +26,29 @@ export function useCursorStateSynced(awareness: Awareness, userInfo: UserInfo) {
   const { screenToFlowPosition } = useReactFlow();
 
   const userId = userInfo.id;
-  const username = userInfo.username;
+  const displayName = userInfo.displayName;
 
-  // Generate a stable color based on user ID
-  const cursorColor = useMemo(() => getUserColor(), [userId]);
+  // Store the user's color in a ref to keep it stable
+  const userColorRef = useRef<string | null>(null);
+  
+  // Initialize the color only once
+  if (userColorRef.current === null) {
+    userColorRef.current = getUserColor([]);
+  }
+  
+  // Use the stable color reference
+  const cursorColor = userColorRef.current;
 
   // Set initial user state - this persists across reconnections
   useEffect(() => {
     awareness.setLocalState({
       user: {
         id: userId,
-        username: username,
+        displayName: displayName,
         color: cursorColor
       }
     });
-  }, [awareness, userId, username, cursorColor]);
+  }, [awareness, userId, displayName, cursorColor]);
 
   // Throttled cursor update function
   const updateCursorPosition = useCallback(
@@ -57,14 +65,14 @@ export function useCursorStateSynced(awareness: Awareness, userInfo: UserInfo) {
         ...currentState,
         cursor: {
           id: userId,
-          username,
+          displayName: displayName,
           color: cursorColor,
           x: position.x,
           y: position.y,
         }
       });
     },
-    [awareness, screenToFlowPosition, userId, username, cursorColor]
+    [awareness, screenToFlowPosition, userId, displayName, cursorColor]
   );
 
   // Create a throttled version that limits updates
@@ -90,12 +98,11 @@ export function useCursorStateSynced(awareness: Awareness, userInfo: UserInfo) {
             ...state.cursor,
             // Use a composite key of clientId and user ID to ensure uniqueness
             id: `${clientId}-${state.user.id}`,
-            username: state.user.username,
+            displayName: state.user.displayName,
             color: state.user.color || state.cursor.color
           });
         }
       });
-
       setCursors(cursorList);
     };
 
@@ -110,6 +117,7 @@ export function useCursorStateSynced(awareness: Awareness, userInfo: UserInfo) {
     };
   }, [awareness, userId]);
 
+  // We now use static colors, so we don't need to return the colors anymore
   return [cursors, onMouseMove] as const;
 }
 

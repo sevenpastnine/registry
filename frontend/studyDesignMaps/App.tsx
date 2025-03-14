@@ -17,6 +17,7 @@ import {
 
 import ShortUUID from './shortUUID';
 import Cursors from './Cursors';
+import OnlineUsers from './OnlineUsers';
 import NodeCreator from './NodeCreator';
 import { StudyDesignMapNode, type StudyDesignMapNodeType } from './Node';
 import { NodeEditor } from './NodeEditor';
@@ -55,7 +56,8 @@ function StudyDesignMap({ studyDesignId, nodeTypes, organisations, userInfo }: S
   const {
     nodes, setNodes, onNodesChange,
     edges, setEdges, onEdgesChange,
-    cursors, onMouseMove
+    cursors, onMouseMove,
+    onlineUsers
   } = useYjsFlow(studyDesignId, userInfo);
 
   const onDragOver = (event: DragEvent) => {
@@ -174,6 +176,7 @@ function StudyDesignMap({ studyDesignId, nodeTypes, organisations, userInfo }: S
         <Panel position='top-left' className="!left-[280px]">
           <OrganisationFilter organisations={organisations} />
         </Panel>
+        <OnlineUsers users={onlineUsers} />
       </ReactFlow>
       {currentlyEditingNode && <NodeEditor nodeId={currentlyEditingNode} organisations={organisations} />}
     </>

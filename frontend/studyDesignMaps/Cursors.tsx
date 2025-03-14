@@ -3,14 +3,14 @@ import { memo } from 'react';
 import { type Cursor } from './useCursorStateSynced';
 
 // Memoized individual cursor component to optimize rendering
-const CursorItem = memo(({ id, username, color, x, y, zoom }: Cursor & { zoom: number }) => {
+const CursorItem = memo(({ id, displayName, color, x, y, zoom }: Cursor & { zoom: number }) => {
   const translate = `translate(${x}px, ${y}px)`;
   const scale = `scale(${1 / zoom})`;
 
   return (
     <div key={id} className="cursor" style={{ transform: translate, position: 'absolute', pointerEvents: 'none', zIndex: 1000 }}>
       <div
-        title={username}
+        title={displayName}
         style={{
           position: 'absolute',
           transform: scale,

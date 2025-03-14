@@ -6,7 +6,7 @@ import { type StudyDesignMapNodeType } from './Node';
 
 export type UserInfo = {
   id: string;
-  username: string;
+  displayName: string; // User's display name for UI elements
 };
 
 export default function StudyDesignMap(

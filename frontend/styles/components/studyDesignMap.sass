@@ -8,6 +8,14 @@
         z-index: 50
         pointer-events: none
         user-select: none
+        
+    // User avatar styles
+    .user-avatar
+        @apply w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium text-white shadow-md
+        transition: transform 0.2s ease
+        
+        &:hover
+            transform: scale(1.1)
 
     .btn
         @apply border bg-white drop-shadow-sm font-normal !text-sm !py-1 !ring-0
