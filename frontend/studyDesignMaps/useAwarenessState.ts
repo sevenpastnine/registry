@@ -101,11 +101,6 @@ export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
     return (Date.now() - lastActive < INACTIVITY_THRESHOLD_MS);
   };
 
-  // Check if a user is active based on lastActive timestamp
-  const isInactive = (lastActive: number) => {
-    return (Date.now() - lastActive >= INACTIVITY_THRESHOLD_MS);
-  };
-
   useEffect(() => {
     // Update cursors and online users when awareness changes
     const updateAwareness = () => {
@@ -114,24 +109,22 @@ export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
       const usersList: OnlineUser[] = [];
 
       states.forEach((state, clientId) => {
-        // Skip the current user
+        // Only process other users with valid user data
         if (state.user && state.user.id !== userId) {
-          // Determine if the user is active or inactive
+          // Determine if the user is active
           const userIsActive = isActive(state.lastActive);
-          const userIsInactive = isInactive(state.lastActive);
 
-          // Include both active and inactive users in the online users list
-          if ((userIsActive || userIsInactive) && state.user) {
-            // Avoid duplicates
-            const exists = usersList.some(u => u.id === state.user.id);
-            if (!exists) {
-              usersList.push({
-                id: state.user.id,
-                displayName: state.user.displayName,
-                color: state.user.color,
-                active: Boolean(userIsActive) // Flag indicating if user is active
-              });
-            }
+          // Always include users in the online users list
+          // This simplifies logic since all users are either active or inactive
+          // Avoid duplicates
+          const exists = usersList.some(u => u.id === state.user.id);
+          if (!exists) {
+            usersList.push({
+              id: state.user.id,
+              displayName: state.user.displayName,
+              color: state.user.color,
+              active: userIsActive // Flag indicating if user is active
+            });
           }
 
           // Add to cursor list ONLY if they are active
