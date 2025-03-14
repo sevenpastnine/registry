@@ -9,20 +9,20 @@ const CursorItem = memo(({ id, username, color, x, y, zoom }: Cursor & { zoom: n
 
   return (
     <div key={id} className="cursor" style={{ transform: translate, position: 'absolute', pointerEvents: 'none', zIndex: 1000 }}>
-      <div 
-        title={username || `User ${id}`}
-        style={{ 
-          position: 'absolute', 
-          transform: scale, 
+      <div
+        title={username}
+        style={{
+          position: 'absolute',
+          transform: scale,
           transformOrigin: '0 0'
         }}
       >
         <svg width="10" height="10" viewBox="0 0 10 10">
-          <circle 
-            cx="5" 
-            cy="5" 
-            r="4" 
-            fill={color} 
+          <circle
+            cx="5"
+            cy="5"
+            r="4"
+            fill={color}
             stroke="white"
             strokeWidth="1"
           />
