@@ -6,7 +6,6 @@ import { WebsocketProvider } from 'y-websocket'
 import useNodesStateSynced from './useNodesStateSynced';
 import useEdgesStateSynced from './useEdgesStateSynced';
 import { useAwarenessState } from './useAwarenessState';
-import { OnlineUser } from './OnlineUsers';
 
 import { type UserInfo } from './main';
 

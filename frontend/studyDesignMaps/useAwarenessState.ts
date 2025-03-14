@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { Awareness } from 'y-protocols/awareness';
 import { useReactFlow } from '@xyflow/react';
 import { getUserColor, throttle } from './utils';
