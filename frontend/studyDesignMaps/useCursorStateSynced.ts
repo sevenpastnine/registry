@@ -1,75 +1,116 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { type Map as YMap } from 'yjs';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
+import { Awareness } from 'y-protocols/awareness';
 import { useReactFlow } from '@xyflow/react';
-import { stringToColor } from './utils';
-
-const MAX_IDLE_TIME = 10000;
+import { getUserColor, throttle } from './utils';
+import { UserInfo } from './main';
 
 export type Cursor = {
   id: string;
+  username: string;
   color: string;
   x: number;
   y: number;
-  timestamp: number;
 };
 
-export function useCursorStateSynced(cursorsMap: YMap<Cursor>, cursorId: string) {
+type AwarenessState = {
+  cursor: Cursor;
+  user: {
+    id: string;
+    username: string;
+    color: string;
+  };
+};
+
+export function useCursorStateSynced(awareness: Awareness, userInfo: UserInfo) {
   const [cursors, setCursors] = useState<Cursor[]>([]);
   const { screenToFlowPosition } = useReactFlow();
 
-  const cursorColor = stringToColor(cursorId);
+  const userId = userInfo.id;
+  const username = userInfo.username;
 
-  // Flush any cursors that have gone stale.
-  const flush = useCallback(() => {
-    const now = Date.now();
+  // Generate a stable color based on user ID
+  const cursorColor = useMemo(() => getUserColor(), [userId]);
 
-    for (const [id, cursor] of cursorsMap) {
-      if (now - cursor.timestamp > MAX_IDLE_TIME) {
-        cursorsMap.delete(id);
+  // Set initial user state - this persists across reconnections
+  useEffect(() => {
+    awareness.setLocalState({
+      user: {
+        id: userId,
+        username: username,
+        color: cursorColor
       }
-    }
-  }, []);
+    });
+  }, [awareness, userId, username, cursorColor]);
 
-  const onMouseMove = useCallback(
+  // Throttled cursor update function
+  const updateCursorPosition = useCallback(
     (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
 
-      cursorsMap.set(cursorId, {
-        id: cursorId,
-        color: cursorColor,
-        x: position.x,
-        y: position.y,
-        timestamp: Date.now(),
+      // Update only the cursor part of the local state
+      const currentState = awareness.getLocalState() as AwarenessState || {};
+
+      awareness.setLocalState({
+        ...currentState,
+        cursor: {
+          id: userId,
+          username,
+          color: cursorColor,
+          x: position.x,
+          y: position.y,
+        }
       });
     },
-    [screenToFlowPosition]
+    [awareness, screenToFlowPosition, userId, username, cursorColor]
+  );
+
+  // Create a throttled version that limits updates
+  const throttledUpdateRef = useRef(throttle(updateCursorPosition, 30));
+
+  // Mouse move handler
+  const onMouseMove = useCallback(
+    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      throttledUpdateRef.current(event);
+    },
+    [throttledUpdateRef]
   );
 
   useEffect(() => {
-    const timer = window.setInterval(flush, MAX_IDLE_TIME);
-    const observer = () => {
-      setCursors([...cursorsMap.values()]);
+    // Update cursors when awareness changes
+    const updateCursors = () => {
+      const states = awareness.getStates() as Map<number, AwarenessState>;
+      const cursorList: Cursor[] = [];
+
+      states.forEach((state, clientId) => {
+        if (state.cursor && state.user.id !== userId) {
+          cursorList.push({
+            ...state.cursor,
+            // Use a composite key of clientId and user ID to ensure uniqueness
+            id: `${clientId}-${state.user.id}`,
+            username: state.user.username,
+            color: state.user.color || state.cursor.color
+          });
+        }
+      });
+
+      setCursors(cursorList);
     };
 
-    flush();
-    setCursors([...cursorsMap.values()]);
-    cursorsMap.observe(observer);
+    // Initial update
+    updateCursors();
+
+    // Subscribe to awareness changes
+    awareness.on('change', updateCursors);
 
     return () => {
-      cursorsMap.unobserve(observer);
-      window.clearInterval(timer);
+      awareness.off('change', updateCursors);
     };
-  }, [flush]);
+  }, [awareness, userId]);
 
-  const cursorsWithoutSelf = useMemo(
-    () => cursors.filter(({ id }) => id !== cursorId),
-    [cursors]
-  );
-
-  return [cursorsWithoutSelf, onMouseMove] as const;
+  return [cursors, onMouseMove] as const;
 }
 
 export default useCursorStateSynced;

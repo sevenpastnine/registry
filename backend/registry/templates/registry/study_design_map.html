@@ -21,13 +21,21 @@
 
     {{ node_types|json_script:"node_types" }}
     {{ organisations|json_script:"organisations" }}
+    <script id="user_info" type="application/json">
+        {
+            "id": "{{ request.user.id }}",
+            "username": "{{ user_display_name }}"
+        }
+    </script>
 
     <script type="module">
         import StudyDesignMap from '{% vite_asset_url "studyDesignMaps/main.tsx" %}'
+        const userInfo = JSON.parse(document.getElementById('user_info').textContent);
         StudyDesignMap(
             '{{ study_design.id }}',
             JSON.parse(document.getElementById('node_types').textContent),
             JSON.parse(document.getElementById('organisations').textContent),
+            userInfo
         )
     </script>
 </div>

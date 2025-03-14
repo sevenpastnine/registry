@@ -5,37 +5,34 @@ import { WebsocketProvider } from 'y-websocket'
 
 import useNodesStateSynced from './useNodesStateSynced';
 import useEdgesStateSynced from './useEdgesStateSynced';
-import { type Cursor, useCursorStateSynced } from './useCursorStateSynced';
+import { useCursorStateSynced } from './useCursorStateSynced';
 
 import { useStrictModeAwareEffect } from './utils';
+import { type UserInfo } from './main';
 
-export function useYjsFlow(studyDesignId: string) {
+export function useYjsFlow(studyDesignId: string, userInfo: UserInfo) {
 
   const [{
-    ydoc,
     provider,
     nodesMap,
-    edgesMap,
-    cursorsMap }] = useState(() => {
+    edgesMap }] = useState(() => {
       const ydoc = new Y.Doc()
       const provider = new WebsocketProvider(`//${window.location.host}/ws/registry/study-design-maps/`, studyDesignId, ydoc);
 
       const nodesMap = ydoc.getMap<Node>('nodes');
       const edgesMap = ydoc.getMap<Edge>('edges');
-      const cursorsMap = ydoc.getMap<Cursor>('cursors');
 
       return {
         ydoc: ydoc,
         provider,
         nodesMap,
-        edgesMap,
-        cursorsMap
+        edgesMap
       };
     });
 
   const [nodes, setNodes, onNodesChange] = useNodesStateSynced(nodesMap, edgesMap);
   const [edges, setEdges, onEdgesChange] = useEdgesStateSynced(edgesMap);
-  const [cursors, onMouseMove] = useCursorStateSynced(cursorsMap, ydoc.clientID.toString());
+  const [cursors, onMouseMove] = useCursorStateSynced(provider.awareness, userInfo);
 
   useStrictModeAwareEffect(() => {
     return () => {

@@ -25,13 +25,16 @@ import { OrganisationFilter } from './NodeFilters';
 import { useYjsFlow } from './useYjsFlow';
 import useStudyDesignMapState from './useStudyDesignMapState';
 
+import { type UserInfo } from './main';
+
 type StudyDesignMapProps = {
   studyDesignId: string;
   nodeTypes: Array<StudyDesignMapNodeType>;
   organisations: Record<string, string>;
+  userInfo: UserInfo;
 }
 
-function StudyDesignMap({ studyDesignId, nodeTypes, organisations }: StudyDesignMapProps) {
+function StudyDesignMap({ studyDesignId, nodeTypes, organisations, userInfo }: StudyDesignMapProps) {
   const { screenToFlowPosition } = useReactFlow();
 
   const currentlyEditingNode = useStudyDesignMapState((state) => state.currentlyEditingNode);
@@ -53,7 +56,7 @@ function StudyDesignMap({ studyDesignId, nodeTypes, organisations }: StudyDesign
     nodes, setNodes, onNodesChange,
     edges, setEdges, onEdgesChange,
     cursors, onMouseMove
-  } = useYjsFlow(studyDesignId);
+  } = useYjsFlow(studyDesignId, userInfo);
 
   const onDragOver = (event: DragEvent) => {
     event.preventDefault();
