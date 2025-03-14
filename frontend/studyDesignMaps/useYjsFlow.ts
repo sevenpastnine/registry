@@ -34,10 +34,13 @@ export function useYjsFlow(studyDesignId: string, userInfo: UserInfo) {
   const [cursors, onMouseMove] = useCursorStateSynced(provider.awareness, userInfo);
 
   useEffect(() => {
-    return () => {
-      provider.disconnect();
+    // Handle page unload/refresh explicitly
+    // Needed to remove the local state from the awareness
+    const handleBeforeUnload = () => {
+      provider.awareness.setLocalState(null);
     };
-  }, []);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+  }, [provider]);
 
   return {
     nodes, setNodes, onNodesChange,
