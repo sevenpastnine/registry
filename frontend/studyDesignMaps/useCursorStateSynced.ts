@@ -68,7 +68,7 @@ export function useCursorStateSynced(awareness: Awareness, userInfo: UserInfo) {
   );
 
   // Create a throttled version that limits updates
-  const throttledUpdateRef = useRef(throttle(updateCursorPosition, 30));
+  const throttledUpdateRef = useRef(throttle(updateCursorPosition, 50));
 
   // Mouse move handler
   const onMouseMove = useCallback(
