@@ -60,10 +60,15 @@ class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
             await super().receive(text_data, bytes_data)
 
             if self.ydoc is not None and self.study_design is not None:
-                if timezone.now() - self.last_updated_time > timezone.timedelta(milliseconds=self.debounce_time):
-                    doc = {
-                        'nodes': dict(self.ydoc.get_map('nodes').items()),
-                        'edges': dict(self.ydoc.get_map('edges').items()),
-                    }
-                    self.last_updated_time = timezone.now()
-                    await sync_to_async(self.study_design.update_from_ydoc)(self.scope, doc)
+                if bytes_data and len(bytes_data) > 0:
+                    message_type = bytes_data[0]
+                    # Skip cursor-only awareness updates
+                    if message_type == 0:  # Code for document messages (awarness code is 1)
+                        if timezone.now() - self.last_updated_time > timezone.timedelta(milliseconds=self.debounce_time):
+                            print("UPDATE", timezone.now())
+                            doc = {
+                                'nodes': dict(self.ydoc.get_map('nodes').items()),
+                                'edges': dict(self.ydoc.get_map('edges').items()),
+                            }
+                            self.last_updated_time = timezone.now()
+                            await sync_to_async(self.study_design.update_from_ydoc)(self.scope, doc)
