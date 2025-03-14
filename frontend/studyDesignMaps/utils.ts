@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react';
-
 /**
  * Throttle function to limit the rate of function calls
  * @param func The function to throttle
@@ -11,7 +9,7 @@ export function throttle<T extends (...args: any[]) => any>(
   limit: number
 ): (...args: Parameters<T>) => void {
   let inThrottle = false;
-  
+
   return function(this: any, ...args: Parameters<T>) {
     if (!inThrottle) {
       func.apply(this, args);
@@ -34,4 +32,3 @@ export function getUserColor() {
   const randomIndex = Math.floor(Math.random() * palette.length);
   return palette[randomIndex];
 }
-
