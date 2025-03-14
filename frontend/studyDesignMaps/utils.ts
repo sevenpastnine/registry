@@ -35,28 +35,3 @@ export function getUserColor() {
   return palette[randomIndex];
 }
 
-/**
- * A custom hook that ensures the callback is not executed on the first render.
- * This is useful in React's strict mode where effects are run twice on mount.
- *
- * @template T - The type of the dependencies array.
- * @param {() => (void | (() => void))} callback - The effect callback function.
- * @param {T[]} [deps=[]] - The dependencies array for the effect.
- * @returns {void}
- */
-
-export function useStrictModeAwareEffect<T>(
-  callback: () => (void | (() => void)),
-  deps: T[] = []
-): void {
-  const isFirstRender = useRef<boolean>(true);
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
-    return callback();
-  }, deps);
-}

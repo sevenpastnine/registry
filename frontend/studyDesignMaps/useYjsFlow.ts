@@ -1,5 +1,5 @@
 import * as Y from 'yjs'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Node, Edge } from '@xyflow/react';
 import { WebsocketProvider } from 'y-websocket'
 
@@ -7,7 +7,6 @@ import useNodesStateSynced from './useNodesStateSynced';
 import useEdgesStateSynced from './useEdgesStateSynced';
 import { useCursorStateSynced } from './useCursorStateSynced';
 
-import { useStrictModeAwareEffect } from './utils';
 import { type UserInfo } from './main';
 
 export function useYjsFlow(studyDesignId: string, userInfo: UserInfo) {
@@ -34,7 +33,7 @@ export function useYjsFlow(studyDesignId: string, userInfo: UserInfo) {
   const [edges, setEdges, onEdgesChange] = useEdgesStateSynced(edgesMap);
   const [cursors, onMouseMove] = useCursorStateSynced(provider.awareness, userInfo);
 
-  useStrictModeAwareEffect(() => {
+  useEffect(() => {
     return () => {
       provider.disconnect();
     };
