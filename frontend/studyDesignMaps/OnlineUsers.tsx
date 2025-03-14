@@ -4,6 +4,7 @@ export type OnlineUser = {
   id: string;
   displayName: string; // User's display name for tooltips and initials
   color: string;
+  active: boolean; // Whether the user is currently active or inactive
 };
 
 type OnlineUsersProps = {
@@ -33,9 +34,9 @@ function OnlineUsers({ users }: OnlineUsersProps) {
   return (
     <div className="flex flex-col-reverse space-y-reverse space-y-2">
       {users.map(user => (
-        <Tooltip key={user.id} content={user.displayName} placement="left">
+        <Tooltip key={user.id} content={`${user.displayName}${!user.active ? ' (inactive)' : ''}`} placement="left">
           <div 
-            className="user-avatar cursor-default"
+            className={`user-avatar cursor-default ${!user.active ? 'opacity-40' : ''}`}
             style={{ backgroundColor: user.color }}
           >
             {getInitials(user.displayName)}

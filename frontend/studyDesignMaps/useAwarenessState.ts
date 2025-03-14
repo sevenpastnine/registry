@@ -20,6 +20,7 @@ type AwarenessState = {
     displayName: string;
     color: string;
   };
+  lastActive: number; // Timestamp of last activity at the root level
 };
 
 export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
@@ -32,23 +33,25 @@ export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
 
   // Store the user's color in a ref to keep it stable
   const userColorRef = useRef<string | null>(null);
-  
+
   // Initialize the color only once
   if (userColorRef.current === null) {
     userColorRef.current = getUserColor([]);
   }
-  
+
   // Use the stable color reference
   const cursorColor = userColorRef.current;
 
   // Set initial user state - this persists across reconnections
   useEffect(() => {
+    const now = Date.now();
     awareness.setLocalState({
       user: {
         id: userId,
         displayName: displayName,
         color: cursorColor
-      }
+      },
+      lastActive: now // Track activity time at the root level
     });
   }, [awareness, userId, displayName, cursorColor]);
 
@@ -63,6 +66,7 @@ export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
       // Update only the cursor part of the local state
       const currentState = awareness.getLocalState() as AwarenessState || {};
 
+      const now = Date.now();
       awareness.setLocalState({
         ...currentState,
         cursor: {
@@ -70,8 +74,9 @@ export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
           displayName: displayName,
           color: cursorColor,
           x: position.x,
-          y: position.y,
-        }
+          y: position.y
+        },
+        lastActive: now // Track activity time at the root level
       });
     },
     [awareness, screenToFlowPosition, userId, displayName, cursorColor]
@@ -88,6 +93,19 @@ export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
     [throttledUpdateRef]
   );
 
+  // Constant for inactivity threshold (10 seconds)
+  const INACTIVITY_THRESHOLD_MS = 10000;
+
+  // Check if a user is active based on lastActive timestamp
+  const isActive = (lastActive: number) => {
+    return (Date.now() - lastActive < INACTIVITY_THRESHOLD_MS);
+  };
+
+  // Check if a user is active based on lastActive timestamp
+  const isInactive = (lastActive: number) => {
+    return (Date.now() - lastActive >= INACTIVITY_THRESHOLD_MS);
+  };
+
   useEffect(() => {
     // Update cursors and online users when awareness changes
     const updateAwareness = () => {
@@ -98,21 +116,26 @@ export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
       states.forEach((state, clientId) => {
         // Skip the current user
         if (state.user && state.user.id !== userId) {
-          // Add to online users list if they have user info
-          if (state.user) {
+          // Determine if the user is active or inactive
+          const userIsActive = isActive(state.lastActive);
+          const userIsInactive = isInactive(state.lastActive);
+
+          // Include both active and inactive users in the online users list
+          if ((userIsActive || userIsInactive) && state.user) {
             // Avoid duplicates
             const exists = usersList.some(u => u.id === state.user.id);
             if (!exists) {
               usersList.push({
                 id: state.user.id,
                 displayName: state.user.displayName,
-                color: state.user.color
+                color: state.user.color,
+                active: Boolean(userIsActive) // Flag indicating if user is active
               });
             }
           }
-          
-          // Add to cursor list if they have cursor info
-          if (state.cursor) {
+
+          // Add to cursor list ONLY if they are active
+          if (userIsActive && state.cursor) {
             cursorList.push({
               ...state.cursor,
               // Use a composite key of clientId and user ID to ensure uniqueness
@@ -123,7 +146,7 @@ export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
           }
         }
       });
-      
+
       setCursors(cursorList);
       setOnlineUsers(usersList);
     };
@@ -134,8 +157,19 @@ export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
     // Subscribe to awareness changes
     awareness.on('change', updateAwareness);
 
+    // Set up a timer to periodically check for inactive users
+    // This will re-check which users are active based on their lastActive timestamp
+    const checkInactivity = () => {
+      updateAwareness(); // Re-run filtering to remove inactive users
+    };
+
+    // Check every 2 seconds for inactive users
+    const activityIntervalId = setInterval(checkInactivity, 2000);
+
     return () => {
+      clearInterval(activityIntervalId);
       awareness.off('change', updateAwareness);
+      awareness.setLocalState(null);
     };
   }, [awareness, userId]);
 
