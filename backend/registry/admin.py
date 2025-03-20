@@ -1,10 +1,12 @@
 from django.contrib import admin
+from django.urls import path
 from django.contrib.contenttypes.admin import GenericTabularInline
 
 from adminsortable2.admin import SortableAdminMixin
 
 from . import models
 from . import admin_forms as forms
+from . import admin_views as views
 
 
 @admin.register(models.Project)
@@ -28,6 +30,21 @@ class Person(admin.ModelAdmin):
     list_filter = ['sites', 'organisations', 'groups']
     search_fields = ['user__username', 'user__first_name', 'user__last_name', 'user__email']
     filter_horizontal = ['sites']
+
+    def import_people(self, request):
+        return views.import_people(self, request)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('import-people/', self.import_people, name='import-people'),
+        ]
+        return custom_urls + urls
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['import_url'] = 'import-people/'
+        return super().changelist_view(request, extra_context=extra_context)
 
 
 @admin.register(models.PersonRole)

@@ -1,0 +1,53 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}">{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+&rsaquo; <a href="{% url 'admin:registry_person_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+&rsaquo; {% translate 'Import People' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <p>This form allows you to upload an Excel file containing organisations and people data to be imported.</p>
+        <p>The Excel file must have two sheets:</p>
+        <ul>
+            <li>Organisations, with columns: Short name, Country, Name</li>
+            <li>People, with columns: ORCID, Organisation (short), First name, Last name, Email</li>
+        </ul>
+        <p>Both organisations and people will be associated with the current site.</p>
+
+        <p>Users will be notified via email about them beeing added to the project, with their credentials if they were not members of the Registry yet.</p>
+
+        <p><strong>NOTE:</strong> the import will take some time because the password creation is a deliberately slow process.</p>
+
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="module">
+                {% for field in form %}
+                <div class="form-row field-{{ field.name }}">
+                    <div>
+                        {{ field.errors }}
+                        {{ field }}
+                    </div>
+                </div>
+                {% endfor %}
+            </fieldset>
+            <div class="submit-row">
+                <input type="submit" value="{% translate 'Import' %}" class="default" name="_import">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
