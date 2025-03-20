@@ -3,9 +3,11 @@ from functools import wraps
 from typing import Optional, Callable
 from asgiref.sync import sync_to_async
 
+from django.conf import settings
 from django.http import HttpRequest
 from django.http import HttpResponseForbidden
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.views import PasswordResetView
 
 
 def site_member_required(view_func: Optional[Callable] = None):
@@ -49,3 +51,13 @@ def site_member_required(view_func: Optional[Callable] = None):
         return async_wrapper
 
     return sync_wrapper
+
+
+class CustomPasswordResetView(PasswordResetView):
+    """
+    Custom password reset view that adds registry_support_email to the email context
+    """
+    def get_email_context(self):
+        context = super().get_email_context()
+        context['registry_support_email'] = settings.REGISTRY_SUPPORT_EMAIL
+        return context

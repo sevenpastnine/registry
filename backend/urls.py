@@ -11,14 +11,14 @@ from decorator_include import decorator_include
 import backend.registry.urls
 import backend.registry.media
 import backend.registry.consumers
-from backend.auth import site_member_required
+from backend.auth import site_member_required, CustomPasswordResetView
 
 admin.site.site_title = "Registry Administration"
 admin.site.site_header = "Registry Administration"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    path('accounts/password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('api/', include('backend.registry.api.urls')),
     path('media/<path:path>', backend.registry.media.check_access),
