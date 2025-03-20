@@ -144,8 +144,9 @@ LOGOUT_REDIRECT_URL = 'login'
 
 # Registry
 
+DEFAULT_FROM_EMAIL = 'Registry <support@sevenpastnine.com>'
+
 REGISTRY_SUPPORT_EMAIL = 'support@sevenpastnine.com'
-DEFAULT_FROM_EMAIL = REGISTRY_SUPPORT_EMAIL
 REGISTRY_RESOURCE_FILE_DIR = 'resources/files/'
 REGISTRY_DEFAULT_NODE_TYPES = [
     {

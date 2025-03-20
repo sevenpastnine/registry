@@ -57,7 +57,5 @@ class CustomPasswordResetView(PasswordResetView):
     """
     Custom password reset view that adds registry_support_email to the email context
     """
-    def get_email_context(self):
-        context = super().get_email_context()
-        context['registry_support_email'] = settings.REGISTRY_SUPPORT_EMAIL
-        return context
+
+    extra_email_context = {'registry_support_email': settings.REGISTRY_SUPPORT_EMAIL}
