@@ -147,6 +147,7 @@ LOGOUT_REDIRECT_URL = 'login'
 DEFAULT_FROM_EMAIL = 'Registry <support@sevenpastnine.com>'
 
 REGISTRY_SUPPORT_EMAIL = 'support@sevenpastnine.com'
+REGISTRY_SUPPORT_EMAIL_WITH_NAME = 'Registry <support@sevenpastnine.com>'
 REGISTRY_RESOURCE_FILE_DIR = 'resources/files/'
 REGISTRY_DEFAULT_NODE_TYPES = [
     {
@@ -179,7 +180,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'simple': {
-            'format': '%(levelname)-10s %(message)s'
+            'format': '%(levelname) %(asctime) %(message)s'
         },
     },
     'handlers': {

@@ -17,6 +17,9 @@ from django_countries import countries
 from . import models
 from . import admin_forms as forms
 
+import logging
+logger = logging.getLogger('management.commands')
+
 
 def get_new_user_email_message(name, email, password, site_name, site_url, support_email):
     return f'''
@@ -100,6 +103,8 @@ def process_organisations_sheet(sheet, current_site, request):
         if not (short_name and name and country_name):
             continue
 
+        logger.info(f'Importing organisation: {short_name}')
+
         try:
             country_code = countries.by_name(country_name)
             if not country_code:
@@ -159,6 +164,8 @@ def process_people_sheet(sheet, current_site, site_name, site_url, request):
         if not (first_name and last_name and email and org_short_name):
             continue
 
+        logger.info(f'Importing person: {email}')
+
         try:
             validate_email(email)
         except ValidationError:
@@ -186,9 +193,9 @@ def process_people_sheet(sheet, current_site, site_name, site_url, request):
                 person_name, email, password, site_name, site_url, settings.REGISTRY_SUPPORT_EMAIL
             )
             new_user_emails.append((
-                f'You have been added to {site_name} Registry',
+                f'You have been added to the {site_name} Registry',
                 email_content,
-                settings.REGISTRY_SUPPORT_EMAIL,
+                settings.REGISTRY_SUPPORT_EMAIL_WITH_NAME,
                 [email]
             ))
         elif is_new_to_site:
@@ -197,9 +204,9 @@ def process_people_sheet(sheet, current_site, site_name, site_url, request):
                 username, person_name, site_name, site_url, settings.REGISTRY_SUPPORT_EMAIL
             )
             existing_user_emails.append((
-                f'You have been added to {site_name} Registry',
+                f'You have been added to the {site_name} Registry',
                 email_content,
-                settings.REGISTRY_SUPPORT_EMAIL,
+                settings.REGISTRY_SUPPORT_EMAIL_WITH_NAME,
                 [email]
             ))
 
