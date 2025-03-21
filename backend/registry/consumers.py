@@ -80,7 +80,6 @@ class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
                     # Skip cursor-only awareness updates
                     if message_type == 0:  # Code for document messages (awarness code is 1)
                         if timezone.now() - self.last_updated_time > timezone.timedelta(milliseconds=self.debounce_time):
-                            print("UPDATE", timezone.now())
                             doc = {
                                 'nodes': dict(self.ydoc.get_map('nodes').items()),
                                 'edges': dict(self.ydoc.get_map('edges').items()),

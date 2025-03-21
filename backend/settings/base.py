@@ -180,7 +180,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'simple': {
-            'format': '%(levelname) %(asctime) %(message)s'
+            'format': '{levelname} [{asctime}] {message}',
+            'style': '{',
         },
     },
     'handlers': {
