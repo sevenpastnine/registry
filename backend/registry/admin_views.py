@@ -29,7 +29,7 @@ You can access the Registry at {site_url}
 Your username is: {email}
 Your password is: {password}
 
-In case you have any questions or run into problems, please contact us at {support_email}
+If you have any questions or run into problems, please contact us at {support_email}
 
 
 Best regards,
@@ -38,7 +38,7 @@ The {site_name} Registry team
 '''
 
 
-def get_existing_user_email_message(name, site_name, site_url, support_email):
+def get_existing_user_email_message(username, name, site_name, site_url, support_email):
     return f'''
 Dear {name},
 
@@ -48,7 +48,9 @@ You can access the Registry at {site_url}
 
 Please log in with your existing Registry credentials.
 
-In case you have any questions or run into problems, please contact us at {support_email}
+Your username, in case you've forgotten: {username}
+
+If you have any questions or run into problems, please contact us at {support_email}
 
 
 Best regards,
@@ -171,7 +173,7 @@ def process_people_sheet(sheet, current_site, site_name, site_url, request):
             continue
 
         # Create or update user and person
-        password, user_created, is_new_to_site = create_or_update_person(
+        username, password, user_created, is_new_to_site = create_or_update_person(
             first_name, last_name, email, orcid, org, current_site
         )
 
@@ -192,7 +194,7 @@ def process_people_sheet(sheet, current_site, site_name, site_url, request):
         elif is_new_to_site:
             # Existing user gets notification about new site
             email_content = get_existing_user_email_message(
-                person_name, site_name, site_url, settings.REGISTRY_SUPPORT_EMAIL
+                username, person_name, site_name, site_url, settings.REGISTRY_SUPPORT_EMAIL
             )
             existing_user_emails.append((
                 f'You have been added to {site_name} Registry',
@@ -242,7 +244,7 @@ def create_or_update_person(first_name, last_name, email, orcid, org, current_si
     if is_new_to_site:
         person.sites.add(current_site)
 
-    return password, user_created, is_new_to_site
+    return user.username, password, user_created, is_new_to_site
 
 
 def import_people(admin, request):
