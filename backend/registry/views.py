@@ -239,6 +239,7 @@ def study_design_add(request):
             study_design = form.save(commit=False)
             study_design.site = request.site
             study_design.save()
+            form.save_m2m()
             save_contributor_formset(contributor_formset, study_design)
             messages.add_message(request, messages.SUCCESS, 'A new study design has been registered.')
             return redirect('registry:study_design_map', study_design_id=study_design.id)
