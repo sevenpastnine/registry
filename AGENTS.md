@@ -3,6 +3,7 @@
 ### Key Technologies
 - **Django 5**: Web framework
 - **HTMX** and **django-htmx**: Dynamic interactions without complex JavaScript
+- **Django REST Framework**: Building APIs
 - **TailwindCSS 4.x**: Styling framework
 - **TypeScript** and **React**: Frontend development
 - **React XY Flow**: Diagrams and flowcharts in React
