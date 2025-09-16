@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from django.contrib.sites.models import Site
 from django.contrib.contenttypes.models import ContentType
 
 from .. import models
@@ -76,7 +77,7 @@ class ResourceSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         groups = validated_data.pop('groups', [])
         contributors = validated_data.pop('contributors', [])
-        resource = models.Resource.objects.create(**validated_data)
+        resource = models.Resource.objects.create(**validated_data, site=Site.objects.get_current())
 
         resource.groups.set(groups)
 
