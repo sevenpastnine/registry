@@ -1,12 +1,33 @@
-import y_py as Y
+from typing import TypedDict, cast
 from asgiref.sync import sync_to_async
-import ypy_websocket.django_channels_consumer
+
+from pycrdt import Doc, Map
+from pycrdt.websocket.django_channels_consumer import YjsConsumer as BaseYjsConsumer
 
 from django.utils import timezone
 
 from backend.utils import get_current_site
 
 from . import models
+
+
+# -----------------------------------------------------------------------------
+# The followin types define the expected structure of the scope dictionary passed by
+# Django Channels' URLRouter. The url_route.kwargs.study_design_id corresponds
+# to the <str:study_design_id> parameter in websocket_urlpatterns (backend/urls.py).
+
+class UrlRouteKwargs(TypedDict):
+    study_design_id: str
+
+
+class UrlRoute(TypedDict):
+    kwargs: UrlRouteKwargs
+
+
+class WebSocketScope(TypedDict):
+    url_route: UrlRoute
+
+# -----------------------------------------------------------------------------
 
 
 def is_member_of_the_current_site(scope) -> bool:
@@ -16,7 +37,7 @@ def is_member_of_the_current_site(scope) -> bool:
     return scope['user'].person.sites.filter(id=get_current_site(scope).id).exists()  # type: ignore
 
 
-class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
+class YjsConsumer(BaseYjsConsumer):
 
     def __init__(self):
         super().__init__()
@@ -25,18 +46,20 @@ class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
         self.debounce_time = 1000
 
     def make_room_name(self) -> str:
-        return f'study-design-map-{self.scope["url_route"]["kwargs"]["study_design_id"]}'
+        scope = cast(WebSocketScope, self.scope)
+        return f'study-design-map-{scope["url_route"]["kwargs"]["study_design_id"]}'
 
-    async def make_ydoc(self) -> Y.YDoc:
-        ydoc = Y.YDoc()
+    async def make_ydoc(self) -> Doc:
+        ydoc = Doc()
         if self.study_design is not None:
             doc = await sync_to_async(self.study_design.to_ydoc)()
-            txn = ydoc.begin_transaction()
-            try:
-                ydoc.get_map('nodes').update(txn, doc['nodes'].items())
-                ydoc.get_map('edges').update(txn, doc['edges'].items())
-            finally:
-                txn.commit()
+            nodes = ydoc.get('nodes', type=Map)
+            edges = ydoc.get('edges', type=Map)
+            with ydoc.transaction():
+                for key, value in doc['nodes'].items():
+                    nodes[key] = value
+                for key, value in doc['edges'].items():
+                    edges[key] = value
         return ydoc
 
     async def connect(self):
@@ -44,7 +67,8 @@ class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
             await self.close()
         else:
             try:
-                self.study_design = await models.StudyDesign.objects.aget(pk=self.scope['url_route']['kwargs']['study_design_id'])
+                scope = cast(WebSocketScope, self.scope)
+                self.study_design = await models.StudyDesign.objects.aget(pk=scope['url_route']['kwargs']['study_design_id'])
                 await super().connect()
             except models.StudyDesign.DoesNotExist:
                 await self.close()
@@ -52,16 +76,14 @@ class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
     async def disconnect(self, code) -> None:
         if self.room_name is not None:
             if not await sync_to_async(is_member_of_the_current_site)(self.scope):
-                # Check permission on disconnect as well to be consistent
-                # No need to save changes if the user isn't authorized
                 self.ydoc = None
             elif hasattr(self, 'ydoc') and self.ydoc is not None:
-                # Ensure the YDoc is properly cleaned up on the same thread
-                # Save any pending changes before disconnecting
                 if self.study_design is not None:
+                    nodes = self.ydoc.get('nodes', type=Map)
+                    edges = self.ydoc.get('edges', type=Map)
                     doc = {
-                        'nodes': dict(self.ydoc.get_map('nodes').items()),
-                        'edges': dict(self.ydoc.get_map('edges').items()),
+                        'nodes': dict(nodes.items()),
+                        'edges': dict(edges.items()),
                     }
                     await sync_to_async(self.study_design.update_from_ydoc)(self.scope, doc)
                 self.ydoc = None
@@ -78,11 +100,13 @@ class YjsConsumer(ypy_websocket.django_channels_consumer.YjsConsumer):
                 if bytes_data and len(bytes_data) > 0:
                     message_type = bytes_data[0]
                     # Skip cursor-only awareness updates
-                    if message_type == 0:  # Code for document messages (awarness code is 1)
+                    if message_type == 0:  # Code for document messages (awareness code is 1)
                         if timezone.now() - self.last_updated_time > timezone.timedelta(milliseconds=self.debounce_time):
+                            nodes = self.ydoc.get('nodes', type=Map)
+                            edges = self.ydoc.get('edges', type=Map)
                             doc = {
-                                'nodes': dict(self.ydoc.get_map('nodes').items()),
-                                'edges': dict(self.ydoc.get_map('edges').items()),
+                                'nodes': dict(nodes.items()),
+                                'edges': dict(edges.items()),
                             }
                             self.last_updated_time = timezone.now()
                             await sync_to_async(self.study_design.update_from_ydoc)(self.scope, doc)

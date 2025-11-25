@@ -19,7 +19,7 @@ dependencies = [
     "django-decorator-include~=3.2",
     "django-easy-audit~=1.3",
     "setuptools~=75.8",
-    "ypy-websocket~=0.12",
+    "pycrdt-websocket~=0.16",
     "channels[daphne]~=4.2",
     "channels-redis~=4.2",
     "django-debug-toolbar~=5.0",
@@ -30,4 +30,6 @@ dependencies = [
 distribution = false
 
 [dependency-groups]
-dev = ["fabric~=3.2"]
+dev = [
+    "fabric~=3.2",
+]

@@ -28,5 +28,5 @@ urlpatterns = [
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 websocket_urlpatterns = [
-    path('ws/registry/study-design-maps/<str:study_design_id>', backend.registry.consumers.YjsConsumer.as_asgi()),
+    path('ws/registry/study-design-maps/<str:study_design_id>', backend.registry.consumers.YjsConsumer.as_asgi()),  # type: ignore
 ]
