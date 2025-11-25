@@ -2,7 +2,7 @@
 name = "registry"
 requires-python = "~=3.13"
 dependencies = [
-    "django~=5.1",
+    "django~=5.1.0",
     "shortuuid~=1.0",
     "django-countries~=7.6",
     "django-docopt-command~=1.1",
