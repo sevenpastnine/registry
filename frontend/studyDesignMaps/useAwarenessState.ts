@@ -82,8 +82,8 @@ export function useAwarenessState(awareness: Awareness, userInfo: UserInfo) {
     [awareness, screenToFlowPosition, userId, displayName, cursorColor]
   );
 
-  // Create a throttled version that limits updates
-  const throttledUpdateRef = useRef(throttle(updateCursorPosition, 50));
+  // Create a throttled version that limits updates to 100ms
+  const throttledUpdateRef = useRef(throttle(updateCursorPosition, 100));
 
   // Mouse move handler
   const onMouseMove = useCallback(

@@ -47,7 +47,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [("redis", 6379)],
-            "capacity": 500,  # Increased from default of 100
+            "capacity": 1000,  # Increased from default of 100
             "expiry": 60,     # Seconds until group membership expires (default is 60)
         }
     }
