@@ -1,7 +1,7 @@
 from typing import TypedDict, cast
 from asgiref.sync import sync_to_async
 
-from pycrdt import Doc, Map
+from pycrdt import Doc, Map, create_sync_message
 from pycrdt.websocket.django_channels_consumer import YjsConsumer as BaseYjsConsumer
 
 from backend.utils import get_current_site
@@ -25,7 +25,12 @@ class UrlRoute(TypedDict):
 class WebSocketScope(TypedDict):
     url_route: UrlRoute
 
+
 # -----------------------------------------------------------------------------
+# Shared room state: all consumers in the same process share these docs
+# Key: room_name, Value: (ydoc, connection_count)
+
+_room_docs: dict[str, tuple[Doc, int]] = {}
 
 
 def is_member_of_the_current_site(scope) -> bool:
@@ -39,10 +44,12 @@ class YjsConsumer(BaseYjsConsumer):
     """
     WebSocket consumer for Y.js document synchronization.
 
-    Persistence strategy: Save only on disconnect.
-    This avoids race conditions when multiple Daphne workers have different
-    ydoc states. Y.js CRDT keeps all clients in sync, so by disconnect time
-    all consumers should have the same document state.
+    Persistence strategy: Single shared ydoc per room with save on last disconnect.
+    All consumers in the same room share one ydoc instance, eliminating race
+    conditions. Document is persisted only when the last connection leaves.
+
+    IMPORTANT: This requires running a single Daphne worker to ensure all
+    connections share the same process memory.
     """
 
     def __init__(self):
@@ -73,25 +80,54 @@ class YjsConsumer(BaseYjsConsumer):
             try:
                 scope = cast(WebSocketScope, self.scope)
                 self.study_design = await models.StudyDesign.objects.aget(pk=scope['url_route']['kwargs']['study_design_id'])
-                await super().connect()
+
+                # Set up room name before checking shared docs
+                self.room_name = self.make_room_name()
+
+                # Use shared ydoc if room already exists, otherwise create new one
+                if self.room_name in _room_docs:
+                    self.ydoc, count = _room_docs[self.room_name]
+                    _room_docs[self.room_name] = (self.ydoc, count + 1)
+                else:
+                    self.ydoc = await self.make_ydoc()
+                    _room_docs[self.room_name] = (self.ydoc, 1)
+
+                # Replicate base class connect() logic WITHOUT overwriting self.ydoc
+                # Base class does: self.ydoc = await self.make_ydoc() - we skip that
+                self._websocket_shim = self._make_websocket_shim(self.scope["path"])
+                await self.channel_layer.group_add(self.room_name, self.channel_name)
+                await self.accept()
+
+                # Send sync step 1 to the new client
+                sync_message = create_sync_message(self.ydoc)
+                await self._websocket_shim.send(sync_message)
+
             except models.StudyDesign.DoesNotExist:
                 await self.close()
 
     async def disconnect(self, code) -> None:
         if self.room_name is not None:
             if not await sync_to_async(is_member_of_the_current_site)(self.scope):
-                self.ydoc = None
-            elif hasattr(self, 'ydoc') and self.ydoc is not None:
-                if self.study_design is not None:
-                    nodes = self.ydoc.get('nodes', type=Map)
-                    edges = self.ydoc.get('edges', type=Map)
-                    doc = {
-                        'nodes': dict(nodes.items()),
-                        'edges': dict(edges.items()),
-                    }
-                    await sync_to_async(self.study_design.update_from_ydoc)(self.scope, doc)
-                self.ydoc = None
+                pass  # Don't save for unauthorized users
+            elif self.room_name in _room_docs:
+                ydoc, count = _room_docs[self.room_name]
 
+                if count <= 1:
+                    # Last connection - save to DB and clean up
+                    if self.study_design is not None:
+                        nodes = ydoc.get('nodes', type=Map)
+                        edges = ydoc.get('edges', type=Map)
+                        doc = {
+                            'nodes': dict(nodes.items()),
+                            'edges': dict(edges.items()),
+                        }
+                        await sync_to_async(self.study_design.update_from_ydoc)(self.scope, doc)
+                    del _room_docs[self.room_name]
+                else:
+                    # Other connections remain - just decrement count
+                    _room_docs[self.room_name] = (ydoc, count - 1)
+
+            self.ydoc = None
             await super().disconnect(code)
 
     async def receive(self, text_data=None, bytes_data=None):
