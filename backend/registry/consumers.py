@@ -4,8 +4,6 @@ from asgiref.sync import sync_to_async
 from pycrdt import Doc, Map
 from pycrdt.websocket.django_channels_consumer import YjsConsumer as BaseYjsConsumer
 
-from django.utils import timezone
-
 from backend.utils import get_current_site
 
 from . import models
@@ -38,12 +36,18 @@ def is_member_of_the_current_site(scope) -> bool:
 
 
 class YjsConsumer(BaseYjsConsumer):
+    """
+    WebSocket consumer for Y.js document synchronization.
+
+    Persistence strategy: Save only on disconnect.
+    This avoids race conditions when multiple Daphne workers have different
+    ydoc states. Y.js CRDT keeps all clients in sync, so by disconnect time
+    all consumers should have the same document state.
+    """
 
     def __init__(self):
         super().__init__()
         self.study_design = None
-        self.last_updated_time = timezone.now()
-        self.debounce_time = 1000
 
     def make_room_name(self) -> str:
         scope = cast(WebSocketScope, self.scope)
@@ -95,18 +99,3 @@ class YjsConsumer(BaseYjsConsumer):
             await self.close()
         else:
             await super().receive(text_data, bytes_data)
-
-            if self.ydoc is not None and self.study_design is not None:
-                if bytes_data and len(bytes_data) > 0:
-                    message_type = bytes_data[0]
-                    # Skip cursor-only awareness updates
-                    if message_type == 0:  # Code for document messages (awareness code is 1)
-                        if timezone.now() - self.last_updated_time > timezone.timedelta(milliseconds=self.debounce_time):
-                            nodes = self.ydoc.get('nodes', type=Map)
-                            edges = self.ydoc.get('edges', type=Map)
-                            doc = {
-                                'nodes': dict(nodes.items()),
-                                'edges': dict(edges.items()),
-                            }
-                            self.last_updated_time = timezone.now()
-                            await sync_to_async(self.study_design.update_from_ydoc)(self.scope, doc)
