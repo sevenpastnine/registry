@@ -6,6 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.search import SearchQuery
+from django.views.decorators.vary import vary_on_headers
 
 from . import models
 from . import forms
@@ -100,6 +101,7 @@ def get_resources(request, filters=None):
         return queryset
 
 
+@vary_on_headers('HX-Request')
 def resources(request):
     filters_form = forms.ResourceFiltersForm(request, request.GET)
 
