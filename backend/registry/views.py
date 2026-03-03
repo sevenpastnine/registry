@@ -130,8 +130,22 @@ def resource(request, resource_id):
 
 
 def study_designs(request):
+    # Study designs with collections
+    collections_with_study_designs = models.StudyDesignCollection.site_objects(request).prefetch_related(
+        'study_designs__contributors__person',
+        'study_designs__groups',
+        'study_designs__license'
+    ).filter(study_designs__archived=False).distinct()
+
+    # Study designs without a collection
+    uncollected_study_designs = models.StudyDesign.site_objects(request).filter(
+        archived=False,
+        collection__isnull=True
+    ).select_related('license').prefetch_related('contributors__person', 'groups')
+
     return render(request, 'registry/study_designs.html', {
-        'study_designs': models.StudyDesign.site_objects(request).filter(archived=False)
+        'collections_with_study_designs': collections_with_study_designs,
+        'uncollected_study_designs': uncollected_study_designs
     })
 
 

@@ -100,6 +100,13 @@ class Resource(admin.ModelAdmin):
     form = forms.ResourceAdminForm
 
 
+@admin.register(models.StudyDesignCollection)
+class StudyDesignCollection(SortableAdminMixin, admin.ModelAdmin):
+    list_display = ['name', 'site']
+    list_display_links = ['name']
+    list_filter = ['site']
+
+
 @admin.register(models.StudyDesign)
 class StudyDesign(admin.ModelAdmin):
     list_display = ['archived', 'name']

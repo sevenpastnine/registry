@@ -285,6 +285,18 @@ class ResourceFile(BaseModel):
 # -----------------------------------------------------------------------------
 # Study designs
 
+class StudyDesignCollection(BaseModel, SiteMixin):
+    position = models.PositiveIntegerField(default=0)
+    name = models.CharField(max_length=255)
+    unique_together = ['site', 'name']
+
+    class Meta:
+        ordering = ['position']
+
+    def __str__(self):
+        return self.name
+
+
 class StudyDesign(BaseModel, SiteMixin):
     archived = models.BooleanField(
         default=False,
@@ -293,6 +305,7 @@ class StudyDesign(BaseModel, SiteMixin):
 
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
+    collection = models.ForeignKey(StudyDesignCollection, on_delete=models.SET_NULL, null=True, blank=True, related_name='study_designs')
 
     license = models.ForeignKey(License, on_delete=models.PROTECT, null=True, blank=True, related_name='study_designs')
     groups = models.ManyToManyField(Group, blank=True, related_name='study_designs', verbose_name='Use cases')

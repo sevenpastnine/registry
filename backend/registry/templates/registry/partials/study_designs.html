@@ -1,26 +1,54 @@
-{% if not study_designs %}
+{% if not collections_with_study_designs and not uncollected_study_designs %}
 <div class="my-3gap">No study designs found.</div>
 {% else %}
 <div class="overflow-x-auto">
     <table class="min-w-full w-full divide-y divide-gray-300">
-        <thead>
-            <tr>
-                <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold">Name</th>
-                <th scope="col" class="py-3.5 px-3 text-left text-sm font-semibold">Use cases</th>
-            </tr>
-        </thead>
-
         <tbody class="divide-y divide-gray-200">
-            {% for study_design in study_designs %}
+            {% if collections_with_study_designs %}
+            {% for collection in collections_with_study_designs %}
+            <tr class="">
+                <td colspan="2" class="px-3 py-3 text-sm font-semibold">
+                    <div class="mb-0 mt-6 text-lg font-medium">{{ collection.name }}</div>
+                </td>
+            </tr>
+
+            {% for study_design in collection.study_designs.all %}
             <tr>
-                <td class="whitespace-nowrap py-4 px-3 text-sm truncate"><a href="{% url 'registry:study_design_map' study_design.id %}">{{ study_design.name }}</a></td>
-                <td class="whitespace-nowrap py-4 px-3 text-sm">
+                <td class="whitespace-nowrap px-3 py-4 text-sm truncate">
+                    <a href="{% url 'registry:study_design_map' study_design.id %}">{{ study_design.name }}</a>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm">
                     {% for group in study_design.groups.all %}
                     <div>{{ group.name }}</div>
                     {% endfor %}
                 </td>
             </tr>
             {% endfor %}
+            {% endfor %}
+            {% endif %}
+
+            {% if uncollected_study_designs %}
+            {% if collections_with_study_designs %}
+            <tr class="">
+                <td colspan="2" class="px-3 py-3 text-sm font-semibold">
+                    <div class="mb-0 mt-6 text-lg font-medium">Other study designs</div>
+                </td>
+            </tr>
+            {% endif %}
+
+            {% for study_design in uncollected_study_designs %}
+            <tr>
+                <td class="whitespace-nowrap px-3 py-4 text-sm truncate">
+                    <a href="{% url 'registry:study_design_map' study_design.id %}">{{ study_design.name }}</a>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                    {% for group in study_design.groups.all %}
+                    <div>{{ group.name }}</div>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+            {% endif %}
         </tbody>
     </table>
 </div>
