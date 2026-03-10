@@ -26,10 +26,19 @@ dependencies = [
     "openpyxl~=3.1",
 ]
 
-[tool.pdm]
-distribution = false
-
 [dependency-groups]
 dev = [
     "fabric~=3.2",
 ]
+
+[tool.pdm]
+distribution = false
+
+[tool.pyright]
+# Django models define inner `class Meta` which Pyright incorrectly flags as
+# incompatible overrides of the base Model.Meta. This is a false positive —
+# Django's metaclass handles Meta specially and override compatibility doesn't apply.
+reportIncompatibleVariableOverride = "none"
+# DRF stubs type GenericAPIView.get_queryset() as returning Never when queryset = objects.none(),
+# making all get_queryset() overrides appear incompatible. This is a known stubs limitation.
+reportIncompatibleMethodOverride = "none"

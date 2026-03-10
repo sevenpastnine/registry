@@ -1,5 +1,7 @@
 from django import forms
 from django.forms import ModelForm
+from django.http import HttpRequest
+
 from convenient_formsets import ConvenientBaseModelFormSet
 
 from . import models
@@ -14,10 +16,12 @@ class ContributorForm(ModelForm):
 
 
 class RequestConvenientBaseModelFormSet(ConvenientBaseModelFormSet):
-   def get_form_kwargs(self, index):
-       kwargs = super().get_form_kwargs(index)
-       kwargs['request'] = self.request
-       return kwargs
+    request: HttpRequest | None
+
+    def get_form_kwargs(self, index):
+        kwargs = super().get_form_kwargs(index)
+        kwargs['request'] = self.request
+        return kwargs
 
 
 BaseContributorFormSet = forms.modelformset_factory(
