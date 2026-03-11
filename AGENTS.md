@@ -26,7 +26,7 @@
 - Use the `typing` module for type annotations (e.g., `List[str]`, `Dict[str, int]`).
 - Break down complex functions into smaller, more manageable functions.
 - Prefer functional style over imperative style where possible.
-- Prefer functional style over objective-oriented style where possible.
+- Prefer functional style over object-oriented style where possible.
 - Prefer immutable data structures where possible (e.g., use tuples instead of lists for fixed collections).
 - Prefer list comprehensions and generator expressions for creating lists and iterators.
 - Avoid using global variables; pass parameters explicitly to functions.
@@ -34,6 +34,7 @@
 - Handle errors with specific exception types
 - Respect existing patterns in related files when adding new code
 - Use two blank lines to separate functions, classes.
+- Prefer plain functions over class-based views in Django where possible, unless state management or inheritance is required.
 
 ### TypeScript/React
 - TypeScript with strict mode and linting rules enabled

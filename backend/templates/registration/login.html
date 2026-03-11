@@ -37,15 +37,16 @@
                 {% include 'partials/form_field.html' with field=form.username %}
                 {% include 'partials/form_field.html' with field=form.password %}
 
-                <div class="flex items-center justify-end">
-                    <div class="text-sm">
-                        <a href="{% url 'password_reset' %}" class="!no-underline">Forgot your password?</a>
-                    </div>
-                </div>
-
                 <div class="pt-gap">
                     <input type="submit" value="Sign in" class="btn btn-primary flex w-full justify-center">
                     <input type="hidden" name="next" value="{{ next }}">
+                </div>
+
+                <hr class="border-gray-200 my-6">
+
+                <div class="flex flex-col gap-3 text-sm text-center">
+                    <div>First time using Registry?  <a href="{% url 'activation' %}">Activate your account</a></div>
+                    <a href="{% url 'password_reset' %}">Forgot your password?</a>
                 </div>
             </form>
         </div>

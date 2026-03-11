@@ -28,6 +28,7 @@ class Person(admin.ModelAdmin):
     list_display = ['last_name', 'first_name', 'orcid', 'email']
     list_display_links = ['email']
     list_filter = ['sites', 'organisations', 'groups']
+    autocomplete_fields = ['user']
     search_fields = ['user__username', 'user__first_name', 'user__last_name', 'user__email']
     filter_horizontal = ['sites']
 
@@ -37,7 +38,7 @@ class Person(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            path('import-people/', self.import_people, name='import-people'),
+            path('import-people/', self.admin_site.admin_view(self.import_people), name='import-people'),
         ]
         return custom_urls + urls
 

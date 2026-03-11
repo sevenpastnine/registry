@@ -1,0 +1,1 @@
+{{ site.name }} Registry — Complete your account activation

@@ -1,0 +1,18 @@
+{% autoescape off %}
+Dear {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.get_username }}{% endif %},
+
+You already have an active account on the {{ site.name }} Registry.
+
+Your existing credentials (email: {{ user.email }}) work across all Registry sites you are a member of. There is nothing more you need to do.
+
+You can sign in with your existing Registry email and password here: {{ login_url }}
+
+If you've forgotten your password, you can reset it here: {{ password_reset_url }}
+
+If you have any questions or run into problems, please contact us at {{ support_email }}.
+
+
+Best regards,
+
+The {{ site.name }} Registry team
+{% endautoescape %}

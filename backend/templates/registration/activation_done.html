@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Password Reset Email Sent{% endblock %}
+{% block title %}Check Your Email{% endblock %}
 
 {% block header %}{% endblock %}
 
@@ -18,9 +18,16 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
-            <p class="text-sm mb-6">We've emailed you instructions for resetting your password or activation if your account hasn't been activated yet. You should receive them shortly.</p>
-            <p class="text-sm text-muted mb-4">If you don't receive an email, please make sure you've entered the address you registered with, and check your spam folder.</p>
-            <a href="{% url 'login' %}" class="btn btn-primary inline-block">Return to Login</a>
+            <p class="text-sm mb-6">
+                If your email address is registered and your account hasn't been activated yet,
+                you'll receive an email with a link to complete your activation.
+            </p>
+
+            <p class="text-sm text-muted mb-4">
+                Didn't receive an email? Check your spam folder, or contact the project administrator.
+            </p>
+
+            <a href="{% url 'login' %}" class="btn btn-primary inline-block">Back to sign in</a>
         </div>
     </div>
 </div>

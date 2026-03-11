@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Password Reset Complete{% endblock %}
+{% block title %}Account Activated{% endblock %}
 
 {% block header %}{% endblock %}
 
@@ -13,14 +13,18 @@
 <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <img class="mx-auto h-8 w-auto" src="{% static 'images/logo.png' %}" alt="Logo">
-        <h2 class="mt-6 text-center text-3xl font-bold tracking-tight">Password reset complete</h2>
+        <h2 class="mt-6 text-center text-3xl font-bold tracking-tight">Account activated</h2>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
-            <p class="text-sm mb-6">Your password has been reset. You may now log in with your new password.</p>
+            <p class="text-sm mb-6">Your account has been activated. You can now sign in.</p>
 
-            <a href="{% url 'login' %}" class="btn btn-primary inline-block">Log in now</a>
+            <p class="text-sm text-muted mb-6">
+                Your credentials work across all Registries you are a member of so you only ever need one password.
+            </p>
+
+            <a href="{% url 'login' %}" class="btn btn-primary inline-block">Sign in</a>
         </div>
     </div>
 </div>

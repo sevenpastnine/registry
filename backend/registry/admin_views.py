@@ -1,65 +1,20 @@
-import string
-import random
 import openpyxl
 
-from backend.utils import get_current_site
+from backend.utils import get_current_site, normalize_email
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.db import transaction
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from django.core.mail import send_mass_mail
-from django.conf import settings
 
 from django_countries import countries
 
 from . import models
 from . import admin_forms as forms
 
-import logging
-logger = logging.getLogger('management.commands')
-
-
-def get_new_user_email_message(name, email, password, site_name, site_url, support_email):
-    return f'''
-Dear {name},
-
-You have been added to the {site_name} Registry.
-
-You can access the Registry at {site_url}
-
-Your username is: {email}
-Your password is: {password}
-
-If you have any questions or run into problems, please contact us at {support_email}
-
-
-Best regards,
-
-The {site_name} Registry team
-'''
-
-
-def get_existing_user_email_message(username, name, site_name, site_url, support_email):
-    return f'''
-Dear {name},
-
-You have been added to the {site_name} Registry.
-
-You can access the Registry at {site_url}
-
-Please log in with your existing Registry credentials.
-
-Your username, in case you've forgotten: {username}
-
-If you have any questions or run into problems, please contact us at {support_email}
-
-
-Best regards,
-
-The {site_name} Registry team
-'''
+from typing import Optional
 
 
 def check_import_people_permission(admin, request):
@@ -103,8 +58,6 @@ def process_organisations_sheet(sheet, current_site, request):
         if not (short_name and name and country_name):
             continue
 
-        logger.info(f'Importing organisation: {short_name}')
-
         try:
             country_code = countries.by_name(country_name)
             if not country_code:
@@ -130,17 +83,8 @@ def process_organisations_sheet(sheet, current_site, request):
     return org_count
 
 
-def get_person_name(first_name, last_name, email):
-    """Determine display name for email messages"""
-    if first_name:
-        return first_name
-    elif last_name:
-        return last_name
-    return email
-
-
-def process_people_sheet(sheet, current_site, site_name, site_url, request):
-    """Process people from Excel sheet"""
+def process_people_sheet(sheet, current_site, request):
+    """Process people from Excel sheet, creating or updating Person records."""
     headers = [cell.value for cell in sheet[1]]  # Get header row
 
     # Find column indices
@@ -151,8 +95,6 @@ def process_people_sheet(sheet, current_site, site_name, site_url, request):
     email_idx = headers.index('Email')
 
     people_count = 0
-    new_user_emails = []
-    existing_user_emails = []
 
     for row in list(sheet.rows)[1:]:
         orcid = str(row[orcid_idx].value or '').strip() if orcid_idx is not None and row[orcid_idx].value else None
@@ -164,94 +106,75 @@ def process_people_sheet(sheet, current_site, site_name, site_url, request):
         if not (first_name and last_name and email and org_short_name):
             continue
 
-        logger.info(f'Importing person: {email}')
-
         try:
             validate_email(email)
         except ValidationError:
             messages.error(request, f'Invalid email address: {email}')
             continue
 
-        # Find organisation
         try:
             org = models.Organisation.objects.get(short_name=org_short_name)
         except models.Organisation.DoesNotExist:
             messages.error(request, f'Organisation {org_short_name} not found for person {email}')
             continue
 
-        # Create or update user and person
-        username, password, user_created, is_new_to_site = create_or_update_person(
-            first_name, last_name, email, orcid, org, current_site
-        )
-
-        # Prepare email notifications
-        person_name = get_person_name(first_name, last_name, email)
-
-        if user_created:
-            # New user gets credentials
-            email_content = get_new_user_email_message(
-                person_name, email, password, site_name, site_url, settings.REGISTRY_SUPPORT_EMAIL
-            )
-            new_user_emails.append((
-                f'You have been added to the {site_name} Registry',
-                email_content,
-                settings.REGISTRY_SUPPORT_EMAIL_WITH_NAME,
-                [email]
-            ))
-        elif is_new_to_site:
-            # Existing user gets notification about new site
-            email_content = get_existing_user_email_message(
-                username, person_name, site_name, site_url, settings.REGISTRY_SUPPORT_EMAIL
-            )
-            existing_user_emails.append((
-                f'You have been added to the {site_name} Registry',
-                email_content,
-                settings.REGISTRY_SUPPORT_EMAIL_WITH_NAME,
-                [email]
-            ))
-
+        create_or_update_person(first_name, last_name, email, orcid, org, current_site)
         people_count += 1
 
-    return people_count, new_user_emails, existing_user_emails
+    return people_count
 
 
-def create_or_update_person(first_name, last_name, email, orcid, org, current_site):
-    """Create or update user and person records"""
-    # Generate random password
-    password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+def create_or_update_person(
+    first_name: str,
+    last_name: str,
+    email: str,
+    orcid: Optional[str],
+    org: models.Organisation,
+    current_site: Site,
+) -> tuple[bool, bool]:
+    """
+    Create or update a Person and their associated User for the given site.
 
-    # Create or update user
-    user, user_created = User.objects.update_or_create(
-        username=email,
-        defaults={
-            'email': email,
-            'first_name': first_name,
-            'last_name': last_name,
-        }
-    )
+    Handles three cases:
+    - Brand-new user: creates User with unusable password (pending activation).
+    - Existing pending/active user (imported elsewhere): links to the new site only.
+    - Existing active user (registered on another site): links to the new site only.
 
-    if user_created:
-        user.set_password(password)
+    Returns:
+        (user_created, is_new_to_site)
+    """
+    email = normalize_email(email)
+
+    try:
+        user = User.objects.get(username=email)
+        user_created = False
+        # Update name fields if they've changed, but never touch is_active or password
+        if user.first_name != first_name or user.last_name != last_name:
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save(update_fields=['first_name', 'last_name'])
+    except User.DoesNotExist:
+        # New user: create with unusable password (pending activation)
+        user_created = True
+        user = User(
+            username=email,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            is_active=True,
+        )
+        user.set_unusable_password()
         user.save()
 
-    # Create or update person
-    person, person_created = models.Person.objects.update_or_create(
-        user=user,
-        defaults={'orcid': orcid}
-    )
+    person, _ = models.Person.objects.update_or_create(user=user, defaults={'orcid': orcid} if orcid is not None else {})
 
-    # Add to organisation
-    if org not in person.organisations.all():  # type: ignore
-        person.organisations.add(org)  # type: ignore
+    person.organisations.add(org)  # type: ignore  (M2M add is idempotent)
 
-    # Check if person is already in site
     is_new_to_site = current_site not in person.sites.all()
-
-    # Add to current site
     if is_new_to_site:
         person.sites.add(current_site)
 
-    return user.username, password, user_created, is_new_to_site
+    return user_created, is_new_to_site
 
 
 def import_people(admin, request):
@@ -261,8 +184,6 @@ def import_people(admin, request):
         return redirect_response
 
     current_site = get_current_site(request)
-    site_name = current_site.name
-    site_url = f"https://{current_site.domain}" if current_site.domain.startswith('http') else f"https://{current_site.domain}"
 
     if request.method == 'POST':
         form = forms.PersonImportForm(request.POST, request.FILES)
@@ -280,22 +201,15 @@ def import_people(admin, request):
 
                     # Process people sheet
                     people_sheet = workbook['People']
-                    people_count, new_user_emails, existing_user_emails = process_people_sheet(
-                        people_sheet, current_site, site_name, site_url, request
+                    people_count = process_people_sheet(
+                        people_sheet, current_site, request
                     )
 
                     # If there were any errors, abort the transaction
                     if messages.get_messages(request):
                         raise Exception()
 
-                # Send email notifications
-                all_emails = new_user_emails + existing_user_emails
-                if all_emails:
-                    send_mass_mail(all_emails, fail_silently=False)
-
-                email_count = len(all_emails)
                 messages.success(request, f'Successfully imported {org_count} organisations and {people_count} people.')
-                messages.success(request, f'Sent {email_count} email notifications.')
 
                 return redirect('..')
             except Exception as e:

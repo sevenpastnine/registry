@@ -1,0 +1,16 @@
+{% autoescape off %}
+Dear {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.get_username }}{% endif %},
+
+To activate your account on the {{ site.name }} Registry, please follow the link below and set your password:
+
+{{ confirm_url }}
+
+This link will expire in 3 days. If you did not expect this email, you can safely ignore it.
+
+If you have any questions or run into problems, please contact us at {{ support_email }}.
+
+
+Best regards,
+
+The {{ site.name }} Registry team
+{% endautoescape %}

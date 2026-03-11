@@ -7,6 +7,11 @@ from django.contrib.sites.requests import RequestSite
 from django.contrib.sites.shortcuts import get_current_site as get_current_site_django
 
 
+def normalize_email(email: str) -> str:
+    """Normalize an email address by stripping whitespace and lowercasing."""
+    return email.strip().lower()
+
+
 def get_current_site(request_or_scope: Union[HttpRequest, Dict]) -> Union[Site, RequestSite]:
     """
     Retrieves the current site based on the provided request or scope.
