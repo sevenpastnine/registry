@@ -33,9 +33,9 @@
         <div>
             <dt>Members</dt>
             <dd>
-                {% if group.people.all.count %}
+                {% if people %}
                 <ul>
-                    {% for person in group.people.all %}
+                    {% for person in people %}
                     <li><a href="{% url 'registry:person' person.id %}">{{ person }}</a></li>
                     {% endfor %}
                 </ul>

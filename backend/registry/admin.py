@@ -60,6 +60,7 @@ class Organisation(admin.ModelAdmin):
     list_display = ['ror', 'short_name', 'name']
     list_display_links = ['name']
     list_filter = ['sites']
+    search_fields = ['ror', 'short_name', 'name']
     filter_horizontal = ['sites', 'people']
     form = forms.OrganisationAdminForm
 

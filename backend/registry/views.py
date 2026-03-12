@@ -8,6 +8,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.search import SearchQuery
 from django.views.decorators.vary import vary_on_headers
 
+from backend.utils import get_current_site
+
 from . import models
 from . import forms
 
@@ -43,8 +45,10 @@ def organisations(request):
 
 
 def organisation(request, organisation_id):
+    organisation = get_object_or_404(models.Organisation.site_objects(request), pk=organisation_id)
     return render(request, 'registry/organisation.html', {
-        'organisation': get_object_or_404(models.Organisation.site_objects(request), pk=organisation_id)
+        'organisation': organisation,
+        'people': organisation.people.filter(sites=get_current_site(request)),
     })
 
 
@@ -58,6 +62,7 @@ def group(request, group_id):
     group = get_object_or_404(models.Group.site_objects(request), pk=group_id)
     return render(request, 'registry/group.html', {
         'group': group,
+        'people': group.people.filter(sites=get_current_site(request)),
         'resources': models.Resource.site_objects(request).filter(archived=False, groups=group),
         'study_designs': models.StudyDesign.site_objects(request).filter(archived=False, groups=group),
     })
