@@ -127,3 +127,4 @@ class StudyDesignForm(ModelForm):
 
         self.fields["license"].queryset = models.License.site_objects(request).all()  # type: ignore
         self.fields["groups"].queryset = models.Group.site_objects(request).all()  # type: ignore
+        self.fields["collection"].queryset = models.StudyDesignCollection.site_objects(request).all()  # type: ignore

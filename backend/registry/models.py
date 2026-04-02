@@ -288,10 +288,10 @@ class ResourceFile(BaseModel):
 class StudyDesignCollection(BaseModel, SiteMixin):
     position = models.PositiveIntegerField(default=0)
     name = models.CharField(max_length=255)
-    unique_together = ['site', 'name']
 
     class Meta:
         ordering = ['position']
+        unique_together = ['site', 'name']
 
     def __str__(self):
         return self.name
