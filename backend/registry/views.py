@@ -103,7 +103,7 @@ def get_resources(request, filters=None):
             queryset = queryset.filter(status=filters.get('status'))
         if filters.get('organisation'):
             queryset = queryset.filter(contributors__person__in=filters.get('organisation').people.all())
-        return queryset
+        return queryset.distinct()
 
 
 @vary_on_headers('HX-Request')
@@ -198,6 +198,7 @@ def resource_add(request):
             resource = form.save(commit=False)
             resource.site = request.site
             resource.save()
+            form.save_m2m()
             save_contributor_formset(contributor_formset, resource)
             save_resource_file_formset(file_formset, resource)
             messages.add_message(request, messages.SUCCESS, 'A new resource has been registered.')
