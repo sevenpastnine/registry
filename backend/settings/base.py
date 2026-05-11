@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'convenient_formsets',
     'easyaudit',
+    'import_export',
 
     'rest_framework',
     'rest_framework.authtoken',

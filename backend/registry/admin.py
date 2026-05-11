@@ -1,6 +1,11 @@
+import os
+
 from django.contrib import admin
 from django.urls import path
 from django.contrib.contenttypes.admin import GenericTabularInline
+
+from import_export import resources
+from import_export.admin import ExportActionModelAdmin
 
 from adminsortable2.admin import SortableAdminMixin
 
@@ -91,13 +96,74 @@ class ResourceFileInline(admin.TabularInline):
     extra = 0
 
 
+class ResourceResource(resources.ModelResource):
+
+    class Meta:
+        model = models.Resource
+        fields = [
+            'name',
+            'kind',
+            'status__name',
+            'license__name',
+            'groups',
+            'data_link',
+        ]
+
+    def dehydrate_groups(self, obj):
+        if obj.groups.all():
+            return "\n".join([group.name for group in obj.groups.all()])
+        return ''
+
+    def get_export_headers(self):
+        return super().get_export_headers() + ['file_count', 'file_name', 'file_format', 'file_size_bytes']
+
+    def _build_first_row(self, obj, file=None, file_count=''):
+        """Build one export row for obj, with optional file columns appended."""
+        row = [self.export_field(f, obj) for f in self.get_export_fields()]
+        if file is not None:
+            name = file.name or os.path.basename(file.file.name)
+            format = os.path.splitext(file.file.name)[1].lstrip('.').upper()
+            try:
+                size = file.file.size
+            except (FileNotFoundError, OSError):
+                size = ''
+            row += [file_count, name, format, size]
+        else:
+            row += [file_count, '', '', '']
+        return row
+
+    def export(self, queryset=None, *args, **kwargs):
+        import tablib
+        if queryset is None:
+            queryset = self.get_queryset()
+        dataset = tablib.Dataset(headers=self.get_export_headers())
+        qs = queryset.prefetch_related('files', 'groups', 'status', 'license')
+        empty_resource_cols = [''] * (len(self.get_export_fields()) + 1)  # +1 for file_count
+        for obj in qs:
+            files = list(obj.files.all())
+            if files:
+                dataset.append(self._build_first_row(obj, files[0], file_count=str(len(files))))
+                for f in files[1:]:
+                    name = f.name or os.path.basename(f.file.name)
+                    format = os.path.splitext(f.file.name)[1].lstrip('.').upper()
+                    try:
+                        size = f.file.size
+                    except (FileNotFoundError, OSError):
+                        size = ''
+                    dataset.append(empty_resource_cols + [name, format, size])
+            else:
+                dataset.append(self._build_first_row(obj))
+        return dataset
+
+
 @admin.register(models.Resource)
-class Resource(admin.ModelAdmin):
+class Resource(ExportActionModelAdmin):
     list_display = ['archived', 'name', 'kind']
     list_display_links = ['name']
     list_filter = ['site', 'archived', 'kind', 'groups', 'license']
     filter_horizontal = ['groups']
     search_fields = ['name', 'description']
+    resource_classes = [ResourceResource]
     inlines = [ContributorInline, ResourceFileInline]
     form = forms.ResourceAdminForm
 

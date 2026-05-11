@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:269c9f3f07a0c0ff206cb44609c7b24fbc3ff1f2c1cbe827c4e366f7313701bb"
+content_hash = "sha256:c0851b57b835224f329683c774bb5721d3b8b7db034faf635584f977cdb22864"
 
 [[metadata.targets]]
 requires_python = "~=3.13"
@@ -483,6 +483,17 @@ files = [
 ]
 
 [[package]]
+name = "diff-match-patch"
+version = "20241021"
+requires_python = ">=3.7"
+summary = "Repackaging of Google's Diff Match and Patch libraries."
+groups = ["default"]
+files = [
+    {file = "diff_match_patch-20241021-py3-none-any.whl", hash = "sha256:93cea333fb8b2bc0d181b0de5e16df50dd344ce64828226bda07728818936782"},
+    {file = "diff_match_patch-20241021.tar.gz", hash = "sha256:beae57a99fa48084532935ee2968b8661db861862ec82c6f21f4acdd6d835073"},
+]
+
+[[package]]
 name = "django"
 version = "5.1.14"
 requires_python = ">=3.10"
@@ -624,6 +635,22 @@ dependencies = [
 files = [
     {file = "django_htmx-1.26.0-py3-none-any.whl", hash = "sha256:3a80ffaa6df5a07e833752cd8ada7cee0fa711787841ab17a805075b1aecacc7"},
     {file = "django_htmx-1.26.0.tar.gz", hash = "sha256:88ecc2f8a3f13ad5a50e6b16be127f04fba369124cc40a09b21ce33babb04aa6"},
+]
+
+[[package]]
+name = "django-import-export"
+version = "4.4.1"
+requires_python = ">=3.9"
+summary = "Django application and library for importing and exporting data with included admin integration."
+groups = ["default"]
+dependencies = [
+    "Django>=4.2",
+    "diff-match-patch==20241021",
+    "tablib>=3.7.0",
+]
+files = [
+    {file = "django_import_export-4.4.1-py3-none-any.whl", hash = "sha256:8be2782e505ae303ccb02070a1b4c528995922126fca9ee449eb28666835dd4b"},
+    {file = "django_import_export-4.4.1.tar.gz", hash = "sha256:165dc7fdcd56a6356342eef3f88f3f3682b64b6f67e9a259a137e8b57aeff10c"},
 ]
 
 [[package]]
@@ -1232,6 +1259,17 @@ groups = ["default"]
 files = [
     {file = "sqlparse-0.5.3-py3-none-any.whl", hash = "sha256:cf2196ed3418f3ba5de6af7e82c694a9fbdbfecccdfc72e281548517081f16ca"},
     {file = "sqlparse-0.5.3.tar.gz", hash = "sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272"},
+]
+
+[[package]]
+name = "tablib"
+version = "3.9.0"
+requires_python = ">=3.9"
+summary = "Format agnostic tabular data library (XLS, JSON, YAML, CSV, etc.)"
+groups = ["default"]
+files = [
+    {file = "tablib-3.9.0-py3-none-any.whl", hash = "sha256:eda17cd0d4dda614efc0e710227654c60ddbeb1ca92cdcfc5c3bd1fc5f5a6e4a"},
+    {file = "tablib-3.9.0.tar.gz", hash = "sha256:1b6abd8edb0f35601e04c6161d79660fdcde4abb4a54f66cc9f9054bd55d5fe2"},
 ]
 
 [[package]]
