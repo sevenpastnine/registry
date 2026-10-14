@@ -1,7 +1,7 @@
 import functools
 
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
@@ -136,10 +136,12 @@ def resource(request, resource_id):
 
 def study_designs(request):
     # Study designs with collections
+    active_study_designs = models.StudyDesign.site_objects(request).filter(
+        archived=False
+    ).select_related('license').prefetch_related('contributors__person', 'groups')
+
     collections_with_study_designs = models.StudyDesignCollection.site_objects(request).prefetch_related(
-        'study_designs__contributors__person',
-        'study_designs__groups',
-        'study_designs__license'
+        Prefetch('study_designs', queryset=active_study_designs, to_attr='active_study_designs')
     ).filter(study_designs__archived=False).distinct()
 
     # Study designs without a collection
@@ -155,7 +157,7 @@ def study_designs(request):
 
 
 def study_design(request, study_design_id):
-    study_design = get_object_or_404(models.StudyDesign.site_objects(request), pk=study_design_id)
+    study_design = get_object_or_404(models.StudyDesign.site_objects(request), pk=study_design_id, archived=False)
 
     return render(request, 'registry/study_design.html', {
         'study_design': study_design,
@@ -179,7 +181,7 @@ def study_design_map(request, study_design_id):
 
     return render(request, 'registry/study_design_map.html', {
         'node_types': list(models.StudyDesignNodeType.site_objects(request).all().values('id', 'name', 'color', 'description')),
-        'study_design': get_object_or_404(models.StudyDesign.site_objects(request), pk=study_design_id),
+        'study_design': get_object_or_404(models.StudyDesign.site_objects(request), pk=study_design_id, archived=False),
         'organisations': dict([(org.id, org.short_name) for org in models.Organisation.site_objects(request).all().order_by('short_name')]),
         'user_display_name': display_name,
     })

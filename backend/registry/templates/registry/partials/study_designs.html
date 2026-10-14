@@ -12,7 +12,7 @@
                 </td>
             </tr>
 
-            {% for study_design in collection.study_designs.all %}
+            {% for study_design in collection.active_study_designs %}
             <tr>
                 <td class="whitespace-nowrap px-3 py-4 text-sm truncate">
                     <a href="{% url 'registry:study_design_map' study_design.id %}">{{ study_design.name }}</a>
